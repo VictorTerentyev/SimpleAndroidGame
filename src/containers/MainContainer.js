@@ -18,7 +18,12 @@ import {
 } from 'react-native';
 
 import Video from 'react-native-video';
-import BackgroundVideo from '../../assets/videos/background.mp4';
+import NVidia_Intro from '../../assets/videos/nvidia.mp4';
+import AMD_Intro from '../../assets/videos/amd.mp4';
+import UE4_Intro from '../../assets/videos/ue4.mp4';
+import Frontier_Intro from '../../assets/videos/frontier.mp4';
+import Menu_Background from '../../assets/videos/menu.mp4';
+
 
 import Sound from 'react-native-sound';
 
@@ -43,8 +48,8 @@ class SteamApp extends Component {
           source={BackgroundVideo}
           style={styles.backgroundVideo}
         />
-        <ScrollView 
-          contentContainerStyle={{
+        <View
+          style={{
             flexGrow : 1,
             alignItems: 'center',
             justifyContent: 'center',
@@ -52,14 +57,7 @@ class SteamApp extends Component {
             width: this.state.screenWidth
           }} 
         >
-          <Text style={styles.welcome}>
-            Welcome to Red Steam App!
-          </Text>
-          <Text style={styles.instructions}>Please, fill the input with interesting you Steam ID</Text>
-          <LoginForm style={styles.loginForm} submit={actions.submit}/>
-          <ProfilePage style={styles.profilePage}/>
-          <ErrorMessage style={styles.errorMessage}/> 
-        </ScrollView>
+        </View>
       </View>
     );
   }
@@ -69,7 +67,7 @@ class SteamApp extends Component {
     this.state = {
       screenWidth: Dimensions.get('window').width,
       previousAppState: 'active',
-      backgroundSound: new Sound('background.mp3', Sound.MAIN_BUNDLE, (error) => {
+      MenuBackgroundSound: new Sound('background.mp3', Sound.MAIN_BUNDLE, (error) => {
         if (!error) {
           this.state.backgroundSound.setNumberOfLoops(-1);
           this.state.backgroundSound.play();

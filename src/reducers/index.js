@@ -1,1 +1,1 @@
-export { default as steamApp } from './app';
+export { default as simpleAndroidGame } from './app';
