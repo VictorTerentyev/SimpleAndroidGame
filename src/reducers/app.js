@@ -9,15 +9,10 @@ const initialState = {
     menu: false
   },
   displays: {
-    intro: {
-      nvidia: 'flex',
-      amd: 'none',
-      ue4: 'none',
-      frointier: 'none',
-      menu: 'none'
-    },
+    intro: 'flex',
     menu: {
-      mainDisp: 'none',
+      menu: 'none',
+      main: 'none',
       settings: 'none',
       credits: 'none',
       exit: 'none'

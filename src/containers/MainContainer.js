@@ -20,12 +20,12 @@ import Orientation from 'react-native-orientation';
 import * as AppActions from '../actions/AppActions';
 
 import Intro from './Intro';
-import ProfilePage from './Menu';
-import ErrorMessage from './Game';
+import Menu from './Menu';
+import Game from './Game';
 
-class mainContainer extends Component {
+class MainContainer extends Component {
   render() {
-    const { appState: { appState }, dispatch, componentDidMount } = this.props;
+    const { appProps: { appProps }, dispatch, componentDidMount } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -42,8 +42,8 @@ class mainContainer extends Component {
   }
 }
 
-mainContainer.propTypes = {
-  appState: PropTypes.object,
+MainContainer.propTypes = {
+  appProps: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -58,8 +58,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appState: state.mainContainer
+    appProps: state.simpleAndroidGame
   };
 };
 
-export default connect(stateMap)(mainContainer);
+export default connect(stateMap)(MainContainer);

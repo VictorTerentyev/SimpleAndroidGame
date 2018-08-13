@@ -9,15 +9,17 @@ import {
   AppState
 } from 'react-native';
 
+import * as AppActions from '../actions/AppActions';
+
 import Video from 'react-native-video';
 import NVidia from '../../assets/videos/nvidia.mp4';
 import AMD from '../../assets/videos/amd.mp4';
 import UE4 from '../../assets/videos/ue4.mp4';
 import Frontier from '../../assets/videos/frontier.mp4';
 
-class intro extends Component {
+class Intro extends Component {
   render() {
-    const { introState: { introState }, dispatch, componentDidMount } = this.props;
+    const { appProps: { appProps }, introDisp: { introDisp }, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -46,8 +48,18 @@ class intro extends Component {
   }
 }
 
-intro.propTypes = {
-  introState: PropTypes.object,
+function setStyles(display) {
+  const styles = StyleSheet.create({
+    container: {
+      display: display
+    }
+  });
+  return styles.container;
+}
+
+Intro.propTypes = {
+  appProps: PropTypes.object,
+  introDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
 
@@ -63,8 +75,9 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    introState: state.intro
+    appProps: state.simpleAndroidGame,
+    introDisp: state.simpleAndroidGame.displays.intro
   };
 };
 
-export default connect(stateMap)(intro);
+export default connect(stateMap)(Intro);

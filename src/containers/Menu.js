@@ -10,8 +10,10 @@ import {
   AppState
 } from 'react-native';
 
+import * as AppActions from '../actions/AppActions';
+
 import Video from 'react-native-video';
-import Menu from '../../assets/videos/menu.mp4';
+import MenuBg from '../../assets/videos/menu.mp4';
 
 import Sound from 'react-native-sound';
 
@@ -20,9 +22,9 @@ import Settings from '../components/Menu/settings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
-class menu extends Component {
+class Menu extends Component {
   render() {
-    const { menuState: { menuState }, dispatch, componentDidMount } = this.props;
+    const { appProps: { appProps }, menuDisp: { menuDisp }, dispatch, componentDidMount } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -45,7 +47,7 @@ class menu extends Component {
   constructor() {
     super();
     this.state = {
-      source: Menu,
+      source: MenuBg,
       menuState: AppState.currentState,
       backgroundSound: new Sound('background.mp3', Sound.MAIN_BUNDLE, (error) => {
         if (!error) {
@@ -57,8 +59,18 @@ class menu extends Component {
   }
 }
 
-menu.propTypes = {
-  menuState: PropTypes.object,
+function setStyles(display) {
+  const styles = StyleSheet.create({
+    container: {
+      display: display
+    }
+  });
+  return styles.container;
+}
+
+Menu.propTypes = {
+  appProps: PropTypes.object,
+  menuDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
 
@@ -77,8 +89,9 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    menuState: state.menu
+    appProps: state.simpleAndroidGame,
+    menuDisp: state.simpleAndroidGame.displays.menu.menu
   };
 };
 
-export default connect(stateMap)(menu);
+export default connect(stateMap)(Menu);

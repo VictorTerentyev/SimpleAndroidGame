@@ -6,22 +6,29 @@ import {
   StyleSheet,
   View,
   SectionList,
+  TouchableHighlight,
   Dimensions,
   AppState
 } from 'react-native';
 
-class mainMenu extends Component {
+import * as AppActions from '../actions/AppActions';
+
+class MainMenu extends Component {
   render() {
-    const { mainMenuState: { mainMenuState }, dispatch, componentDidMount } = this.props;
+    const { appProps: { appProps }, mainMenuDisp: { mainMenuDisp }, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={styles.container}>
+      <View style={setStyles(this.props.mainMenuDisp)}>
         <SectionList
           sections={[
             {title: 'Main Menu', data: ['Start', 'Settings', 'Credits', 'Exit']}
           ]}
-          renderItem={({item}) => <Text style={styles.listItem}>{item}</Text>}
+          renderItem={({item}) =>
+            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle(item)}> 
+              <Text style={styles.listItem}>{item}</Text>
+            </TouchableHighlight>
+          }
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
           keyExtractor={(item, index) => index}
         />
@@ -37,18 +44,40 @@ class mainMenu extends Component {
   }
 }
 
-mainMenu.propTypes = {
-  mainMenuState: PropTypes.object,
+function setStyles(display) {
+  const styles = StyleSheet.create({
+    container: {
+      display: display
+    }
+  });
+  return styles.container;
+}
+
+MainMenu.propTypes = {
+  appProps: PropTypes.object,
+  mainMenuDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
 
 const styles = StyleSheet.create({
-  
+  container: {
+
+  },
+  listItem: {
+
+  },
+  sectionHeader: {
+
+  },
+  button: {
+
+  }
 });
 
 const stateMap = (state) => {
   return {
-    mainMenuState: state.mainMenu
+    appProps: state.simpleAndroidGames,
+    mainMenuDisp: state.simpleAndroidGame.displays.menu.main
   };
 };
 
