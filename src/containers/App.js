@@ -9,7 +9,7 @@ import { combineReducers, createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { Provider } from 'react-redux';
 
-import  from './SteamApp';
+import MainContainer from './MainContainer';
 
 import * as reducers from '../reducers';
 
@@ -21,7 +21,7 @@ export default class App extends Component {
     return (
       <View styles={styles.main}>
         <Provider store={store}>
-          <SteamApp />
+          <MainContainer />
         </Provider>
       </View>
     );
@@ -30,8 +30,8 @@ export default class App extends Component {
 
 const styles = StyleSheet.create({
   main: {
-
+    
   }
 });
 
-AppRegistry.registerComponent('RedSteamApp', () => App);
+AppRegistry.registerComponent('SimpleAndroidGame', () => App);

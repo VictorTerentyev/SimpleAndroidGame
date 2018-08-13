@@ -1,10 +1,22 @@
 import * as types from '../constants/ActionTypes';
 
-export function submit (id, content, displays) {
+export function setSettings(settings) {
   return {
-    type: types.SUBMIT_ID,
-    id,
-    content,
-    displays
+    type: types.SET_SETTINGS,
+    settings
   };
+}
+
+export function setDisplays(displays) {
+  return {
+    type: types.SET_DISPLAYS,
+    displays
+  }
+}
+
+export function videoPlay(videoPlay) {
+  return {
+    type: types.VIDEO_PLAY,
+    videoPlay
+  }
 }

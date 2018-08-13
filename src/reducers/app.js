@@ -1,33 +1,67 @@
 import * as types from '../constants/ActionTypes';
 
 const initialState = {
-  id: '',
-  content: {
-
+  videoPlay: {
+    nvidia: true,
+    amd: false,
+    ue4: false,
+    frointier: false,
+    menu: false
   },
   displays: {
-
+    intro: {
+      nvidia: 'flex',
+      amd: 'none',
+      ue4: 'none',
+      frointier: 'none',
+      menu: 'none'
+    },
+    menu: {
+      mainDisp: 'none',
+      settings: 'none',
+      credits: 'none',
+      exit: 'none'
+    },
+    game: 'none'
   },
-  videoSettings: {
-
+  settings: {
+    videoSettings: {
+      brightness: 100
+    },
+    audioSettings: {
+      volume: 100,
+      effects: 100,
+      music: 100
+    },
+    gameSettings: {
+      mod: 'default'
+    }
   }
-  audioSettings: {
+  game: {
 
   }
 }
 
-export default function steamApp (state = initialState, action) {
+export default function simpleAndroidGame (state = initialState, action) {
 
   switch (action.type) {
 
-    case types.INIT_STATE:
+    case types.SET_SETTINGS:
       return ({
         ...state,
-        id: action.id || initialState.id,
-        content: action.content || initialState.content,
-        displays: action.displays || initialState.displays,
-        videoSettings: action.videoSettings || initialState.videoSettings,
-        audioSettings: action.audioSettings || initialState.audioSettings
+        settings: action.settings || initialState.settings
+      })
+
+    case types.SET_DISPLAYS:
+      return ({
+        ...state,
+        displays: action.displays || initialState.displays
+      })
+
+    case types.VIDEO_PLAY:
+      return ({
+        ...state,
+        videoPlay: action.videoPlay || initialState.vidioPlay
       })
 
     default:
