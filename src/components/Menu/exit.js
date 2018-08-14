@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
   TouchableHighlight,
@@ -10,11 +11,11 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import * as AppActions from '../../actions/AppActions';
 
 class Exit extends Component {
   render() {
-    const { appState: { exitState }, exitDisp: { exitDisp }, dispatch } = this.props;
+    const { appProps: { appProps }, exitDisp: { exitDisp }, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -74,9 +75,11 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appState: state.simpleAndroidGame,
+    appProps: state.simpleAndroidGame,
     exitDisp: state.simpleAndroidGame.displays.menu.exit
   };
 };
 
 export default connect(stateMap)(Exit);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => Exit);

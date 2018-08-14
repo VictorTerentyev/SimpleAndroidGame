@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
   SectionList,
@@ -28,7 +29,7 @@ class Menu extends Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={styles.container}>
+      <View style={setStyles(this.props.menuDisp)}>
         <Video 
           playInBackground
           playWhenInactive
@@ -49,7 +50,7 @@ class Menu extends Component {
     this.state = {
       source: MenuBg,
       menuState: AppState.currentState,
-      backgroundSound: new Sound('background.mp3', Sound.MAIN_BUNDLE, (error) => {
+      backgroundSound: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
         if (!error) {
           this.state.backgroundSound.setNumberOfLoops(-1);
           this.state.backgroundSound.play();
@@ -95,3 +96,5 @@ const stateMap = (state) => {
 };
 
 export default connect(stateMap)(Menu);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => Menu);

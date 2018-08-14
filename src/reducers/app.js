@@ -1,23 +1,28 @@
 import * as types from '../constants/ActionTypes';
+import NVidia from '../../assets/videos/nvidia.mp4';
+import AMD from '../../assets/videos/amd.mp4';
+import UE4 from '../../assets/videos/ue4.mp4';
+import Frontier from '../../assets/videos/frontier.mp4';
 
 const initialState = {
+  introVids: [NVidia, AMD, UE4, Frontier],
   videoPlay: {
-    nvidia: true,
-    amd: false,
-    ue4: false,
-    frointier: false,
-    menu: false
+    nvidia: false,
+    amd: true,
+    ue4: true,
+    frointier: true,
+    menu: true
   },
   displays: {
     intro: 'flex',
+    game: 'none',
     menu: {
       menu: 'none',
       main: 'none',
       settings: 'none',
       credits: 'none',
       exit: 'none'
-    },
-    game: 'none'
+    }
   },
   settings: {
     videoSettings: {
@@ -31,7 +36,7 @@ const initialState = {
     gameSettings: {
       mod: 'default'
     }
-  }
+  },
   game: {
 
   }
@@ -56,7 +61,7 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.VIDEO_PLAY:
       return ({
         ...state,
-        videoPlay: action.videoPlay || initialState.vidioPlay
+        videoPlay: action.videoPlay || initialState.vidioPlay,
       })
 
     default:

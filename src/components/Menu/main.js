@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
   SectionList,
@@ -11,7 +12,7 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import * as AppActions from '../../actions/AppActions';
 
 class MainMenu extends Component {
   render() {
@@ -81,4 +82,6 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(mainMenu);
+export default connect(stateMap)(MainMenu);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => MainMenu);

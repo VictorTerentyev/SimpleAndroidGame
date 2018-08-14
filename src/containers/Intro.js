@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
+  TouchableOpacity,
   Dimensions,
   AppState
 } from 'react-native';
@@ -12,25 +14,24 @@ import {
 import * as AppActions from '../actions/AppActions';
 
 import Video from 'react-native-video';
-import NVidia from '../../assets/videos/nvidia.mp4';
-import AMD from '../../assets/videos/amd.mp4';
-import UE4 from '../../assets/videos/ue4.mp4';
-import Frontier from '../../assets/videos/frontier.mp4';
 
 class Intro extends Component {
   render() {
-    const { appProps: { appProps }, introDisp: { introDisp }, dispatch } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
+    const { introVids: { introVids }, introDisp: { introDisp }, dispatch } = this.props;
 
     return (
-      <View style={styles.container}>
-        <Video 
-          playInBackground
-          playWhenInactive
-          resizeMode='cover'
-          source={Menu}
-          style={styles.backgroundVideo}
-        />
+      <View style={setStyles(this.props.introDisp)}>
+        <TouchableOpacity style={styles.button} onPress={() => this.introControlHandle()}>
+          <Video 
+            playInBackground
+            playWhenInactive
+            resizeMode='cover'
+            source={this.props.introVids[this.state.index]}
+            style={styles.backgroundVideo}
+            paused={this.state.paused}
+            onEnd={() => this.introControlHandle()}
+          />
+        </TouchableOpacity>
       </View>
     );
   }
@@ -38,27 +39,45 @@ class Intro extends Component {
   constructor() {
     super();
     this.state = {
-      exist: true,
-      source: NVidia
-    }
+      index: 0,
+      paused: false
+    };
   }
 
-  destructor() {
-    this.state.exist === true ? 
+  introControlHandle() {
+    if (this.state.index + 1 < this.props.introVids.length) {
+      this.setState({index: this.state.index + 1});
+    } 
+    else {
+      this.setState({ paused: true });
+      this.props.setDisplays({
+        intro: 'none',
+        game: 'none',
+        menu: {
+          menu: 'flex',
+          main: 'flex',
+          settings: 'none',
+          credits: 'none',
+          exit: 'none'
+        }
+      });
+    }
   }
 }
 
 function setStyles(display) {
   const styles = StyleSheet.create({
     container: {
-      display: display
+      display: display,
+      width: Dimensions.get('window').width,
+      height: Dimensions.get('window').height
     }
   });
   return styles.container;
 }
 
 Intro.propTypes = {
-  appProps: PropTypes.object,
+  introVids: PropTypes.array,
   introDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
@@ -70,14 +89,21 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: -2,
     right: 0
+  },
+  button: {
+    display: 'flex',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height
   }
 });
 
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGame,
-    introDisp: state.simpleAndroidGame.displays.intro
+    introVids: state.simpleAndroidGame.introVids,
+    introDisp: state.simpleAndroidGame.displays.intro,
   };
 };
 
 export default connect(stateMap)(Intro);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => Intro);

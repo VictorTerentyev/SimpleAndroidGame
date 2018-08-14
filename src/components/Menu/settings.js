@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
   SectionList,
@@ -11,7 +12,7 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import * as AppActions from '../../actions/AppActions';
 
 class Settings extends Component {
   render() {
@@ -82,3 +83,5 @@ const stateMap = (state) => {
 };
 
 export default connect(stateMap)(Settings);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => Settings);

@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
 import {
+  AppRegistry,
   StyleSheet,
   View,
   Dimensions,
@@ -30,8 +31,7 @@ class MainContainer extends Component {
 
     return (
       <View style={styles.container}>
-        <Intro />
-        <Menu />
+        <Intro setDisplays={actions.setDisplays}/>
         <Game />
       </View>
     );
@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
   container: {
     display: 'flex',
     alignSelf: 'stretch',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height 
+    width: 300,
+    height: 300 
   }
 });
 
@@ -63,3 +63,5 @@ const stateMap = (state) => {
 };
 
 export default connect(stateMap)(MainContainer);
+
+AppRegistry.registerComponent('SimpleAndroidGame', () => MainContainer);
