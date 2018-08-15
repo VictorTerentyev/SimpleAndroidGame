@@ -6,7 +6,9 @@ import {
   AppRegistry,
   StyleSheet,
   View,
+  Text,
   SectionList,
+  ImageBackground,
   TouchableHighlight,
   Dimensions,
   AppState
@@ -23,11 +25,13 @@ class MainMenu extends Component {
       <View style={setStyles(this.props.mainMenuDisp)}>
         <SectionList
           sections={[
-            {title: 'Main Menu', data: ['Start', 'Settings', 'Credits', 'Exit']}
+            {title: 'MAIN MENU', data: ['Start', 'Settings', 'Credits', 'Exit']}
           ]}
           renderItem={({item}) =>
-            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle(item)}> 
-              <Text style={styles.listItem}>{item}</Text>
+            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={() => this.actionHandle(item)}> 
+              <ImageBackground style={styles.btnBgImg} source={{uri: 'menubtn.png'}}>
+                <Text style={styles.listItem}>{item}</Text>
+              </ImageBackground>
             </TouchableHighlight>
           }
           renderSectionHeader={({section}) => <Text style={styles.sectionHeader}>{section.title}</Text>}
@@ -43,12 +47,18 @@ class MainMenu extends Component {
 
     }
   }
+
+  actionHandle = (item) => {
+
+  }
 }
 
 function setStyles(display) {
   const styles = StyleSheet.create({
     container: {
-      display: display
+      display: display,
+      marginTop: 10,
+      marginLeft: 10
     }
   });
   return styles.container;
@@ -65,19 +75,36 @@ const styles = StyleSheet.create({
 
   },
   listItem: {
-
+    marginLeft: 10,
+    fontSize: 20,
+    color: '#fafafa',
+    textShadowColor: 'rgba(255, 255, 255, 1)',
+    shadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 30,
   },
   sectionHeader: {
-
+    width: 300,
+    fontSize: 30,
+    color: '#fafafa',
+    textShadowColor: 'rgba(255, 255, 255, 1)',
+    shadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 30,
+    fontFamily: 'Eurostile'
   },
   button: {
-
+    justifyContent: 'center',
+    width: 300,
+    height: 40
+  },
+  btnBgImg: {
+    width: '100%',
+    height: '100%',
   }
 });
 
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGames,
+    appProps: state.simpleAndroidGame,
     mainMenuDisp: state.simpleAndroidGame.displays.menu.main
   };
 };

@@ -25,16 +25,24 @@ import Exit from '../components/Menu/exit';
 
 class Menu extends Component {
   render() {
-    const { appProps: { appProps }, menuDisp: { menuDisp }, dispatch, componentDidMount } = this.props;
+    const { 
+      appProps: { appProps }, 
+      display: { display }, 
+      bgPaused: { bgPaused },
+      componentWillReceiveProps,
+      dispatch
+    } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={setStyles(this.props.menuDisp)}>
+      <View style={setStyles(this.props.display)}>
         <Video 
+          repeat
+          paused={this.props.bgPaused}
           playInBackground
           playWhenInactive
           resizeMode='cover'
-          source={this.state.source}
+          source={MenuBg}
           style={styles.backgroundVideo}
         />
         <MainMenu />
@@ -48,22 +56,40 @@ class Menu extends Component {
   constructor() {
     super();
     this.state = {
-      source: MenuBg,
-      menuState: AppState.currentState,
-      backgroundSound: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
+      appState: AppState.currentState,
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
         if (!error) {
-          this.state.backgroundSound.setNumberOfLoops(-1);
-          this.state.backgroundSound.play();
-        } 
+          this.state.bgMusic.setNumberOfLoops(-1);
+        }
       })
+    };
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.display === 'flex') {
+      this.state.bgMusic.play();
+    } 
+    else { 
+      this.state.bgMusic.plause();
     }
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.bgMusic.play();
+    } else {
+      this.state.bgMusic.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 }
 
 function setStyles(display) {
   const styles = StyleSheet.create({
     container: {
-      display: display
+      display: display,
+      flex: 1
     }
   });
   return styles.container;
@@ -71,7 +97,8 @@ function setStyles(display) {
 
 Menu.propTypes = {
   appProps: PropTypes.object,
-  menuDisp: PropTypes.string,
+  display: PropTypes.string,
+  bgPaused: PropTypes.bool,
   dispatch: PropTypes.func
 }
 
@@ -82,16 +109,14 @@ const styles = StyleSheet.create({
     left: 0,
     bottom: -2,
     right: 0
-  },
-  backgroundMusic: {
-    display: 'none'
   }
 });
 
 const stateMap = (state) => {
   return {
     appProps: state.simpleAndroidGame,
-    menuDisp: state.simpleAndroidGame.displays.menu.menu
+    display: state.simpleAndroidGame.displays.menu.menu,
+    bgPaused: state.simpleAndroidGame.videoPaused.menu
   };
 };
 

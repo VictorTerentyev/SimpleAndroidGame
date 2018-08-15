@@ -6,11 +6,8 @@ import Frontier from '../../assets/videos/frontier.mp4';
 
 const initialState = {
   introVids: [NVidia, AMD, UE4, Frontier],
-  videoPlay: {
-    nvidia: false,
-    amd: true,
-    ue4: true,
-    frointier: true,
+  videoPaused: {
+    intro: false,
     menu: true
   },
   displays: {
@@ -61,7 +58,7 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.VIDEO_PLAY:
       return ({
         ...state,
-        videoPlay: action.videoPlay || initialState.vidioPlay,
+        videoPaused: action.videoPaused || initialState.vidioPaused,
       })
 
     default:

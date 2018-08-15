@@ -6,6 +6,7 @@ import {
   AppRegistry,
   StyleSheet,
   View,
+  Text,
   SectionList,
   TouchableHighlight,
   Dimensions,
@@ -26,7 +27,7 @@ class Settings extends Component {
             {title: 'Settings', data: ['Video', 'Audio', 'Gameplay', 'Back']}
           ]}
           renderItem={({item}) =>
-            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle(item)}> 
+            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={() => this.actionHandle(item)}> 
               <Text style={styles.listItem}>{item}</Text>
             </TouchableHighlight>
           }
@@ -42,6 +43,10 @@ class Settings extends Component {
     this.state = {
 
     }
+  }
+
+  actionHandle = (act) => {
+    return act;
   }
 }
 

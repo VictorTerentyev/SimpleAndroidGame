@@ -6,6 +6,7 @@ import {
   AppRegistry,
   StyleSheet,
   View,
+  Text,
   TouchableHighlight,
   Dimensions,
   AppState
@@ -23,7 +24,7 @@ class Credits extends Component {
         <View style={styles.container}>
           <Text style={styles.header}>Developer:</Text>
           <Text style={styles.text}>Victor Terentyev</Text>
-          <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle('Exit')}> 
+          <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={() => this.actionHandle()}> 
             <Text style={styles.buttonText}>Back</Text>
           </TouchableHighlight>
         </View>
@@ -36,6 +37,10 @@ class Credits extends Component {
     this.state = {
 
     }
+  }
+
+  actionHandle = () => {
+
   }
 }
 
@@ -77,7 +82,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appState: state.simpleAndroidGame,
+    appProps: state.simpleAndroidGame,
     creditsDisp: state.simpleAndroidGame.displays.menu.credits
   };
 };

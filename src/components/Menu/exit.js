@@ -6,6 +6,7 @@ import {
   AppRegistry,
   StyleSheet,
   View,
+  Text,
   TouchableHighlight,
   Dimensions,
   AppState
@@ -23,10 +24,10 @@ class Exit extends Component {
         <View style={styles.container}>
           <Text style={styles.header}>Are you sure?</Text>
           <View>
-            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle('Cancel')}> 
+            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={() => this.actionHandle('Cancel')}> 
               <Text style={styles.buttonText}>Cancel</Text>
             </TouchableHighlight>
-            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={this.actionHandle('Exit')}> 
+            <TouchableHighlight style={styles.button} underlayColor="#ffa200e6" onPress={() => this.actionHandle('Exit')}> 
               <Text style={styles.buttonText}>Exit</Text>
             </TouchableHighlight>
           </View>
@@ -40,6 +41,10 @@ class Exit extends Component {
     this.state = {
 
     }
+  }
+
+  actionHandle = (act) => {
+
   }
 }
 

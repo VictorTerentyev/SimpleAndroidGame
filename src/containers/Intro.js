@@ -44,12 +44,13 @@ class Intro extends Component {
     };
   }
 
-  introControlHandle() {
+  introControlHandle = () => {
     if (this.state.index + 1 < this.props.introVids.length) {
       this.setState({index: this.state.index + 1});
     } 
     else {
       this.setState({ paused: true });
+      this.props.videoPlay({ intro: true, menu: false });
       this.props.setDisplays({
         intro: 'none',
         game: 'none',
@@ -69,8 +70,7 @@ function setStyles(display) {
   const styles = StyleSheet.create({
     container: {
       display: display,
-      width: Dimensions.get('window').width,
-      height: Dimensions.get('window').height
+      flex: 1
     }
   });
   return styles.container;
@@ -91,9 +91,7 @@ const styles = StyleSheet.create({
     right: 0
   },
   button: {
-    display: 'flex',
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height
+    flex: 1
   }
 });
 

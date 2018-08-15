@@ -11,12 +11,12 @@ export function setDisplays(displays) {
   return {
     type: types.SET_DISPLAYS,
     displays
-  }
+  };
 }
 
-export function videoPlay(videoPlay) {
+export function videoPlay(videoPaused) {
   return {
     type: types.VIDEO_PLAY,
-    videoPlay
-  }
+    videoPaused
+  };
 }

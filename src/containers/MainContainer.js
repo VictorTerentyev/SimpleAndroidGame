@@ -12,6 +12,7 @@ import {
   AppRegistry,
   StyleSheet,
   View,
+  StatusBar,
   Dimensions,
   AppState
 } from 'react-native';
@@ -31,14 +32,28 @@ class MainContainer extends Component {
 
     return (
       <View style={styles.container}>
-        <Intro setDisplays={actions.setDisplays}/>
+        <StatusBar hidden/>
+        <Intro setDisplays={actions.setDisplays} videoPlay={actions.videoPlay}/>
+        <Menu />
         <Game />
       </View>
     );
   }
 
+  constructor() {
+    super();
+    this.state = {
+      width: 0,
+      height: 0
+    }
+  }
+
   componentDidMount() {
     Orientation.lockToLandscapeLeft();
+    this.setState({
+      height: Dimensions.get('window').width,
+      width: Dimensions.get('window').height
+    });
   }
 }
 
@@ -50,9 +65,7 @@ MainContainer.propTypes = {
 const styles = StyleSheet.create({
   container: {
     display: 'flex',
-    alignSelf: 'stretch',
-    width: 300,
-    height: 300 
+    flex: 1
   }
 });
 
