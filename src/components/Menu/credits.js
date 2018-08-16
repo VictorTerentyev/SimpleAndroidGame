@@ -20,7 +20,7 @@ class Credits extends Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={setStyles(this.props.creditsDisp)}>
+      <View style={this.setDisplay(this.props.creditsDisp)}>
         <View style={styles.container}>
           <Text style={styles.header}>Developer:</Text>
           <Text style={styles.text}>Victor Terentyev</Text>
@@ -42,15 +42,15 @@ class Credits extends Component {
   actionHandle = () => {
 
   }
-}
 
-function setStyles(display) {
-  const styles = StyleSheet.create({
-    container: {
-      display: display
-    }
-  });
-  return styles.container;
+  setDisplay = (display) => {
+    const styles = StyleSheet.create({
+      container: {
+        display: display
+      }
+    });
+    return styles.container;
+  }
 }
 
 Credits.propTypes = {

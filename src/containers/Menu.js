@@ -45,10 +45,10 @@ class Menu extends Component {
           source={MenuBg}
           style={styles.backgroundVideo}
         />
-        <MainMenu />
-        <Settings />
-        <Credits />
-        <Exit />
+        <MainMenu setDisplays={actions.setDisplays}/>
+        <Settings setDisplays={actions.setDisplays}/>
+        <Credits setDisplays={actions.setDisplays}/>
+        <Exit setDisplays={actions.setDisplays}/>
       </View>
     );
   }
@@ -71,7 +71,7 @@ class Menu extends Component {
       this.state.bgMusic.play();
     } 
     else { 
-      this.state.bgMusic.plause();
+      this.state.bgMusic.pause();
     }
   }
 

@@ -20,7 +20,7 @@ class Intro extends Component {
     const { introVids: { introVids }, introDisp: { introDisp }, dispatch } = this.props;
 
     return (
-      <View style={setStyles(this.props.introDisp)}>
+      <View style={this.setDisplay(this.props.introDisp)}>
         <TouchableOpacity style={styles.button} onPress={() => this.introControlHandle()}>
           <Video 
             playInBackground
@@ -64,17 +64,18 @@ class Intro extends Component {
       });
     }
   }
+
+  setDisplay = (display) => {
+    const styles = StyleSheet.create({
+      container: {
+        display: display,
+        flex: 1
+      }
+    });
+    return styles.container;
+  }
 }
 
-function setStyles(display) {
-  const styles = StyleSheet.create({
-    container: {
-      display: display,
-      flex: 1
-    }
-  });
-  return styles.container;
-}
 
 Intro.propTypes = {
   introVids: PropTypes.array,
