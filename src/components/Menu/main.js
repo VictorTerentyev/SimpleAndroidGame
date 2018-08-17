@@ -16,6 +16,8 @@ import {
 
 import * as AppActions from '../../actions/AppActions';
 
+import Sound from 'react-native-sound';
+
 import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
 class MainMenu extends Component {
@@ -36,7 +38,7 @@ class MainMenu extends Component {
                 underlayColor="transparent"
                 onPress={() => this.actionHandle(item)} 
                 onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000')}
-                onHideUnderlay={() => this.changeUnderlayHandle(item, '#ffffff')}
+                onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa')}
               > 
                 <Text style={this.setTextColor(item)}>{item}</Text>
               </TouchableHighlight>
@@ -67,11 +69,18 @@ class MainMenu extends Component {
         Settings: '#fafafa',
         Credits: '#fafafa',
         Exit: '#fafafa'
-      }
+      },
+      appState: AppState.currentState,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
+        if (!error) {
+          //this.state.btnSound.setNumberOfLoops(-1);
+        }
+      })
     }
   }
 
   actionHandle = (item) => {
+    this.state.btnSound.play();
     let obj = this.props.appDisps;
     switch (item) {
       case 'Start':
@@ -86,7 +95,6 @@ class MainMenu extends Component {
         this.props.setDisplays(obj);
         break;
       case 'Credits':
-        obj.menu.main = 'none';
         obj.menu.credits = 'flex';
         this.props.setDisplays(obj);
         break;
@@ -97,17 +105,9 @@ class MainMenu extends Component {
     }
   }
 
-  showUnderlayHandle = (elem, color) => {
+  changeUnderlayHandle = (elem, color) => {
     let obj = this.state.textColors;
-    obj[elem] = "#000000";
-    this.setState({
-      textColors: obj
-    });
-  }
-
-  changeUnderlayHandle = (elem) => {
-    let obj = this.state.textColors;
-    obj[elem] = "#fafafa";
+    obj[elem] = color;
     this.setState({
       textColors: obj
     });
@@ -135,6 +135,15 @@ class MainMenu extends Component {
     });
     return styles.container;
   }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.btnSound.play();
+    } else {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
+  }
 }
 
 MainMenu.propTypes = {
@@ -144,10 +153,6 @@ MainMenu.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    backgroundColor: '#000000',
-    padding: 10
-  },
   sectionHeader: {
     marginTop: 5,
     marginBottom: 5,
