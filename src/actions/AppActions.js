@@ -20,3 +20,10 @@ export function videoPlay(videoPaused) {
     videoPaused
   };
 }
+
+export function setBrightness(brightness) {
+  return {
+    type: types.SET_BRIGHTNESS,
+    brightness
+  };
+}

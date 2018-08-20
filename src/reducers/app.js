@@ -17,13 +17,16 @@ const initialState = {
       menu: 'none',
       main: 'none',
       settings: 'none',
+      video: 'none',
+      audio: 'none',
+      gameplay: 'none',
       credits: 'none',
       exit: 'none'
     }
   },
   settings: {
     videoSettings: {
-      brightness: 100
+      brightness: 1.0
     },
     audioSettings: {
       volume: 100,
@@ -59,6 +62,12 @@ export default function simpleAndroidGame (state = initialState, action) {
       return ({
         ...state,
         videoPaused: action.videoPaused || initialState.vidioPaused,
+      })
+
+    case types.SET_BRIGHTNESS:
+      return ({
+        ...state,
+        brightness: action.brightness || initialState.settings.videoSettings.brightness,
       })
 
     default:

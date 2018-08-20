@@ -17,7 +17,7 @@ import Video from 'react-native-video';
 
 class Intro extends Component {
   render() {
-    const { introVids: { introVids }, introDisp: { introDisp }, dispatch } = this.props;
+    const { introVids: { introVids }, appDisps: { appDisps }, introDisp: { introDisp }, dispatch } = this.props;
 
     return (
       <View style={this.setDisplay(this.props.introDisp)}>
@@ -51,17 +51,11 @@ class Intro extends Component {
     else {
       this.setState({ paused: true });
       this.props.videoPlay({ intro: true, menu: false });
-      this.props.setDisplays({
-        intro: 'none',
-        game: 'none',
-        menu: {
-          menu: 'flex',
-          main: 'flex',
-          settings: 'none',
-          credits: 'none',
-          exit: 'none'
-        }
-      });
+      let obj = this.props.appDisps;
+      obj.intro = 'none';
+      obj.menu.menu = 'flex';
+      obj.menu.main = 'flex';
+      this.props.setDisplays(obj);
     }
   }
 
@@ -79,6 +73,7 @@ class Intro extends Component {
 
 Intro.propTypes = {
   introVids: PropTypes.array,
+  appDisps: PropTypes.object,
   introDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
@@ -99,6 +94,7 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     introVids: state.simpleAndroidGame.introVids,
+    appDisps: state.simpleAndroidGame.displays,
     introDisp: state.simpleAndroidGame.displays.intro,
   };
 };

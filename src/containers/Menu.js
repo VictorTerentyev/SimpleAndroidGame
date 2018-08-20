@@ -35,7 +35,7 @@ class Menu extends Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={setStyles(this.props.display)}>
+      <View style={this.setStyles(this.props.display)}>
         <Video 
           repeat
           paused={this.props.bgPaused}
@@ -83,16 +83,16 @@ class Menu extends Component {
     }
     this.setState({appState: nextAppState});
   }
-}
 
-function setStyles(display) {
-  const styles = StyleSheet.create({
-    container: {
-      display: display,
-      flex: 1
-    }
-  });
-  return styles.container;
+  setStyles = (display) => {
+    const styles = StyleSheet.create({
+      container: {
+        display: display,
+        flex: 1
+      }
+    });
+    return styles.container;
+  }
 }
 
 Menu.propTypes = {

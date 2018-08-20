@@ -34,7 +34,7 @@ class MainMenu extends Component {
           renderItem={({item}) =>
             <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
               <TouchableHighlight 
-                style={styles.button}
+                style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle(item)} 
                 onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000')}
@@ -147,7 +147,7 @@ class MainMenu extends Component {
 }
 
 MainMenu.propTypes = {
-  appProps: PropTypes.object,
+  appDisps: PropTypes.object,
   mainMenuDisp: PropTypes.string,
   dispatch: PropTypes.func
 }
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     color: '#fafafa',
     fontFamily: 'Eurostile'
   },
-  button: {
+  btn: {
     justifyContent: 'center',
     alignItems: 'flex-start', 
     backgroundColor: '#000000',
