@@ -23,33 +23,33 @@ import BtnBackgroundImage from '../../../assets/images/btn.png';
 
 class Exit extends Component {
   render() {
-    const { appDisps: { appDisps }, exitDisp: { exitDisp }, dispatch } = this.props;
+    const { appDisps: { appDisps }, display: { display }, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.bgContainer}>
-        <View style={this.setDisplay(this.props.exitDisp)}>
+        <View style={this.setDisplay()}>
           <View style={styles.container}>
             <Text style={styles.header}>Are you sure?</Text>
             <View style={styles.btnRow}>
-              <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
+              <ImageBackground style={styles.btnBgImg} source={this.state.btnBackgrounds['Cancel']}>
                 <TouchableHighlight
                   style={styles.btn}
                   underlayColor="transparent"
                   onPress={() => this.actionHandle('Cancel')}
-                  onShowUnderlay={() => this.changeUnderlayHandle('Cancel', '#000000')}
-                  onHideUnderlay={() => this.changeUnderlayHandle('Cancel', '#ffffff')}
+                  onShowUnderlay={() => this.changeUnderlayHandle('Cancel', '#000000', BtnBackgroundImage)}
+                  onHideUnderlay={() => this.changeUnderlayHandle('Cancel', '#ffffff', {})}
                 > 
                   <Text style={this.setTextColor('Cancel')}>Cancel</Text>
                 </TouchableHighlight>
               </ImageBackground>
-              <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
+              <ImageBackground style={styles.btnBgImg} source={this.state.btnBackgrounds['Exit']}>
                 <TouchableHighlight 
                   style={styles.btn}
                   underlayColor="transparent"
                   onPress={() => this.actionHandle('Exit')}
-                  onShowUnderlay={() => this.changeUnderlayHandle('Exit', '#000000')}
-                  onHideUnderlay={() => this.changeUnderlayHandle('Exit', '#fafafa')}
+                  onShowUnderlay={() => this.changeUnderlayHandle('Exit', '#000000', BtnBackgroundImage)}
+                  onHideUnderlay={() => this.changeUnderlayHandle('Exit', '#fafafa', {})}
                 > 
                   <Text style={this.setTextColor('Exit')}>Exit</Text>
                 </TouchableHighlight>
@@ -64,6 +64,10 @@ class Exit extends Component {
   constructor() {
     super();
     this.state = {
+      btnBackgrounds: {
+        Cancel: {},
+        Exit: {}
+      },
       textColors: {
         Cancel: '#fafafa',
         Exit: '#fafafa'
@@ -90,11 +94,14 @@ class Exit extends Component {
     }
   }
 
-  changeUnderlayHandle = (elem, color) => {
-    let obj = this.state.textColors;
-    obj[elem] = color;
+  changeUnderlayHandle = (elem, color, img) => {
+    let colors = this.state.textColors;
+    let btnBackgrounds = this.state.btnBackgrounds;
+    colors[elem] = color;
+    btnBackgrounds[elem] = img;
     this.setState({
-      textColors: obj
+      btnBackgrounds: btnBackgrounds,
+      textColors: colors
     });
   }
 
@@ -109,14 +116,15 @@ class Exit extends Component {
     return styles.textColor;
   }
 
-  setDisplay = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
+        display: this.props.display,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',  
-        backgroundColor: 'rgba(0,0,0,0.5)'
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        opacity: this.props.brightness
       }
     });
     return styles.container;
@@ -134,7 +142,8 @@ class Exit extends Component {
 
 Exit.propTypes = {
   appDisps: PropTypes.object,
-  exitDisp: PropTypes.string,
+  displays: PropTypes.string,
+  brightness: PropTypes.number,
   dispatch: PropTypes.func
 }
 
@@ -182,7 +191,8 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
-    exitDisp: state.simpleAndroidGame.displays.menu.exit
+    display: state.simpleAndroidGame.displays.menu.exit,
+    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
   };
 };
 

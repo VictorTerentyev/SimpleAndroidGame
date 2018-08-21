@@ -21,25 +21,25 @@ import BtnBackgroundImage from '../../../assets/images/btn.png';
 
 class Credits extends Component {
   render() {
-    const { appDisps: { appDisps }, creditsDisp: { creditsDisp }, dispatch } = this.props;
+    const { appDisps: { appDisps }, display: { display }, dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.bgContainer}>
-        <View style={this.setDisplay(this.props.creditsDisp)}>
+        <View style={this.setDisplay()}>
           <View style={styles.container}>
             <Text style={styles.header}>Credits</Text>
             <View style={styles.textRow}>
               <Text style={styles.text}>Developer:</Text>
               <Text style={styles.text}>Victor Terentyev</Text>
             </View>
-            <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
+            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
               <TouchableHighlight 
                 style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000')}
-                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa')}
+                onShowUnderlay={() => this.changeUnderlayHandle('#000000', BtnBackgroundImage)}
+                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
               > 
                 <Text style={this.setTextColor()}>Back</Text>
               </TouchableHighlight>
@@ -53,6 +53,7 @@ class Credits extends Component {
   constructor() {
     super();
     this.state = {
+      btnBackground: {},
       textColor: '#fafafa',
       appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -70,8 +71,9 @@ class Credits extends Component {
     this.props.setDisplays(obj);
   }
 
-  changeUnderlayHandle = (color) => {
+  changeUnderlayHandle = (color, img) => {
     this.setState({
+      btnBackground: img,
       textColor: color
     });
   }
@@ -88,14 +90,15 @@ class Credits extends Component {
   }
 
 
-  setDisplay = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
+        display: this.props.display,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',  
-        backgroundColor: 'rgba(0,0,0,0.5)'
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        opacity: this.props.brightness
       }
     });
     return styles.container;
@@ -113,7 +116,8 @@ class Credits extends Component {
 
 Credits.propTypes = {
   appDisps: PropTypes.object,
-  creditsDisp: PropTypes.string,
+  display: PropTypes.string,
+  brightness: PropTypes.number,
   dispatch: PropTypes.func
 }
 
@@ -163,7 +167,8 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
-    creditsDisp: state.simpleAndroidGame.displays.menu.credits
+    display: state.simpleAndroidGame.displays.menu.credits,
+    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
   };
 };
 

@@ -17,10 +17,10 @@ import Video from 'react-native-video';
 
 class Intro extends Component {
   render() {
-    const { introVids: { introVids }, appDisps: { appDisps }, introDisp: { introDisp }, dispatch } = this.props;
+    const { introVids: { introVids }, appDisps: { appDisps }, display: { display }, dispatch } = this.props;
 
     return (
-      <View style={this.setDisplay(this.props.introDisp)}>
+      <View style={this.setDisplay()}>
         <TouchableOpacity style={styles.button} onPress={() => this.introControlHandle()}>
           <Video 
             playInBackground
@@ -59,10 +59,10 @@ class Intro extends Component {
     }
   }
 
-  setDisplay = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
+        display: this.props.display,
         flex: 1
       }
     });
@@ -74,7 +74,7 @@ class Intro extends Component {
 Intro.propTypes = {
   introVids: PropTypes.array,
   appDisps: PropTypes.object,
-  introDisp: PropTypes.string,
+  display: PropTypes.string,
   dispatch: PropTypes.func
 }
 
@@ -95,7 +95,7 @@ const stateMap = (state) => {
   return {
     introVids: state.simpleAndroidGame.introVids,
     appDisps: state.simpleAndroidGame.displays,
-    introDisp: state.simpleAndroidGame.displays.intro,
+    display: state.simpleAndroidGame.displays.intro,
   };
 };
 

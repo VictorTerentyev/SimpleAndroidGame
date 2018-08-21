@@ -29,13 +29,14 @@ class Menu extends Component {
       appProps: { appProps }, 
       display: { display }, 
       bgPaused: { bgPaused },
+      brightness: { brightness },
       componentWillReceiveProps,
       dispatch
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={this.setStyles(this.props.display)}>
+      <View style={this.setDisplay()}>
         <Video 
           repeat
           paused={this.props.bgPaused}
@@ -43,8 +44,9 @@ class Menu extends Component {
           playWhenInactive
           resizeMode='cover'
           source={MenuBg}
-          style={styles.backgroundVideo}
+          style={styles.bgVideo}
         />
+        <View style={this.setVideoBrightness(this.props.brightness)}/>
         <MainMenu setDisplays={actions.setDisplays}/>
         <Settings setDisplays={actions.setDisplays}/>
         <Credits setDisplays={actions.setDisplays}/>
@@ -84,39 +86,57 @@ class Menu extends Component {
     this.setState({appState: nextAppState});
   }
 
-  setStyles = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
+        display: this.props.display,
         flex: 1
+      }
+    });
+    return styles.container;
+  }
+
+  setVideoBrightness = (brightness) => {
+    let styles = StyleSheet.create({
+      container: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: -2,
+        backgroundColor: '#000000',
+        opacity: 1 - brightness
       }
     });
     return styles.container;
   }
 }
 
+let styles = StyleSheet.create({
+  bgVideo: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: -2,
+    zIndex: -1
+  }
+});
+
 Menu.propTypes = {
   appProps: PropTypes.object,
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
+  brightness: PropTypes.number,
   dispatch: PropTypes.func
 }
-
-const styles = StyleSheet.create({
-  backgroundVideo: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: -2,
-    right: 0
-  }
-});
 
 const stateMap = (state) => {
   return {
     appProps: state.simpleAndroidGame,
     display: state.simpleAndroidGame.displays.menu.menu,
-    bgPaused: state.simpleAndroidGame.videoPaused.menu
+    bgPaused: state.simpleAndroidGame.videoPaused.menu,
+    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
   };
 };
 

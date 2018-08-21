@@ -27,7 +27,7 @@ import Game from './Game';
 
 class MainContainer extends Component {
   render() {
-    const { appProps: { appProps }, brightness: { brightness }, dispatch, componentDidMount } = this.props;
+    const { appProps: { appProps }, dispatch, componentDidMount } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -36,7 +36,6 @@ class MainContainer extends Component {
         <Intro setDisplays={actions.setDisplays} videoPlay={actions.videoPlay}/>
         <Menu />
         <Game />
-        <View style={this.setBrightness(this.props.brightness)}></View>
       </View>
     );
   }
@@ -44,36 +43,23 @@ class MainContainer extends Component {
   componentDidMount() {
     Orientation.lockToLandscapeLeft();
   }
-
-  setBrightness = (brightness) => {
-    let styles = StyleSheet.create({
-      container: {
-        position: 'absolute', 
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,' + (1.0 - brightness) + ')'
-      }
-    });
-    return styles.container;
-  }
 }
 
-MainContainer.propTypes = {
-  appProps: PropTypes.object,
-  brightness: PropTypes.number,
-  dispatch: PropTypes.func
-}
-
-const styles = StyleSheet.create({
-  container: { 
+let styles = StyleSheet.create({
+  container: {
     display: 'flex',
     flex: 1
   }
 });
 
+MainContainer.propTypes = {
+  appProps: PropTypes.object,
+  dispatch: PropTypes.func
+}
+
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGame,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
+    appProps: state.simpleAndroidGame
   };
 };
 

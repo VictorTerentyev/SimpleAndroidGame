@@ -67,7 +67,11 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.SET_BRIGHTNESS:
       return ({
         ...state,
-        brightness: action.brightness || initialState.settings.videoSettings.brightness,
+        settings: {
+          videoSettings: {
+            brightness: action.brightness || initialState.settings.videoSettings.brightness
+          }
+        }
       })
 
     default:

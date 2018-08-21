@@ -24,7 +24,7 @@ class VideoSettings extends Component {
   render() {
     const { 
       appDisps: { appDisps },
-      videoDisp: { videoDisp },
+      display: { display },
       brightness: { brightness },
       componentWillReceiveProps,
       dispatch 
@@ -32,34 +32,39 @@ class VideoSettings extends Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={this.setDisplay(this.props.videoDisp)}>
+      <View style={this.setDisplay()}>
         <View style={styles.container}>
           <Text style={styles.header}>VIDEO</Text>
           <View style={styles.textRow}>
             <Text style={styles.title}>Brightness</Text>
             <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>10</Text>
+            <Text style={styles.text}>20</Text>
             <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
               <Slider 
                 style={styles.sld}
-                minimumValue={0.1}
+                minimumValue={0.2}
+                minimumTrackTintColor={'#fdb023'}
+                maximumTrackTintColor={'#fdb023'}
+                thumbTintColor={'#fd8723'}
                 onValueChange={(value) => this.handleSliderValueChange(value)}
                 value={this.state.brightness}
               />
             </ImageBackground>
-            <Text style={styles.text}>100</Text>
+            <Text style={styles.afterText}>100</Text>
           </View>
-          <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
-            <TouchableHighlight 
-              style={styles.btn}
-              underlayColor="transparent"
-              onPress={() => this.actionHandle()}
-              onShowUnderlay={() => this.changeUnderlayHandle('#000000')}
-              onHideUnderlay={() => this.changeUnderlayHandle('#fafafa')}
-            > 
-              <Text style={this.setTextColor()}>Back</Text>
-            </TouchableHighlight>
-          </ImageBackground>
+          <View style={styles.btnContainer}>
+            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
+              <TouchableHighlight 
+                style={styles.btn}
+                underlayColor="transparent"
+                onPress={() => this.actionHandle()}
+                onShowUnderlay={() => this.changeUnderlayHandle('#000000', BtnBackgroundImage)}
+                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
+              > 
+                <Text style={this.setTextColor()}>Back</Text>
+              </TouchableHighlight>
+            </ImageBackground>
+          </View>
         </View>
       </View>
     );
@@ -68,7 +73,8 @@ class VideoSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      brightness: 1.0,
+      brightness: this.props.brightness,
+      btnBackground: {},
       textColor: '#fafafa',
       appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
@@ -86,8 +92,9 @@ class VideoSettings extends Component {
     this.props.setDisplays(obj);
   }
 
-  changeUnderlayHandle = (color) => {
+  changeUnderlayHandle = (color, img) => {
     this.setState({
+      btnBackground: img,
       textColor: color
     });
   }
@@ -104,13 +111,14 @@ class VideoSettings extends Component {
   }
 
 
-  setDisplay = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
-        justifyContent: 'center',
-        alignItems: 'center',  
-        backgroundColor: 'rgba(0,0,0,0.5)'
+        marginTop: 28,
+        width: 400,
+        display: this.props.display,   
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        padding: 10
       }
     });
     return styles.container;
@@ -126,17 +134,16 @@ class VideoSettings extends Component {
   }
 
   handleSliderValueChange = (brightness) => {
-    alert(brightness);
-    if(this.state.brightness !== brightness) {
+    if (this.state.brightness !== brightness) {
       this.setState({ brightness: brightness});
       this.props.setBrightness(brightness);
-    }  
+    };
   }
 }
 
 VideoSettings.propTypes = {
   appDisps: PropTypes.object,
-  videoDisp: PropTypes.string,
+  display: PropTypes.string,
   brightness: PropTypes.number,
   dispatch: PropTypes.func
 }
@@ -158,31 +165,40 @@ const styles = StyleSheet.create({
     color: '#fafafa',
     marginRight: 10
   },
+  afterText: {
+    fontFamily: 'Eurostile',
+    fontSize: 20,
+    color: '#fafafa',
+    marginLeft: 10
+  },
   title: {
     fontFamily: 'Eurostile',
     fontSize: 20,
     color: '#fafafa',
     marginRight: 10,
-    width: 100
+  },
+  btnContainer: {
+    flexDirection: 'row', 
+    justifyContent: 'flex-end' 
   },
   btn: {
     justifyContent: 'center',
     alignItems: 'center', 
     backgroundColor: '#000000',
-    width: 150,
+    width: 100,
     height: 40,
   },
   btnBgImg: {
-    width: 150,
+    width: 100,
     height: 40
   },
   sld: {
-    width: 300,
+    width: 180,
     height: 20,
     borderRadius: 0
   },
   sldBgImg: {
-    width: 300,
+    width: 180,
     height: 20
   }
 });
@@ -190,7 +206,7 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
-    videoDisp: state.simpleAndroidGame.displays.menu.video,
+    display: state.simpleAndroidGame.displays.menu.video,
     brightness: state.simpleAndroidGame.settings.videoSettings.brightness
   };
 };

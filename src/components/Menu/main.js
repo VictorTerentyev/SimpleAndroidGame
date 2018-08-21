@@ -22,23 +22,28 @@ import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
 class MainMenu extends Component {
   render() {
-    const { appDisps: { appDisps }, mainMenuDisp: { mainMenuDisp }, dispatch } = this.props;
+    const {
+      appDisps: { appDisps },
+      display: { display },
+      brightness: { brightness },
+      dispatch
+    } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={this.setDisplay(this.props.mainMenuDisp)}>
+      <View style={this.setDisplay()}>
         <SectionList
           sections={[
             {title: 'MAIN MENU', data: ['Start', 'Settings', 'Credits', 'Exit']}
           ]}
           renderItem={({item}) =>
-            <ImageBackground style={styles.btnBgImg} source={BtnBackgroundImage}>
+            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackgrounds[item]}>
               <TouchableHighlight 
                 style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle(item)} 
-                onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000')}
-                onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa')}
+                onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', BtnBackgroundImage)}
+                onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa', {})}
               > 
                 <Text style={this.setTextColor(item)}>{item}</Text>
               </TouchableHighlight>
@@ -64,6 +69,12 @@ class MainMenu extends Component {
   constructor() {
     super();
     this.state = {
+      btnBackgrounds: {
+        Start: {},
+        Settings: {},
+        Credits: {},
+        Exit: {}
+      },
       textColors: {
         Start: '#fafafa',
         Settings: '#fafafa',
@@ -105,11 +116,14 @@ class MainMenu extends Component {
     }
   }
 
-  changeUnderlayHandle = (elem, color) => {
-    let obj = this.state.textColors;
-    obj[elem] = color;
+  changeUnderlayHandle = (elem, color, img) => {
+    let colors = this.state.textColors;
+    let btnBackgrounds = this.state.btnBackgrounds;
+    colors[elem] = color;
+    btnBackgrounds[elem] = img;
     this.setState({
-      textColors: obj
+      btnBackgrounds: btnBackgrounds,
+      textColors: colors
     });
   }
 
@@ -125,12 +139,13 @@ class MainMenu extends Component {
     return styles.textColor;
   }
 
-  setDisplay = (display) => {
+  setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: display,
+        display: this.props.display,
         marginTop: 10,
-        marginLeft: 10
+        marginLeft: 10,
+        opacity: this.props.brightness
       }
     });
     return styles.container;
@@ -148,7 +163,8 @@ class MainMenu extends Component {
 
 MainMenu.propTypes = {
   appDisps: PropTypes.object,
-  mainMenuDisp: PropTypes.string,
+  display: PropTypes.string,
+  brightness: PropTypes.number,
   dispatch: PropTypes.func
 }
 
@@ -156,7 +172,7 @@ const styles = StyleSheet.create({
   sectionHeader: {
     marginTop: 5,
     marginBottom: 5,
-    width: 300,
+    width: 200,
     fontSize: 30,
     color: '#fafafa',
     fontFamily: 'Eurostile'
@@ -165,22 +181,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'flex-start', 
     backgroundColor: '#000000',
-    width: 300,
+    width: 200,
     height: 40
   },
   btnBgImg: {
-    width: 300,
+    width: 200,
     height: 40
   },
   hr: {
-    width: 300,
+    width: 200,
     height: 2,
     backgroundColor: '#767676',
     position: 'relative',
     alignItems: 'center'
   },
   hrInner: {
-    width: 270,
+    width: 170,
     height: 2,
     backgroundColor: '#000000'
   }
@@ -189,7 +205,8 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
-    mainMenuDisp: state.simpleAndroidGame.displays.menu.main
+    display: state.simpleAndroidGame.displays.menu.main,
+    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
   };
 };
 
