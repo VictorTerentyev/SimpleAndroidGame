@@ -9,7 +9,6 @@ import {
   Text,
   TouchableHighlight,
   ImageBackground,
-  Dimensions,
   AppState
 } from 'react-native';
 
@@ -81,7 +80,10 @@ class Exit extends Component {
   }
 
   actionHandle = (item) => {
-    this.state.btnSound.play();
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
     let obj = this.props.appDisps;
     switch (item) {
       case 'Cancel':

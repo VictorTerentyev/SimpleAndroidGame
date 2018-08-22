@@ -13,11 +13,8 @@ import {
   StyleSheet,
   View,
   StatusBar,
-  Dimensions,
   AppState
 } from 'react-native';
-
-import Orientation from 'react-native-orientation';
 
 import * as AppActions from '../actions/AppActions';
 
@@ -27,7 +24,7 @@ import Game from './Game';
 
 class MainContainer extends Component {
   render() {
-    const { appProps: { appProps }, dispatch, componentDidMount } = this.props;
+    const { dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -38,10 +35,6 @@ class MainContainer extends Component {
         <Game />
       </View>
     );
-  }
-
-  componentDidMount() {
-    Orientation.lockToLandscapeLeft();
   }
 }
 

@@ -10,13 +10,10 @@ import {
   SectionList,
   ImageBackground,
   TouchableHighlight,
-  Dimensions,
   AppState
 } from 'react-native';
 
 import * as AppActions from '../../actions/AppActions';
-
-import VideoSettings from './video';
 
 import Sound from 'react-native-sound';
 
@@ -34,39 +31,32 @@ class Settings extends Component {
 
     return (
       <View style={this.setDisplay()}>
-        <View style={styles.settingsSection}>
-          <SectionList
-            sections={[
-              {title: 'SETTINGS', data: ['Video', 'Audio', 'Gameplay', 'Back']}
-            ]}
-            renderItem={({item}) =>
-              <ImageBackground style={styles.btnBgImg} source={this.state.btnBackgrounds[item]}>
-                <TouchableHighlight 
-                  style={styles.btn}
-                  underlayColor="transparent"
-                  onPress={() => this.actionHandle(item)} 
-                  onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', BtnBackgroundImage)}
-                  onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa', {})}
-                > 
-                  <Text style={this.setTextColor(item)}>{item}</Text>
-                </TouchableHighlight>
-              </ImageBackground>
-            }
-            renderSectionHeader={({section}) => 
-              <View>
-                <Text style={styles.sectionHeader}>{section.title}</Text>
-                <View id="hr" style={styles.hr}>
-                  <View id="hrInner" style={styles.hrInner}/>
-                </View>
-              </View>
-            }
-            keyExtractor={(item, index) => index}
-          />
-          <View id="hr" style={styles.hr}>
-            <View id="hrInner" style={styles.hrInner}/>
-          </View>
-        </View>
-        <VideoSettings setDisplays={actions.setDisplays} setBrightness={actions.setBrightness}/>
+        <SectionList
+          sections={[
+            {title: 'SETTINGS', data: ['Video', 'Audio', 'Gameplay', 'Back']}
+          ]}
+          renderItem={({item}) =>
+            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackgrounds[item]}>
+              <TouchableHighlight 
+                style={styles.btn}
+                underlayColor="transparent"
+                onPress={() => this.actionHandle(item)} 
+                onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', BtnBackgroundImage)}
+                onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa', {})}
+              > 
+                <Text style={this.setTextColor(item)}>{item}</Text>
+              </TouchableHighlight>
+            </ImageBackground>
+          }
+          renderSectionHeader={({section}) => 
+            <View>
+              <Text style={styles.sectionHeader}>{section.title}</Text>
+              <View id="hr" style={styles.hr}/>
+            </View>
+          }
+          keyExtractor={(item, index) => index}
+        />
+        <View id="hr" style={styles.hr}/>
       </View>
     );
   }
@@ -96,22 +86,28 @@ class Settings extends Component {
   }
 
   actionHandle = (item) => {
-    this.state.btnSound.play();
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
     let obj = this.props.appDisps;
     switch (item) {
       case 'Video':
+        obj.menu.settings = 'none';
         obj.menu.video = 'flex';
         obj.menu.audio = 'none';
         obj.menu.gameplay = 'none';
         this.props.setDisplays(obj);
         break;
       case 'Audio':
+        obj.menu.settings = 'none';
         obj.menu.audio = 'flex';
         obj.menu.video = 'none';
         obj.menu.gameplay = 'none';
         this.props.setDisplays(obj);
         break;
       case 'Gameplay':
+        obj.menu.settings = 'none';
         obj.menu.gameplay = 'flex';
         obj.menu.video = 'none';
         obj.menu.audio = 'none';
@@ -155,8 +151,6 @@ class Settings extends Component {
     const styles = StyleSheet.create({
       container: {
         display: this.props.display,
-        flexDirection: 'row',
-        alignItems: 'flex-start', 
         marginTop: 10,
         marginLeft: 10,
         opacity: this.props.brightness
@@ -185,12 +179,9 @@ Settings.propTypes = {
 }
 
 const styles = StyleSheet.create({
-  settingsSection: {
-
-  },
   sectionHeader: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 6,
+    marginBottom: 6,
     width: 200,
     fontSize: 30,
     color: '#fafafa',
@@ -210,12 +201,9 @@ const styles = StyleSheet.create({
   hr: {
     width: 200,
     height: 2,
-    backgroundColor: '#767676',
-    alignItems: 'center'
-  },
-  hrInner: {
-    width: 170,
-    height: 2,
+    borderLeftWidth: 16,
+    borderRightWidth: 16,
+    borderColor: '#767676',
     backgroundColor: '#000000'
   }
 });

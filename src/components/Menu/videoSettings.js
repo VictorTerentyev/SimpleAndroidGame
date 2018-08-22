@@ -10,7 +10,6 @@ import {
   Slider,
   TouchableHighlight,
   ImageBackground,
-  Dimensions,
   AppState
 } from 'react-native';
 
@@ -25,8 +24,8 @@ class VideoSettings extends Component {
     const { 
       appDisps: { appDisps },
       display: { display },
-      brightness: { brightness },
-      componentWillReceiveProps,
+      videoSettings: { videoSettings },
+      audioSettings: { audioSettings },
       dispatch 
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -46,8 +45,8 @@ class VideoSettings extends Component {
                 minimumTrackTintColor={'#fdb023'}
                 maximumTrackTintColor={'#fdb023'}
                 thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value)}
-                value={this.state.brightness}
+                onValueChange={(value) => this.handleSliderValueChange(value, 'brightness')}
+                value={this.state.videoSettings.brightness}
               />
             </ImageBackground>
             <Text style={styles.afterText}>100</Text>
@@ -73,21 +72,21 @@ class VideoSettings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      brightness: this.props.brightness,
+      videoSettings: this.props.videoSettings,
       btnBackground: {},
       textColor: '#fafafa',
       appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = () => {
-    this.state.btnSound.play();
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
     let obj = this.props.appDisps;
+    obj.menu.settings = 'flex';
     obj.menu.video = 'none';
     this.props.setDisplays(obj);
   }
@@ -114,11 +113,11 @@ class VideoSettings extends Component {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        marginTop: 28,
-        width: 400,
         display: this.props.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
-        padding: 10
+        padding: 10,
+        flex: 1,
+        opacity: this.state.videoSettings.brightness
       }
     });
     return styles.container;
@@ -133,29 +132,41 @@ class VideoSettings extends Component {
     this.setState({appState: nextAppState});
   }
 
-  handleSliderValueChange = (brightness) => {
-    if (this.state.brightness !== brightness) {
-      this.setState({ brightness: brightness});
-      this.props.setBrightness(brightness);
-    };
+  handleSliderValueChange = (val, item) => {
+    let videoSettings = this.state.videoSettings;
+    videoSettings[item] = val;
+    this.setState({ videoSettings: videoSettings });
+    this.props.setVideoSettings(videoSettings);
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 }
 
 VideoSettings.propTypes = {
   appDisps: PropTypes.object,
   display: PropTypes.string,
-  brightness: PropTypes.number,
+  videoSettings: PropTypes.object,
+  audioSettings: PropTypes.object,
   dispatch: PropTypes.func
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  },
   header: {
-    marginBottom: 15,
+    marginTop: 6,
+    marginLeft: 6,
+    marginBottom: 16,
     fontSize: 30,
     color: '#fafafa',
     fontFamily: 'Eurostile'
   },
   textRow: {
+    marginLeft: 6,
+    marginRight: 6,
     marginBottom: 10,
     flexDirection: 'row' 
   },
@@ -176,30 +187,34 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#fafafa',
     marginRight: 10,
+    width: 100
   },
   btnContainer: {
     flexDirection: 'row', 
-    justifyContent: 'flex-end' 
+    justifyContent: 'flex-end',
+    flex: 1
   },
   btn: {
     justifyContent: 'center',
     alignItems: 'center', 
     backgroundColor: '#000000',
     width: 100,
-    height: 40,
+    height: 40
   },
   btnBgImg: {
     width: 100,
-    height: 40
+    height: 40,
+    marginRight: 6,
+    alignSelf: 'flex-end' 
   },
   sld: {
-    width: 180,
-    height: 20,
-    borderRadius: 0
+    width: 350,
+    height: 20
   },
   sldBgImg: {
-    width: 180,
-    height: 20
+    width: 350,
+    height: 20,
+    marginTop: 1
   }
 });
 
@@ -207,7 +222,8 @@ const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.video,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
+    videoSettings: state.simpleAndroidGame.settings.videoSettings,
+    audioSettings: state.simpleAndroidGame.settings.audioSettings
   };
 };
 

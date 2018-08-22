@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   TouchableOpacity,
-  Dimensions,
   AppState
 } from 'react-native';
 

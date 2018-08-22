@@ -7,7 +7,6 @@ import {
   StyleSheet,
   View,
   SectionList,
-  Dimensions,
   AppState
 } from 'react-native';
 
@@ -20,6 +19,8 @@ import Sound from 'react-native-sound';
 
 import MainMenu from '../components/Menu/main';
 import Settings from '../components/Menu/settings';
+import VideoSettings from '../components/Menu/videoSettings';
+import AudioSettings from '../components/Menu/audioSettings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
@@ -30,6 +31,8 @@ class Menu extends Component {
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
+      audioSettings: { audioSettings },
+      componentDidMount,
       componentWillReceiveProps,
       dispatch
     } = this.props;
@@ -49,6 +52,8 @@ class Menu extends Component {
         <View style={this.setVideoBrightness(this.props.brightness)}/>
         <MainMenu setDisplays={actions.setDisplays}/>
         <Settings setDisplays={actions.setDisplays}/>
+        <VideoSettings setDisplays={actions.setDisplays} setVideoSettings={actions.setVideoSettings}/>
+        <AudioSettings setDisplays={actions.setDisplays} setAudioSettings={actions.setAudioSettings}/>
         <Credits setDisplays={actions.setDisplays}/>
         <Exit setDisplays={actions.setDisplays}/>
       </View>
@@ -128,6 +133,7 @@ Menu.propTypes = {
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
+  audioSettings: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -136,7 +142,8 @@ const stateMap = (state) => {
     appProps: state.simpleAndroidGame,
     display: state.simpleAndroidGame.displays.menu.menu,
     bgPaused: state.simpleAndroidGame.videoPaused.menu,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
+    brightness: state.simpleAndroidGame.settings.videoSettings.brightness,
+    audioSettings: state.simpleAndroidGame.settings.audioSettings
   };
 };
 

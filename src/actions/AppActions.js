@@ -1,12 +1,5 @@
 import * as types from '../constants/ActionTypes';
 
-export function setSettings(settings) {
-  return {
-    type: types.SET_SETTINGS,
-    settings
-  };
-}
-
 export function setDisplays(displays) {
   return {
     type: types.SET_DISPLAYS,
@@ -21,9 +14,16 @@ export function videoPlay(videoPaused) {
   };
 }
 
-export function setBrightness(brightness) {
+export function setVideoSettings(settings) {
   return {
-    type: types.SET_BRIGHTNESS,
-    brightness
+    type: types.SET_VIDEO_SETTINGS,
+    settings
+  };
+}
+
+export function setAudioSettings(settings) {
+  return {
+    type: types.SET_AUDIO_SETTINGS,
+    settings
   };
 }

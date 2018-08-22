@@ -10,7 +10,6 @@ import {
   SectionList,
   ImageBackground,
   TouchableHighlight,
-  Dimensions,
   AppState
 } from 'react-native';
 
@@ -52,16 +51,12 @@ class MainMenu extends Component {
           renderSectionHeader={({section}) => 
             <View>
               <Text style={styles.sectionHeader}>{section.title}</Text>
-              <View id="hr" style={styles.hr}>
-                <View id="hrInner" style={styles.hrInner}/>
-              </View>
+              <View id="hr" style={styles.hr}/>
             </View>
           }
           keyExtractor={(item, index) => index}
         />
-        <View id="hr" style={styles.hr}>
-          <View id="hrInner" style={styles.hrInner}/>
-        </View>
+        <View id="hr" style={styles.hr}/>
       </View>
     );
   }
@@ -82,16 +77,15 @@ class MainMenu extends Component {
         Exit: '#fafafa'
       },
       appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = (item) => {
-    this.state.btnSound.play();
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
     let obj = this.props.appDisps;
     switch (item) {
       case 'Start':
@@ -170,8 +164,8 @@ MainMenu.propTypes = {
 
 const styles = StyleSheet.create({
   sectionHeader: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 6,
+    marginBottom: 6,
     width: 200,
     fontSize: 30,
     color: '#fafafa',
@@ -191,13 +185,9 @@ const styles = StyleSheet.create({
   hr: {
     width: 200,
     height: 2,
-    backgroundColor: '#767676',
-    position: 'relative',
-    alignItems: 'center'
-  },
-  hrInner: {
-    width: 170,
-    height: 2,
+    borderLeftWidth: 16,
+    borderRightWidth: 16,
+    borderColor: '#767676',
     backgroundColor: '#000000'
   }
 });

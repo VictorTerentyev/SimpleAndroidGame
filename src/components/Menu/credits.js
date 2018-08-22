@@ -9,7 +9,6 @@ import {
   Text,
   TouchableHighlight,
   ImageBackground,
-  Dimensions,
   AppState
 } from 'react-native';
 
@@ -65,7 +64,10 @@ class Credits extends Component {
   }
 
   actionHandle = () => {
-    this.state.btnSound.play();
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
     let obj = this.props.appDisps;
     obj.menu.credits = 'none';
     this.props.setDisplays(obj);

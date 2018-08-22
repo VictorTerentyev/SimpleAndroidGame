@@ -29,9 +29,10 @@ const initialState = {
       brightness: 1.0
     },
     audioSettings: {
-      volume: 100,
-      effects: 100,
-      music: 100
+      volume: 1.0,
+      effects: 1.0,
+      music: 1.0,
+      video: 1.0
     },
     gameSettings: {
       mod: 'default'
@@ -46,12 +47,6 @@ export default function simpleAndroidGame (state = initialState, action) {
 
   switch (action.type) {
 
-    case types.SET_SETTINGS:
-      return ({
-        ...state,
-        settings: action.settings || initialState.settings
-      })
-
     case types.SET_DISPLAYS:
       return ({
         ...state,
@@ -64,13 +59,21 @@ export default function simpleAndroidGame (state = initialState, action) {
         videoPaused: action.videoPaused || initialState.vidioPaused,
       })
 
-    case types.SET_BRIGHTNESS:
+    case types.SET_VIDEO_SETTINGS:
       return ({
         ...state,
         settings: {
-          videoSettings: {
-            brightness: action.brightness || initialState.settings.videoSettings.brightness
-          }
+          videoSettings: action.settings || initialState.settings.videoSettings,
+          audioSettings: state.settings.audioSettings
+        }
+      })
+
+    case types.SET_AUDIO_SETTINGS:
+      return ({
+        ...state,
+        settings: {
+          videoSettings: state.settings.videoSettings,
+          audioSettings: action.settings || initialState.settings.audioSettings
         }
       })
 
