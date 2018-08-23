@@ -39,7 +39,11 @@ const initialState = {
     }
   },
   game: {
-
+    ship: {
+      health: 3,
+      shots: []
+    },
+    ships: []
   }
 }
 

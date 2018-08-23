@@ -125,13 +125,15 @@ class AudioSettings extends Component {
       textColor: '#fafafa',
       appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillReceiveProps(nextProps) {
     this.state.btnSound.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.effects);
     this.state.bgMusic.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.music);
+    this.state.bgGameMusic.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.music);
   }
 
   actionHandle = () => {

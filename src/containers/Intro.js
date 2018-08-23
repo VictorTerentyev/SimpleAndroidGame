@@ -20,7 +20,7 @@ class Intro extends Component {
 
     return (
       <View style={this.setDisplay()}>
-        <TouchableOpacity style={styles.button} onPress={() => this.introControlHandle()}>
+        <TouchableOpacity style={styles.btn} onPress={() => this.introControlHandle()}>
           <Video 
             playInBackground
             playWhenInactive
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     bottom: -2,
     right: 0
   },
-  button: {
+  btn: {
     flex: 1
   }
 });
