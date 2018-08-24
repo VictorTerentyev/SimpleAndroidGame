@@ -8,6 +8,7 @@ import {
   View,
   Text,
   Slider,
+  SectionList,
   TouchableHighlight,
   ImageBackground,
   AppState
@@ -34,71 +35,33 @@ class AudioSettings extends Component {
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
-          <Text style={styles.header}>AUDIO</Text>
-          <View style={styles.textRow}>
-            <Text style={styles.title}>Volume</Text>
-            <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>0</Text>
-            <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
-              <Slider 
-                style={styles.sld}
-                minimumTrackTintColor={'#fdb023'}
-                maximumTrackTintColor={'#fdb023'}
-                thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value, 'volume')}
-                value={this.state.audioSettings.volume}
-              />
-            </ImageBackground>
-            <Text style={styles.afterText}>100</Text>
-          </View>
-          <View style={styles.textRow}>
-            <Text style={styles.title}>Effects</Text>
-            <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>0</Text>
-            <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
-              <Slider 
-                style={styles.sld}
-                minimumTrackTintColor={'#fdb023'}
-                maximumTrackTintColor={'#fdb023'}
-                thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value, 'effects')}
-                value={this.state.audioSettings.effects}
-              />
-            </ImageBackground>
-            <Text style={styles.afterText}>100</Text>
-          </View>
-          <View style={styles.textRow}>
-            <Text style={styles.title}>Music</Text>
-            <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>0</Text>
-            <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
-              <Slider 
-                style={styles.sld}
-                minimumTrackTintColor={'#fdb023'}
-                maximumTrackTintColor={'#fdb023'}
-                thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value, 'music')}
-                value={this.state.audioSettings.music}
-              />
-            </ImageBackground>
-            <Text style={styles.afterText}>100</Text>
-          </View>
-          <View style={styles.textRow}>
-            <Text style={styles.title}>Video</Text>
-            <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>0</Text>
-            <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
-              <Slider 
-                style={styles.sld}
-                minimumTrackTintColor={'#fdb023'}
-                maximumTrackTintColor={'#fdb023'}
-                thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value, 'video')}
-                value={this.state.audioSettings.video}
-              />
-            </ImageBackground>
-            <Text style={styles.afterText}>100</Text>
-          </View>
+          <SectionList
+            sections={[
+              {title: 'AUDIO', data: ['Volume', 'Effects', 'Music', 'Video']}
+            ]}
+            renderItem={({item}) =>
+              <View style={styles.textRow}>
+                <Text style={styles.title}>{item}</Text>
+                <Text style={styles.text}>:</Text>
+                <Text style={styles.text}>0</Text>
+                <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
+                  <Slider 
+                    style={styles.sld}
+                    minimumTrackTintColor={'#fdb023'}
+                    maximumTrackTintColor={'#fdb023'}
+                    thumbTintColor={'#fd8723'}
+                    onValueChange={(value) => this.handleSliderValueChange(value, item)}
+                    value={this.state.audioSettings[item]}
+                  />
+                </ImageBackground>
+                <Text style={styles.afterText}>100</Text>
+              </View>
+            }
+            renderSectionHeader={({section}) => 
+              <Text style={styles.header}>{section.title}</Text>
+            }
+            keyExtractor={(item, index) => index}
+          />
           <View style={styles.btnContainer}>
             <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
               <TouchableHighlight 
@@ -131,9 +94,9 @@ class AudioSettings extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state.btnSound.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.effects);
-    this.state.bgMusic.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.music);
-    this.state.bgGameMusic.setVolume(nextProps.audioSettings.volume * nextProps.audioSettings.music);
+    this.state.btnSound.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Effects);
+    this.state.bgMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
+    this.state.bgGameMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
   }
 
   actionHandle = () => {
@@ -277,7 +240,7 @@ const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.audio,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness,
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
     audioSettings: state.simpleAndroidGame.settings.audioSettings
   };
 };

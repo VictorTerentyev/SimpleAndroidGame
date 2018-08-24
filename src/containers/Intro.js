@@ -16,7 +16,15 @@ import Video from 'react-native-video';
 
 class Intro extends Component {
   render() {
-    const { introVids: { introVids }, appDisps: { appDisps }, display: { display }, dispatch } = this.props;
+    const {
+      introVids: { introVids },
+      appDisps: { appDisps },
+      display: { display },
+      brightness: { brightness },
+      audioSettings: { audioSettings },
+
+      dispatch
+    } = this.props;
 
     return (
       <View style={this.setDisplay()}>
@@ -29,7 +37,9 @@ class Intro extends Component {
             style={styles.backgroundVideo}
             paused={this.state.paused}
             onEnd={() => this.introControlHandle()}
+            volume={this.props.audioSettings.Volume * this.props.audioSettings.video}
           />
+          <View style={this.setVideoBrightness()}/>
         </TouchableOpacity>
       </View>
     );
@@ -67,6 +77,21 @@ class Intro extends Component {
     });
     return styles.container;
   }
+
+  setVideoBrightness = () => {
+    let styles = StyleSheet.create({
+      container: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: -2,
+        backgroundColor: '#000000',
+        opacity: 1 - this.props.brightness
+      }
+    });
+    return styles.container;
+  }
 }
 
 
@@ -74,6 +99,8 @@ Intro.propTypes = {
   introVids: PropTypes.array,
   appDisps: PropTypes.object,
   display: PropTypes.string,
+  brightness: PropTypes.number,
+  audioSettings: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -95,6 +122,8 @@ const stateMap = (state) => {
     introVids: state.simpleAndroidGame.introVids,
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.intro,
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
+    audioSettings: state.simpleAndroidGame.settings.audioSettings
   };
 };
 

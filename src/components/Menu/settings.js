@@ -212,7 +212,7 @@ const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.settings,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
   };
 };
 

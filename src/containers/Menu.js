@@ -31,8 +31,6 @@ class Menu extends Component {
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
-      audioSettings: { audioSettings },
-      componentDidMount,
       componentWillReceiveProps,
       dispatch
     } = this.props;
@@ -49,7 +47,7 @@ class Menu extends Component {
           source={MenuBg}
           style={styles.bgVideo}
         />
-        <View style={this.setVideoBrightness(this.props.brightness)}/>
+        <View style={this.setVideoBrightness()}/>
         <MainMenu setDisplays={actions.setDisplays}/>
         <Settings setDisplays={actions.setDisplays}/>
         <VideoSettings setDisplays={actions.setDisplays} setVideoSettings={actions.setVideoSettings}/>
@@ -101,7 +99,7 @@ class Menu extends Component {
     return styles.container;
   }
 
-  setVideoBrightness = (brightness) => {
+  setVideoBrightness = () => {
     let styles = StyleSheet.create({
       container: {
         position: 'absolute',
@@ -110,7 +108,7 @@ class Menu extends Component {
         right: 0,
         bottom: -2,
         backgroundColor: '#000000',
-        opacity: 1 - brightness
+        opacity: 1 - this.props.brightness
       }
     });
     return styles.container;
@@ -133,7 +131,6 @@ Menu.propTypes = {
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
-  audioSettings: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -142,8 +139,7 @@ const stateMap = (state) => {
     appProps: state.simpleAndroidGame,
     display: state.simpleAndroidGame.displays.menu.menu,
     bgPaused: state.simpleAndroidGame.videoPaused.menu,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
   };
 };
 

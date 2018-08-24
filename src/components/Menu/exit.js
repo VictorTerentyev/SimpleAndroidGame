@@ -22,7 +22,12 @@ import BtnBackgroundImage from '../../../assets/images/btn.png';
 
 class Exit extends Component {
   render() {
-    const { appDisps: { appDisps }, display: { display }, dispatch } = this.props;
+    const {
+      appDisps: { appDisps },
+      display: { display },
+      brightness: { brightness },
+      dispatch
+    } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
@@ -194,7 +199,7 @@ const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.exit,
-    brightness: state.simpleAndroidGame.settings.videoSettings.brightness
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
   };
 };
 

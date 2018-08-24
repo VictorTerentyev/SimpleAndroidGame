@@ -27,3 +27,10 @@ export function setAudioSettings(settings) {
     settings
   };
 }
+
+export function setGameState(game) {
+  return {
+    type: types.SET_GAME_STATE,
+    game
+  };
+}

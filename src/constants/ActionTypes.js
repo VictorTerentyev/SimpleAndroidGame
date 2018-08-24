@@ -2,3 +2,4 @@ export const SET_DISPLAYS = 'SET_DISPLAYS';
 export const VIDEO_PLAY = 'VIDEO_PLAY';
 export const SET_VIDEO_SETTINGS = 'SET_VIDEO_SETTINGS';
 export const SET_AUDIO_SETTINGS = 'SET_AUDIO_SETTINGS';
+export const SET_GAME_STATE = 'SET_GAME_STATE';

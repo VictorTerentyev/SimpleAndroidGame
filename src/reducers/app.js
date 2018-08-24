@@ -26,23 +26,20 @@ const initialState = {
   },
   settings: {
     videoSettings: {
-      brightness: 1.0
+      Brightness: 1.0
     },
     audioSettings: {
-      volume: 1.0,
-      effects: 1.0,
-      music: 1.0,
-      video: 1.0
+      Volume: 1.0,
+      Effects: 1.0,
+      Music: 1.0,
+      Video: 1.0
     },
     gameSettings: {
       mod: 'default'
     }
   },
   game: {
-    ship: {
-      health: 3,
-      shots: []
-    },
+    render: false,
     ships: []
   }
 }
@@ -79,6 +76,12 @@ export default function simpleAndroidGame (state = initialState, action) {
           videoSettings: state.settings.videoSettings,
           audioSettings: action.settings || initialState.settings.audioSettings
         }
+      })
+
+    case types.SET_GAME_STATE:
+      return ({
+        ...state,
+        game: action.game || initialState.game
       })
 
     default:

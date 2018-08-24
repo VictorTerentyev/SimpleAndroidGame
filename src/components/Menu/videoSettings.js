@@ -8,6 +8,7 @@ import {
   View,
   Text,
   Slider,
+  SectionList,
   TouchableHighlight,
   ImageBackground,
   AppState
@@ -33,24 +34,33 @@ class VideoSettings extends Component {
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
-          <Text style={styles.header}>VIDEO</Text>
-          <View style={styles.textRow}>
-            <Text style={styles.title}>Brightness</Text>
-            <Text style={styles.text}>:</Text>
-            <Text style={styles.text}>20</Text>
-            <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
-              <Slider 
-                style={styles.sld}
-                minimumValue={0.2}
-                minimumTrackTintColor={'#fdb023'}
-                maximumTrackTintColor={'#fdb023'}
-                thumbTintColor={'#fd8723'}
-                onValueChange={(value) => this.handleSliderValueChange(value, 'brightness')}
-                value={this.state.videoSettings.brightness}
-              />
-            </ImageBackground>
-            <Text style={styles.afterText}>100</Text>
-          </View>
+          <SectionList
+            sections={[
+              {title: 'VIDEO', data: ['Brightness']}
+            ]}
+            renderItem={({item}) =>
+              <View style={styles.textRow}>
+                <Text style={styles.title}>{item}</Text>
+                <Text style={styles.text}>:</Text>
+                <Text style={styles.text}>0</Text>
+                <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
+                  <Slider 
+                    style={styles.sld}
+                    minimumTrackTintColor={'#fdb023'}
+                    maximumTrackTintColor={'#fdb023'}
+                    thumbTintColor={'#fd8723'}
+                    onValueChange={(value) => this.handleSliderValueChange(value, item)}
+                    value={this.state.videoSettings[item]}
+                  />
+                </ImageBackground>
+                <Text style={styles.afterText}>100</Text>
+              </View>
+            }
+            renderSectionHeader={({section}) => 
+              <Text style={styles.header}>{section.title}</Text>
+            }
+            keyExtractor={(item, index) => index}
+          />
           <View style={styles.btnContainer}>
             <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
               <TouchableHighlight 

@@ -26,7 +26,7 @@ class MainContainer extends Component {
         <StatusBar hidden/>
         <Intro setDisplays={actions.setDisplays} videoPlay={actions.videoPlay}/>
         <Menu />
-        <Game />
+        <Game setDisplays={actions.setDisplays}/>
       </View>
     );
   }
