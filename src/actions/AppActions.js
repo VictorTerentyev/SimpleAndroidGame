@@ -34,3 +34,40 @@ export function setGameState(game) {
     game
   };
 }
+
+export function setGameBlockLayout(gameBlockLayout) {
+  return {
+    type: types.SET_GAME_BLOCK_LAYOUT,
+    gameBlockLayout
+  };
+}
+
+export function setPosition(position) {
+  return {
+    type: types.SET_POSITION,
+    position
+  };
+}
+
+export function addShot(id, shot) {
+  return {
+    type: types.ADD_SHOT,
+    id,
+    shot
+  };
+}
+
+export function removeShip(id) {
+  return {
+    type: types.REMOVE_SHIP,
+    id
+  };
+}
+
+export function removeShot(shipId, shotId) {
+  return {
+    type: types.REMOVE_SHOT,
+    shipId,
+    shotId
+  };
+}

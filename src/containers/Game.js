@@ -17,8 +17,12 @@ import {
 
 import * as AppActions from '../actions/AppActions';
 
+import Ship from '../components/Game/ship';
+import Controller from '../components/Game/controller';
+
 import GameBg from '../../assets/images/staticbg.jpg';
 import BtnBackgroundImage from '../../assets/images/menubtn.png';
+import HitPoint from '../../assets/images/hitpoint.png'
 
 import Sound from 'react-native-sound';
 
@@ -54,7 +58,9 @@ class Game extends Component {
         <View style={this.setBrightness()}>
           <View style={styles.menu}>
             <View style={styles.health}>
-
+              {this.state.hitPoints.map(e => {
+                return (e);
+              })}
             </View>
             <View style={styles.menuBtn}>
               <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
@@ -70,10 +76,24 @@ class Game extends Component {
               </ImageBackground>
             </View>
           </View>
-          <View style={styles.game}>
-            
+          <View style={styles.game} onLayout={this.getBlockLayout}>
+            {Object.values(this.props.game.ships).map(e => {
+              return (
+                <Ship
+                  id={e.id}
+                  key={e.id}
+                  shots={e.shots}
+                  health={e.health}
+                  position={e.position}
+                /> 
+              );
+            })}
           </View>
         </View>
+        <Controller
+          setPosition={actions.setPosition}
+          addShot={actions.addShot}
+        />
       </View>
     );
   }
@@ -81,17 +101,15 @@ class Game extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      state: this.props.game.state,
+      state: 'deactivated',
       states: ['active', 'resumed', 'paused', 'deactivated'],
-      btnBackground: {},
       textColor: '#fafafa',
-      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          this.state.bgMusic.setNumberOfLoops(-1);
-        }
-      }),
-      bgAnim: new Animated.Value(0),
+      btnBackground: {},
+      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)}),
       menuBtnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      gameBlockLayout: {},
+      bgAnim: new Animated.Value(0),
+      hitPoints: [],
       score: 0
     };
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -101,11 +119,49 @@ class Game extends Component {
     if (nextProps.display === 'flex' && this.state.states.indexOf(this.state.state, 2)) {
       this.setState({ state: 'active' });
       this.setBgAnimation();
+      this.setHealth();
     } else {
       Animated.timing(
         this.state.bgAnim
       ).stop();
     }
+  }
+
+  initSession = (state) => {
+    switch (state) {
+      case 'active':
+        this.setGameState(this.props.game);
+        this.setBgAnimation();
+        break;
+      case 'resumed':
+        this.setGameState(this.props.game);
+        this.setBgAnimation();
+        break;
+      case 'paused':
+        this.setGameState(this.props.game);
+        Animated.timing(
+          this.state.bgAnim
+        ).stop();
+        break;
+      case 'deactivated':
+        this.setGameState(this.props.game);
+        Animated.timing(
+          this.state.bgAnim
+        ).stop();
+        break;
+    }
+  }
+
+  setHealth = () => {
+    let array = [];
+    for (let i = 0; i < this.props.game.ships[0].health; i++) {
+      array.push(<Image key={i} style={styles.hitPoint} source={HitPoint} resizeMode="contain"/>);
+    };
+    this.setState({ hitPoints: array });
+  }
+
+  getBlockLayout = (e) => {
+    this.setState({gameBlockLayout: e.nativeEvent.layout});
   }
 
   menuActionHandle = () => {
@@ -237,8 +293,14 @@ const styles = StyleSheet.create({
   health: {
     width: '20%',
     height: '100%',
+    flexDirection: 'row', 
     justifyContent: 'flex-start',
     alignItems: 'flex-start'  
+  },
+  hitPoint: {
+    height: '100%',
+    width: '33%',
+    marginLeft: '5%'
   },
   menuBtn: {
     width: '20%',

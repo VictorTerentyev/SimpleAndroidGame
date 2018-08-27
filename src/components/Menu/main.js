@@ -25,6 +25,7 @@ class MainMenu extends Component {
       appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
+      gameBlockLayout: { gameBlockLayout },
       dispatch
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -43,7 +44,7 @@ class MainMenu extends Component {
                 onPress={() => this.actionHandle(item)} 
                 onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', BtnBackgroundImage)}
                 onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa', {})}
-              > 
+              >
                 <Text style={this.setTextColor(item)}>{item}</Text>
               </TouchableHighlight>
             </ImageBackground>
@@ -93,6 +94,7 @@ class MainMenu extends Component {
         obj.menu.main = 'none';
         obj.game = 'flex';
         this.props.setDisplays(obj);
+        this.props.setPosition(this.props.gameBlockLayout.height / 100 * 45);
         break;
       case 'Settings':
         obj.menu.main = 'none';
@@ -159,6 +161,7 @@ MainMenu.propTypes = {
   appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
+  gameBlockLayout: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -196,7 +199,8 @@ const stateMap = (state) => {
   return {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.main,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
+    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
+    gameBlockLayout: state.simpleAndroidGame.game.gameBlockLayout
   };
 };
 

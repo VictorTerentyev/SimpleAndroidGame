@@ -39,8 +39,8 @@ const initialState = {
     }
   },
   game: {
-    render: false,
-    ships: []
+    gameBlockLayout: {},
+    ships: [{id: 0, shots: [], health: 3, position: 0 }]
   }
 }
 
@@ -82,6 +82,59 @@ export default function simpleAndroidGame (state = initialState, action) {
       return ({
         ...state,
         game: action.game || initialState.game
+      })
+
+    case types.SET_GAME_BLOCK_LAYOUT: 
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          gameBlockLayout: action.gameBlockLayout
+        }
+      })
+
+    case types.SET_POSITION:
+      let obj = state.game.ships[0];
+      obj.position = action.position;  
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          ships: {
+            ...state.game.ships,
+            [0]: obj
+          }
+        }
+      })
+
+    case types.ADD_SHOT:
+      state.game.ships[action.id].shots.push(action.shot);
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          ships: state.game.ships
+        }
+      })
+
+    case types.REMOVE_SHIP:
+      delete state.game.ships[action.id]  
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          ships: state.game.ships
+        }
+      })
+
+    case types.REMOVE_SHOOT:
+      delete state.game.ships[action.shipId].shots[action.shotId];  
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          ships: state.game.ships
+        }
       })
 
     default:

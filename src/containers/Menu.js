@@ -48,7 +48,7 @@ class Menu extends Component {
           style={styles.bgVideo}
         />
         <View style={this.setVideoBrightness()}/>
-        <MainMenu setDisplays={actions.setDisplays}/>
+        <MainMenu setDisplays={actions.setDisplays} setPosition={actions.setPosition}/>
         <Settings setDisplays={actions.setDisplays}/>
         <VideoSettings setDisplays={actions.setDisplays} setVideoSettings={actions.setVideoSettings}/>
         <AudioSettings setDisplays={actions.setDisplays} setAudioSettings={actions.setAudioSettings}/>
