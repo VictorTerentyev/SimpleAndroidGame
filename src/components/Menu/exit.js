@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -20,7 +20,7 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/btn.png';
 
-class Exit extends Component {
+class Exit extends PureComponent {
   render() {
     const {
       appDisps: { appDisps },
@@ -76,19 +76,12 @@ class Exit extends Component {
         Cancel: '#fafafa',
         Exit: '#fafafa'
       },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = (item) => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     switch (item) {
       case 'Cancel':
@@ -144,6 +137,13 @@ class Exit extends Component {
       this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 }
 

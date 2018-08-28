@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -16,7 +16,7 @@ import Intro from './Intro';
 import Menu from './Menu';
 import Game from './Game';
 
-class MainContainer extends Component {
+class MainContainer extends PureComponent {
   render() {
     const { dispatch } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -24,9 +24,16 @@ class MainContainer extends Component {
     return (
       <View style={styles.container}>
         <StatusBar hidden/>
-        <Intro setDisplays={actions.setDisplays} videoPlay={actions.videoPlay}/>
+        <Intro
+          setDisplays={actions.setDisplays}
+          videoPlay={actions.videoPlay}
+        />
         <Menu />
-        <Game setDisplays={actions.setDisplays} setPosition={actions.setPosition}/>
+        <Game
+          setDisplays={actions.setDisplays}
+          setGameState={actions.setGameState}
+          setPosition={actions.setPosition}
+        />
       </View>
     );
   }

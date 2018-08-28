@@ -1,59 +1,93 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   AppRegistry,
   StyleSheet,
   View,
-  Image
+  Image,
+  Animated,
+  Easing
 } from 'react-native';
 
 import Shot from './shot';
 
-import YourShipBg from '../../../assets/images/cobra.png';
-import EnemyShipBg from '../../../assets/images/eagle.png';
-
-class Ship extends Component {
+class Ship extends PureComponent {
   render() {
-    const { game: { display }, dispatch } = this.props;
+    const { 
+      game: { display },
+      dispatch,
+      componentWillReceiveProps
+    } = this.props;
     return (
-      <View style={this.setDisplay()}>
-        <Image style={styles.image} source={this.setShipBg()} resizeMode="contain"/>
-        {Object.values(this.props.game.ships).map((e, index) => {
-          return (
-            <Shot key={index} position={e.position}/> 
-          );
-        })}
-      </View>
+      <Animated.View
+        style={[
+          this.setDisplay(),
+          {
+            top: this.state.anim
+          }
+        ]}
+        renderToHardwareTextureAndroid
+      >
+        <Image
+          style={styles.image}
+          source={this.setShipBg()}
+          resizeMode="stretch"
+        />
+      </Animated.View>
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       display: 'flex',
+      anim: new Animated.Value(this.props.position)
     };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setBgAnimation(nextProps.position);
   }
 
   setShipBg = () => {
     if (this.props.id === 0) {
-      return YourShipBg;
+      return {uri: 'cobra'};
     } 
     else {
-      return EnemyShipBg;
+      return {uri: 'eagle'}
     }
   }
 
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        position: 'relative',
-        top: this.props.position,  
-        width: '20%',
-        height: '10%'
+        position: 'absolute',
+        top: this.props.position, 
+        width: '10%',
+        height: '20%',
+        zIndex: -1
       }
     });
     return styles.container;
+  }
+
+  setBgAnimation = (position) => {
+    let duration = position > this.props.position ? (position - this.props.position) * 5 : (this.props.position - position) * 5;
+
+    Animated.parallel([
+      Animated.timing(
+        this.state.anim,
+        {
+          toValue: position,
+          duration: duration,
+          easing: Easing.ease,
+        }
+      )
+    ],
+    {
+      useNativeDriver: true
+    }).start();
   }
 }
 
@@ -64,8 +98,8 @@ Ship.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
-    width: 60,
-    height: 40
+    width: '100%',
+    height: '100%'
   }
 });
 

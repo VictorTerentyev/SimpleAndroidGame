@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -20,7 +20,7 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
-class AudioSettings extends Component {
+class AudioSettings extends PureComponent {
   render() {
     const { 
       appDisps: { appDisps },
@@ -88,22 +88,19 @@ class AudioSettings extends Component {
       textColor: '#fafafa',
       appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.state.btnSound.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Effects);
-    this.state.bgMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
+    this.state.bgMenuMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
     this.state.bgGameMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
   }
 
   actionHandle = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     obj.menu.settings = 'flex';
     obj.menu.audio = 'none';
@@ -148,6 +145,13 @@ class AudioSettings extends Component {
       this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 
   handleSliderValueChange = (val, item) => {

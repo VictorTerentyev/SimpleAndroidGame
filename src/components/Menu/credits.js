@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -18,7 +18,7 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/btn.png';
 
-class Credits extends Component {
+class Credits extends PureComponent {
   render() {
     const { 
       appDisps: { appDisps },
@@ -69,10 +69,7 @@ class Credits extends Component {
   }
 
   actionHandle = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay()
     let obj = this.props.appDisps;
     obj.menu.credits = 'none';
     this.props.setDisplays(obj);
@@ -118,6 +115,13 @@ class Credits extends Component {
       this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 }
 

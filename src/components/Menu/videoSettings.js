@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -20,7 +20,7 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
-class VideoSettings extends Component {
+class VideoSettings extends PureComponent {
   render() {
     const { 
       appDisps: { appDisps },
@@ -91,10 +91,7 @@ class VideoSettings extends Component {
   }
 
   actionHandle = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     obj.menu.settings = 'flex';
     obj.menu.video = 'none';
@@ -127,7 +124,7 @@ class VideoSettings extends Component {
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
-        opacity: this.state.videoSettings.brightness
+        opacity: this.state.videoSettings.Brightness
       }
     });
     return styles.container;
@@ -140,6 +137,13 @@ class VideoSettings extends Component {
       this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 
   handleSliderValueChange = (val, item) => {

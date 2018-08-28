@@ -28,17 +28,10 @@ export function setAudioSettings(settings) {
   };
 }
 
-export function setGameState(game) {
+export function setGameState(state) {
   return {
     type: types.SET_GAME_STATE,
-    game
-  };
-}
-
-export function setGameBlockLayout(gameBlockLayout) {
-  return {
-    type: types.SET_GAME_BLOCK_LAYOUT,
-    gameBlockLayout
+    state
   };
 }
 
@@ -49,10 +42,16 @@ export function setPosition(position) {
   };
 }
 
-export function addShot(id, shot) {
+export function addShip(ship) {
+  return {
+    type: types.ADD_SHIP,
+    ship
+  };
+}
+
+export function addShot(shot) {
   return {
     type: types.ADD_SHOT,
-    id,
     shot
   };
 }
@@ -64,10 +63,9 @@ export function removeShip(id) {
   };
 }
 
-export function removeShot(shipId, shotId) {
+export function removeShot(id) {
   return {
     type: types.REMOVE_SHOT,
-    shipId,
-    shotId
+    id
   };
 }

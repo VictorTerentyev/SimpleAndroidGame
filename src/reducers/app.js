@@ -39,8 +39,9 @@ const initialState = {
     }
   },
   game: {
-    gameBlockLayout: {},
-    ships: [{id: 0, shots: [], health: 3, position: 0 }]
+    state: 'deactivated',
+    ships: [{id: 0, health: 3, position: 0, side: 'left'}],
+    shots: []
   }
 }
 
@@ -81,39 +82,42 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.SET_GAME_STATE:
       return ({
         ...state,
-        game: action.game || initialState.game
-      })
-
-    case types.SET_GAME_BLOCK_LAYOUT: 
-      return ({
-        ...state,
         game: {
           ...state.game,
-          gameBlockLayout: action.gameBlockLayout
+          state: action.state
         }
       })
 
     case types.SET_POSITION:
-      let obj = state.game.ships[0];
-      obj.position = action.position;  
+      state.game.ships[0].position = action.position;  
       return ({
         ...state,
         game: {
           ...state.game,
           ships: {
             ...state.game.ships,
-            [0]: obj
+            [0]: state.game.ships[0]
           }
         }
       })
 
-    case types.ADD_SHOT:
-      state.game.ships[action.id].shots.push(action.shot);
+    case types.ADD_SHIP:
+      state.game.ships.push(action.ship);
       return ({
         ...state,
         game: {
           ...state.game,
-          ships: state.game.ships
+          shots: state.game.ship
+        }
+      })
+
+    case types.ADD_SHOT:
+      state.game.shots.push(action.shot);
+      return ({
+        ...state,
+        game: {
+          ...state.game,
+          shots: state.game.shots
         }
       })
 
@@ -128,12 +132,12 @@ export default function simpleAndroidGame (state = initialState, action) {
       })
 
     case types.REMOVE_SHOOT:
-      delete state.game.ships[action.shipId].shots[action.shotId];  
+      delete state.game.shots[action.id];  
       return ({
         ...state,
         game: {
           ...state.game,
-          ships: state.game.ships
+          shots: state.game.shots
         }
       })
 

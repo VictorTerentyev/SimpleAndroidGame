@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -18,15 +18,14 @@ import {
 import * as AppActions from '../actions/AppActions';
 
 import Ship from '../components/Game/ship';
+import Shot from '../components/Game/shot';
 import Controller from '../components/Game/controller';
 
-import GameBg from '../../assets/images/staticbg.jpg';
-import BtnBackgroundImage from '../../assets/images/menubtn.png';
 import HitPoint from '../../assets/images/hitpoint.png'
 
 import Sound from 'react-native-sound';
 
-class Game extends Component {
+class Game extends PureComponent {
   render() {
     const {
       appDisps: { appDisps },
@@ -40,7 +39,7 @@ class Game extends Component {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={this.setDisplay()} renderToHardwareTextureAndroid={this.props.game.r}>
+      <View style={this.setDisplay()} renderToHardwareTextureAndroid>
         <Animated.Image 
           style={[
             this.setBackground(),
@@ -52,7 +51,7 @@ class Game extends Component {
             }
           ]}
           resizeMode="stretch"
-          source={GameBg}
+          source={{uri: 'staticbg'}}
         />
         <View style={this.setBgBrightness()}/>
         <View style={this.setBrightness()}>
@@ -68,7 +67,7 @@ class Game extends Component {
                   style={styles.btn}
                   underlayColor="transparent"
                   onPress={() => this.menuActionHandle()}
-                  onShowUnderlay={() => this.changeUnderlayHandle('#000000', BtnBackgroundImage)}
+                  onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
                   onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
                 > 
                   <Text style={this.setTextColor()}>MENU</Text>
@@ -76,15 +75,26 @@ class Game extends Component {
               </ImageBackground>
             </View>
           </View>
-          <View style={styles.game} onLayout={this.getBlockLayout}>
-            {Object.values(this.props.game.ships).map(e => {
+          <View style={styles.game}>
+            {Object.values(this.props.game.ships).map((e, index) => {
               return (
                 <Ship
-                  id={e.id}
                   key={e.id}
-                  shots={e.shots}
+                  id={e.id}
                   health={e.health}
                   position={e.position}
+                  side={e.side}
+                /> 
+              );
+            })}
+
+            {Object.values(this.props.game.shots).map((e, index) => {
+              return (
+                <Shot 
+                  key={e.id}
+                  id={e.id}
+                  position={e.position}
+                  side={e.side}
                 /> 
               );
             })}
@@ -106,8 +116,7 @@ class Game extends Component {
       textColor: '#fafafa',
       btnBackground: {},
       bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)}),
-      menuBtnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      gameBlockLayout: {},
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgAnim: new Animated.Value(0),
       hitPoints: [],
       score: 0
@@ -115,15 +124,17 @@ class Game extends Component {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === 'flex' && this.state.states.indexOf(this.state.state, 2)) {
-      this.setState({ state: 'active' });
-      this.setBgAnimation();
-      this.setHealth();
-    } else {
-      Animated.timing(
-        this.state.bgAnim
-      ).stop();
+  componentDidMount = () => {
+    this.setBgAnimation();
+    this.setHealth();
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if(nextProps.display === 'flex') {
+      this.state.bgMusic.play();
+    } 
+    else { 
+      this.state.bgMusic.pause();
     }
   }
 
@@ -155,26 +166,27 @@ class Game extends Component {
   setHealth = () => {
     let array = [];
     for (let i = 0; i < this.props.game.ships[0].health; i++) {
-      array.push(<Image key={i} style={styles.hitPoint} source={HitPoint} resizeMode="contain"/>);
+      array.push(
+        <Image 
+          key={i}
+          style={styles.hitPoint}
+          source={{uri: 'hitpoint'}}
+          resizeMode="contain"
+        />
+      );
     };
     this.setState({ hitPoints: array });
   }
 
-  getBlockLayout = (e) => {
-    this.setState({gameBlockLayout: e.nativeEvent.layout});
-  }
-
   menuActionHandle = () => {
-    if (this.state.menuBtnSound.getCurrentTime !== 0) {
-      this.state.menuBtnSound.stop();
-      this.state.menuBtnSound.play();
-    }
-    this.setState({ state: 'paused' });
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     obj.menu.menu = 'flex';
     obj.menu.main = 'flex';
     obj.game = 'none';
     this.props.setDisplays(obj);
+    this.props.setGameState({ state: 'paused' });
+    
   }
 
   setDisplay = () => {
@@ -244,10 +256,19 @@ class Game extends Component {
   handleAppStateChange = (nextAppState) => {
     if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
       this.state.bgMusic.play();
+      this.state.btnSound.play();
     } else {
       this.state.bgMusic.pause();
+      this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 
   changeUnderlayHandle = (color, img) => {

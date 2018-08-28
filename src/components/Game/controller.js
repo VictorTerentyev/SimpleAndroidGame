@@ -1,14 +1,15 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   AppRegistry,
   StyleSheet,
   View,
-  TouchableHighlight
+  TouchableHighlight,
+  Dimensions
 } from 'react-native';
 
-class Controller extends Component {
+class Controller extends PureComponent {
   render() {
     const { game: { game }, dispatch } = this.props;
 
@@ -17,7 +18,7 @@ class Controller extends Component {
         <TouchableHighlight 
           style={styles.moveController}
           underlayColor="transparent"
-          onPressIn={() => this.actionHandle('move')} 
+          onPressIn={(event) => this.actionHandle('move', event)} 
         >
           <View style={styles.moveController}/>
         </TouchableHighlight>
@@ -36,14 +37,19 @@ class Controller extends Component {
     super();
   }
 
-  actionHandle = (action) => {
+  actionHandle = (action, event) => {
     switch (action) {
       case 'move':
-        this.props.setPosition();
+        let position = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 / 100 * 10;
+        this.props.setPosition(position);
         break;
       case 'shoot':
-        let obj = { position: this.props.game.ships[0].position };
-        this.props.addShot(0, obj);
+        let obj = { 
+          id: this.props.game.shots.length,
+          position: this.props.game.ships[0].position,
+          side: 'left'
+        };
+        this.props.addShot(obj);
         break;
     }
   }
@@ -65,11 +71,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row'  
   },
   moveController: {
-    width: '20%',
+    width: '10%',
     height: '100%'
   },
   shootController: {
-    width: '80%',
+    width: '90%',
     height: '100%'
   }
 });

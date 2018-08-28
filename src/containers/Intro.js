@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -14,7 +14,7 @@ import * as AppActions from '../actions/AppActions';
 
 import Video from 'react-native-video';
 
-class Intro extends Component {
+class Intro extends PureComponent {
   render() {
     const {
       introVids: { introVids },

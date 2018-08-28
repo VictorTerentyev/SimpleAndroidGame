@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -24,7 +24,7 @@ import AudioSettings from '../components/Menu/audioSettings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
-class Menu extends Component {
+class Menu extends PureComponent {
   render() {
     const { 
       appProps: { appProps }, 
@@ -48,10 +48,20 @@ class Menu extends Component {
           style={styles.bgVideo}
         />
         <View style={this.setVideoBrightness()}/>
-        <MainMenu setDisplays={actions.setDisplays} setPosition={actions.setPosition}/>
+        <MainMenu 
+          setDisplays={actions.setDisplays}
+          setPosition={actions.setPosition}
+          setGameState={actions.setGameState}
+        />
         <Settings setDisplays={actions.setDisplays}/>
-        <VideoSettings setDisplays={actions.setDisplays} setVideoSettings={actions.setVideoSettings}/>
-        <AudioSettings setDisplays={actions.setDisplays} setAudioSettings={actions.setAudioSettings}/>
+        <VideoSettings
+          setDisplays={actions.setDisplays}
+          setVideoSettings={actions.setVideoSettings}
+        />
+        <AudioSettings
+          setDisplays={actions.setDisplays}
+          setAudioSettings={actions.setAudioSettings}
+        />
         <Credits setDisplays={actions.setDisplays}/>
         <Exit setDisplays={actions.setDisplays}/>
       </View>
@@ -62,11 +72,7 @@ class Menu extends Component {
     super();
     this.state = {
       appState: AppState.currentState,
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          this.state.bgMusic.setNumberOfLoops(-1);
-        }
-      })
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)})
     };
     AppState.addEventListener('change', this.handleAppStateChange);
   }

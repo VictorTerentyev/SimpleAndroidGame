@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -19,7 +19,7 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
-class Settings extends Component {
+class Settings extends PureComponent {
   render() {
     const {
       appDisps: { appDisps },
@@ -77,19 +77,12 @@ class Settings extends Component {
         Back: '#fafafa'
       },
       appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = (item) => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     switch (item) {
       case 'Video':
@@ -166,6 +159,13 @@ class Settings extends Component {
       this.state.btnSound.pause();
     }
     this.setState({appState: nextAppState});
+  }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
   }
 }
 

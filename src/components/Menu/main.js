@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { bindActionCreators } from 'redux';
@@ -10,6 +10,7 @@ import {
   SectionList,
   ImageBackground,
   TouchableHighlight,
+  Dimensions,
   AppState
 } from 'react-native';
 
@@ -19,13 +20,13 @@ import Sound from 'react-native-sound';
 
 import BtnBackgroundImage from '../../../assets/images/menubtn.png';
 
-class MainMenu extends Component {
+class MainMenu extends PureComponent {
   render() {
     const {
       appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
-      gameBlockLayout: { gameBlockLayout },
+      game: { game },
       dispatch
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -83,18 +84,25 @@ class MainMenu extends Component {
   }
 
   actionHandle = (item) => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
     let obj = this.props.appDisps;
     switch (item) {
       case 'Start':
         obj.menu.menu = 'none';
         obj.menu.main = 'none';
         obj.game = 'flex';
+        switch (this.props.game.state) {
+          case 'deactivated':
+            this.props.setPosition(Dimensions.get('window').height * 0.30);
+            this.props.setGameState('active');
+            break;
+
+          case 'paused':
+            this.props.setGameState('resumed');
+            break;
+        }
         this.props.setDisplays(obj);
-        this.props.setPosition(this.props.gameBlockLayout.height / 100 * 45);
+        
         break;
       case 'Settings':
         obj.menu.main = 'none';
@@ -155,13 +163,20 @@ class MainMenu extends Component {
     }
     this.setState({appState: nextAppState});
   }
+
+  checkBtnSoundDoublePlay = () => {
+    if (this.state.btnSound.getCurrentTime !== 0) {
+      this.state.btnSound.stop();
+      this.state.btnSound.play();
+    }
+  }
 }
 
 MainMenu.propTypes = {
   appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  gameBlockLayout: PropTypes.object,
+  game: PropTypes.object,
   dispatch: PropTypes.func
 }
 
@@ -200,7 +215,7 @@ const stateMap = (state) => {
     appDisps: state.simpleAndroidGame.displays,
     display: state.simpleAndroidGame.displays.menu.main,
     brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    gameBlockLayout: state.simpleAndroidGame.game.gameBlockLayout
+    game: state.simpleAndroidGame.game
   };
 };
 

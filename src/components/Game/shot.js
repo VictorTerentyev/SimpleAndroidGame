@@ -1,43 +1,78 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import {
   AppRegistry,
   StyleSheet,
   View,
-  Image
+  Image,
+  Animated,
+  Dimensions,
+  Easing
 } from 'react-native';
 
 import Shots from '../../../assets/images/shots.png';
 
-class Shot extends Component {
+class Shot extends PureComponent {
   render() {
     const { game: { display }, dispatch } = this.props;
 
     return (
-      <View style={this.setDisplay()}>
-        <Image style={styles.image} source={Shots} resizeMode="contain"/>
-      </View>
+      <Animated.View
+        style={[
+          this.setDisplay(),
+          {
+            [this.props.side]: this.state.anim
+          }
+        ]}
+      >
+        <Image
+          style={styles.image}
+          source={this.state.source}
+          resizeMode="cover"
+        />
+      </Animated.View>
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      display: 'flex' 
+      display: 'flex',
+      source: {uri: 'shots'},
+      anim: new Animated.Value(0)
     };
+    this.setBgAnimation();
   }
 
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        position: 'relative',
-        top: 50,  
-        width: '5%',
-        height: '5%'
+        position: 'absolute',
+        top: this.props.position,
+        width: '20%',
+        height: '20%',
+        zIndex: -1
       }
     });
     return styles.container;
+  }
+
+  setBgAnimation = () => {
+    let value = Dimensions.get('window').width + 200;
+    Animated.parallel([
+      Animated.timing(
+        this.state.anim,
+        {
+          toValue: value,
+          duration: 2000,
+          easing: Easing.ease,
+        }
+      )
+    ],
+    {
+      useNativeDriver: true
+    }).start();
   }
 }
 
@@ -48,8 +83,8 @@ Shot.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
-    width: '5%',
-    height: '5%'
+    width: '100%',
+    height: '100%'
   }
 });
 
