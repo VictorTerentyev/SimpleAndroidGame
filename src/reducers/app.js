@@ -107,7 +107,7 @@ export default function simpleAndroidGame (state = initialState, action) {
         ...state,
         game: {
           ...state.game,
-          shots: state.game.ship
+          ships: state.game.ships
         }
       })
 

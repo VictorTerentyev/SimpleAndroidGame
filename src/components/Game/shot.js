@@ -11,8 +11,6 @@ import {
   Easing
 } from 'react-native';
 
-import Shots from '../../../assets/images/shots.png';
-
 class Shot extends PureComponent {
   render() {
     const { game: { display }, dispatch } = this.props;
@@ -22,13 +20,16 @@ class Shot extends PureComponent {
         style={[
           this.setDisplay(),
           {
-            [this.props.side]: this.state.anim
+            [this.props.side]: this.state.shotPosAnim
           }
         ]}
       >
-        <Image
-          style={styles.image}
-          source={this.state.source}
+        <Animated.Image
+          style={[
+            styles.image,
+            {transform: [{translateX: this.state.shotBgAnim}]}
+          ]}
+          source={this.setBgSource()}
           resizeMode="cover"
         />
       </Animated.View>
@@ -39,8 +40,9 @@ class Shot extends PureComponent {
     super(props);
     this.state = {
       display: 'flex',
-      source: {uri: 'shots'},
-      anim: new Animated.Value(0)
+      source: {uri: 'blue_shot'},
+      shotPosAnim: new Animated.Value(0),
+      shotBgAnim: new Animated.Value(0)
     };
     this.setBgAnimation();
   }
@@ -50,23 +52,35 @@ class Shot extends PureComponent {
       container: {
         position: 'absolute',
         top: this.props.position,
-        width: '20%',
-        height: '20%',
-        zIndex: -1
+        width: '10%',
+        height: '6%',
+        zIndex: -2
       }
     });
     return styles.container;
+  }
+
+  setBgSource = () => {
+    return this.props.side = 'left' ? {uri: 'blue_shot'} : {uri: 'red_shot'};
   }
 
   setBgAnimation = () => {
     let value = Dimensions.get('window').width + 200;
     Animated.parallel([
       Animated.timing(
-        this.state.anim,
+        this.state.shotPosAnim,
         {
           toValue: value,
           duration: 2000,
           easing: Easing.ease,
+        }
+      ),
+      Animated.timing(
+        this.state.shotBgAnim,
+        {
+          toValue: -15,
+          duration: 2000,
+          easing: Easing.linear,
         }
       )
     ],
@@ -83,6 +97,7 @@ Shot.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
+    position: 'relative',
     width: '100%',
     height: '100%'
   }

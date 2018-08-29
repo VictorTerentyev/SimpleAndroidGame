@@ -18,8 +18,6 @@ import * as AppActions from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
-import BtnBackgroundImage from '../../../assets/images/menubtn.png';
-
 class AudioSettings extends PureComponent {
   render() {
     const { 
@@ -44,7 +42,7 @@ class AudioSettings extends PureComponent {
                 <Text style={styles.title}>{item}</Text>
                 <Text style={styles.text}>:</Text>
                 <Text style={styles.text}>0</Text>
-                <ImageBackground style={styles.sldBgImg} source={BtnBackgroundImage}>
+                <ImageBackground style={styles.sldBgImg} source={{uri: 'menubtn'}}>
                   <Slider 
                     style={styles.sld}
                     minimumTrackTintColor={'#fdb023'}
@@ -68,7 +66,7 @@ class AudioSettings extends PureComponent {
                 style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', BtnBackgroundImage)}
+                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
                 onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
               > 
                 <Text style={this.setTextColor()}>Back</Text>

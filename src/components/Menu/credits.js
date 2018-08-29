@@ -16,8 +16,6 @@ import * as AppActions from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
-import BtnBackgroundImage from '../../../assets/images/btn.png';
-
 class Credits extends PureComponent {
   render() {
     const { 
@@ -42,7 +40,7 @@ class Credits extends PureComponent {
                 style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', BtnBackgroundImage)}
+                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'btn'})}
                 onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
               > 
                 <Text style={this.setTextColor()}>Back</Text>

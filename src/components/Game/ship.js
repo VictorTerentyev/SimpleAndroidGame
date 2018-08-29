@@ -10,8 +10,6 @@ import {
   Easing
 } from 'react-native';
 
-import Shot from './shot';
-
 class Ship extends PureComponent {
   render() {
     const { 
@@ -74,7 +72,6 @@ class Ship extends PureComponent {
 
   setBgAnimation = (position) => {
     let duration = position > this.props.position ? (position - this.props.position) * 5 : (this.props.position - position) * 5;
-
     Animated.parallel([
       Animated.timing(
         this.state.anim,

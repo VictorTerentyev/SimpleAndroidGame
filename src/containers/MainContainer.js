@@ -33,6 +33,7 @@ class MainContainer extends PureComponent {
           setDisplays={actions.setDisplays}
           setGameState={actions.setGameState}
           setPosition={actions.setPosition}
+          addShip={actions.addShip}
         />
       </View>
     );

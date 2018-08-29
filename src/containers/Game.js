@@ -12,7 +12,8 @@ import {
   TouchableHighlight,
   Animated,
   Easing,
-  AppState
+  AppState,
+  Dimensions
 } from 'react-native';
 
 import * as AppActions from '../actions/AppActions';
@@ -20,8 +21,6 @@ import * as AppActions from '../actions/AppActions';
 import Ship from '../components/Game/ship';
 import Shot from '../components/Game/shot';
 import Controller from '../components/Game/controller';
-
-import HitPoint from '../../assets/images/hitpoint.png'
 
 import Sound from 'react-native-sound';
 
@@ -47,7 +46,7 @@ class Game extends PureComponent {
               left: this.state.bgAnim.interpolate({
                 inputRange: [0, 1],
                 outputRange: ['0%', '1%'],
-              }),
+              })
             }
           ]}
           resizeMode="stretch"
@@ -132,6 +131,7 @@ class Game extends PureComponent {
   componentWillReceiveProps(nextProps) {
     if(nextProps.display === 'flex') {
       this.state.bgMusic.play();
+      this.creatEnemyShip();
     } 
     else { 
       this.state.bgMusic.pause();
@@ -176,6 +176,25 @@ class Game extends PureComponent {
       );
     };
     this.setState({ hitPoints: array });
+  }
+
+  creatEnemyShip = () => {
+    let context = this;
+    let random = Math.random() * (15000 - 12000) + 500;
+    (function loop() {
+      random = Math.random() * (15000 - 12000) + 500;
+      setTimeout(function() {
+        if (context.props.game.state === 'active' || context.props.game.state === 'resumed') {
+          context.props.addShip({
+            id: context.props.game.ships.length,
+            health: 3,
+            position: Math.random() * Dimensions.get('window').height,
+            side: 'right' 
+          });
+          loop();
+        }
+      }, random);
+    }());
   }
 
   menuActionHandle = () => {

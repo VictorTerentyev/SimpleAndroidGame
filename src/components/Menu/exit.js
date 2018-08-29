@@ -41,7 +41,7 @@ class Exit extends PureComponent {
                   style={styles.btn}
                   underlayColor="transparent"
                   onPress={() => this.actionHandle('Cancel')}
-                  onShowUnderlay={() => this.changeUnderlayHandle('Cancel', '#000000', BtnBackgroundImage)}
+                  onShowUnderlay={() => this.changeUnderlayHandle('Cancel', '#000000', {uri: 'btn'})}
                   onHideUnderlay={() => this.changeUnderlayHandle('Cancel', '#ffffff', {})}
                 > 
                   <Text style={this.setTextColor('Cancel')}>Cancel</Text>
@@ -52,7 +52,7 @@ class Exit extends PureComponent {
                   style={styles.btn}
                   underlayColor="transparent"
                   onPress={() => this.actionHandle('Exit')}
-                  onShowUnderlay={() => this.changeUnderlayHandle('Exit', '#000000', BtnBackgroundImage)}
+                  onShowUnderlay={() => this.changeUnderlayHandle('Exit', '#000000', {uri: 'btn'})}
                   onHideUnderlay={() => this.changeUnderlayHandle('Exit', '#fafafa', {})}
                 > 
                   <Text style={this.setTextColor('Exit')}>Exit</Text>

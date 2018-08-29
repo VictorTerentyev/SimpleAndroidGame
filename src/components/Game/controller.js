@@ -40,13 +40,14 @@ class Controller extends PureComponent {
   actionHandle = (action, event) => {
     switch (action) {
       case 'move':
-        let position = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 / 100 * 10;
+        let position = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 * 0.1;
         this.props.setPosition(position);
         break;
       case 'shoot':
+        let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
           id: this.props.game.shots.length,
-          position: this.props.game.ships[0].position,
+          position: this.props.game.ships[0].position + middle,
           side: 'left'
         };
         this.props.addShot(obj);

@@ -17,8 +17,6 @@ import * as AppActions from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
-import BtnBackgroundImage from '../../../assets/images/menubtn.png';
-
 class Settings extends PureComponent {
   render() {
     const {
@@ -41,7 +39,7 @@ class Settings extends PureComponent {
                 style={styles.btn}
                 underlayColor="transparent"
                 onPress={() => this.actionHandle(item)} 
-                onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', BtnBackgroundImage)}
+                onShowUnderlay={() => this.changeUnderlayHandle(item, '#000000', {uri: 'menubtn'})}
                 onHideUnderlay={() => this.changeUnderlayHandle(item, '#fafafa', {})}
               > 
                 <Text style={this.setTextColor(item)}>{item}</Text>
