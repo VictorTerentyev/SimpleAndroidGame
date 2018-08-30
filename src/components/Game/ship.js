@@ -21,6 +21,7 @@ class Ship extends PureComponent {
     } = this.props;
     return (
       <Animated.View
+        ref={view => { this.ship = view }}
         style={[
           this.setDisplay(),
           {
@@ -49,7 +50,25 @@ class Ship extends PureComponent {
   }
 
   componentDidMount = () => {
+    alert(this.ship.measure( (fx, fy, width, height, px, py) => {fy}));
     if (this.props.side === 'right') {
+      let context = this;
+      let random = Math.random() * (10000 - 7000) + 500;
+      (function loop() {
+          let random = Math.random() * (10000 - 7000) + 500;
+          setTimeout(function() {
+          if (context.props.game.state === 'active' || context.props.game.state === 'resumed') {
+            let middle = Dimensions.get('window').height * 0.9 * 0.07;
+            let obj = { 
+              id: context.props.game.shots.length,
+              positionY: context.props.game.ships[context.props.id].positionY + middle,
+              positionX: context.ship.measure((fx, fy) => fy), 
+              side: 'right'
+            };
+            context.props.addShot(obj);
+          }
+        }, random);
+      }());
       this.setEnemyShipAnimation();
     }
   }
@@ -108,7 +127,7 @@ class Ship extends PureComponent {
         this.state.anim,
         {
           toValue: position,
-          duration: 3000,
+          duration: 1000,
           easing: Easing.linear,
         }
       )

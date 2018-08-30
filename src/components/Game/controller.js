@@ -47,7 +47,8 @@ class Controller extends PureComponent {
         let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
           id: this.props.game.shots.length,
-          position: this.props.game.ships[0].position + middle,
+          positionY: this.props.game.ships[0].position + middle,
+          positionX: 0,
           side: 'left'
         };
         this.props.addShot(obj);

@@ -41,7 +41,7 @@ class Shot extends PureComponent {
     this.state = {
       display: 'flex',
       source: {uri: 'blue_shot'},
-      shotPosAnim: new Animated.Value(0),
+      shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0)
     };
     this.setBgAnimation();
@@ -51,7 +51,7 @@ class Shot extends PureComponent {
     const styles = StyleSheet.create({
       container: {
         position: 'absolute',
-        top: this.props.position,
+        top: this.props.positionY,
         width: '10%',
         height: '6%',
         zIndex: -2
@@ -65,7 +65,7 @@ class Shot extends PureComponent {
   }
 
   setBgAnimation = () => {
-    let value = Dimensions.get('window').width + 200;
+    let value = Dimensions.get('window').width + 200 + this.props.positionX;
     Animated.parallel([
       Animated.timing(
         this.state.shotPosAnim,

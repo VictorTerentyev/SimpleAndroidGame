@@ -84,6 +84,7 @@ class Game extends PureComponent {
                   position={e.position}
                   side={e.side}
                   removeShip={actions.removeShip}
+                  addShot={actions.addShot}
                 /> 
               );
             })}
@@ -93,7 +94,8 @@ class Game extends PureComponent {
                 <Shot 
                   key={e.id}
                   id={e.id}
-                  position={e.position}
+                  positionY={e.positionY}
+                  positionX={e.positionX}
                   side={e.side}
                 /> 
               );
