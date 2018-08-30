@@ -97,6 +97,7 @@ class Game extends PureComponent {
                   positionY={e.positionY}
                   positionX={e.positionX}
                   side={e.side}
+                  removeShot={actions.removeShot}
                 /> 
               );
             })}

@@ -8,7 +8,9 @@ import {
   Image,
   Animated,
   Easing,
-  Dimensions
+  Dimensions,
+  UIManager,
+  findNodeHandle
 } from 'react-native';
 
 class Ship extends PureComponent {
@@ -21,7 +23,7 @@ class Ship extends PureComponent {
     } = this.props;
     return (
       <Animated.View
-        ref={view => { this.ship = view }}
+        ref={(ref) => { this.ship = ref }}
         style={[
           this.setDisplay(),
           {
@@ -44,13 +46,13 @@ class Ship extends PureComponent {
     const position = this.props.side === 'left' ? 'top' : 'right';
     this.state = {
       display: 'flex',
+      measurements: {},
       position: position,
       anim: new Animated.Value(this.props.position)
     };
   }
 
   componentDidMount = () => {
-    alert(this.ship.measure( (fx, fy, width, height, px, py) => {fy}));
     if (this.props.side === 'right') {
       let context = this;
       let random = Math.random() * (10000 - 7000) + 500;
@@ -58,11 +60,12 @@ class Ship extends PureComponent {
           let random = Math.random() * (10000 - 7000) + 500;
           setTimeout(function() {
           if (context.props.game.state === 'active' || context.props.game.state === 'resumed') {
+            context.measure();
             let middle = Dimensions.get('window').height * 0.9 * 0.07;
             let obj = { 
               id: context.props.game.shots.length,
               positionY: context.props.game.ships[context.props.id].positionY + middle,
-              positionX: context.ship.measure((fx, fy) => fy), 
+              positionX: context.state.measurements.fx, 
               side: 'right'
             };
             context.props.addShot(obj);
@@ -77,6 +80,12 @@ class Ship extends PureComponent {
     if (this.props.side === 'left') {
       this.setBgAnimation(nextProps.position);
     }
+  }
+
+  measure = () => {
+    UIManager.measure(findNodeHandle(this.ship), (x, y, width, height, fx, fy) => 
+      this.setState({measurements: { x, y, width, height, fx, fy }})
+    )
   }
 
   setShipBg = () => {

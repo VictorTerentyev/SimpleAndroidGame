@@ -87,6 +87,9 @@ class Shot extends PureComponent {
     {
       useNativeDriver: true
     }).start();
+    setTimeout(() => {
+      this.props.removeShot(this.props.id);
+    }, 2000);
   }
 }
 
