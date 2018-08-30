@@ -75,7 +75,7 @@ class Game extends PureComponent {
             </View>
           </View>
           <View style={styles.game}>
-            {Object.values(this.props.game.ships).map((e, index) => {
+            {Object.values(this.props.game.ships).map((e) => {
               return (
                 <Ship
                   key={e.id}
@@ -83,11 +83,12 @@ class Game extends PureComponent {
                   health={e.health}
                   position={e.position}
                   side={e.side}
+                  removeShip={actions.removeShip}
                 /> 
               );
             })}
 
-            {Object.values(this.props.game.shots).map((e, index) => {
+            {Object.values(this.props.game.shots).map((e) => {
               return (
                 <Shot 
                   key={e.id}
@@ -126,16 +127,20 @@ class Game extends PureComponent {
   componentDidMount = () => {
     this.setBgAnimation();
     this.setHealth();
+    this.creatEnemyShip();
   }
 
   componentWillReceiveProps(nextProps) {
     if(nextProps.display === 'flex') {
       this.state.bgMusic.play();
-      this.creatEnemyShip();
-    } 
-    else { 
+    } else { 
       this.state.bgMusic.pause();
-    }
+    };
+
+    if(this.state.state !== 'active' && this.state.state !== 'resumed') {
+      this.creatEnemyShip();
+      this.setState({state: nextProps.game.state});
+    };
   }
 
   initSession = (state) => {
@@ -204,8 +209,8 @@ class Game extends PureComponent {
     obj.menu.main = 'flex';
     obj.game = 'none';
     this.props.setDisplays(obj);
-    this.props.setGameState({ state: 'paused' });
-    
+    this.props.setGameState('paused');
+    this.setState({state: 'pause'});
   }
 
   setDisplay = () => {

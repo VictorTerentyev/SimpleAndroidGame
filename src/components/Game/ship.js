@@ -7,7 +7,8 @@ import {
   View,
   Image,
   Animated,
-  Easing
+  Easing,
+  Dimensions
 } from 'react-native';
 
 class Ship extends PureComponent {
@@ -15,14 +16,15 @@ class Ship extends PureComponent {
     const { 
       game: { display },
       dispatch,
-      componentWillReceiveProps
+      componentWillReceiveProps,
+      componentDidMount
     } = this.props;
     return (
       <Animated.View
         style={[
           this.setDisplay(),
           {
-            top: this.state.anim
+            [this.state.position]: this.state.anim
           }
         ]}
         renderToHardwareTextureAndroid
@@ -38,18 +40,28 @@ class Ship extends PureComponent {
 
   constructor(props) {
     super(props);
+    const position = this.props.side === 'left' ? 'top' : 'right';
     this.state = {
       display: 'flex',
+      position: position,
       anim: new Animated.Value(this.props.position)
     };
   }
 
+  componentDidMount = () => {
+    if (this.props.side === 'right') {
+      this.setEnemyShipAnimation();
+    }
+  }
+
   componentWillReceiveProps = (nextProps) => {
-    this.setBgAnimation(nextProps.position);
+    if (this.props.side === 'left') {
+      this.setBgAnimation(nextProps.position);
+    }
   }
 
   setShipBg = () => {
-    if (this.props.id === 0) {
+    if (this.props.side === 'left') {
       return {uri: 'cobra'};
     } 
     else {
@@ -58,10 +70,12 @@ class Ship extends PureComponent {
   }
 
   setDisplay = () => {
+
     const styles = StyleSheet.create({
       container: {
         position: 'absolute',
-        top: this.props.position, 
+        top: this.props.position,
+        [this.props.side]: 0, 
         width: '10%',
         height: '20%',
         zIndex: -1
@@ -71,7 +85,7 @@ class Ship extends PureComponent {
   }
 
   setBgAnimation = (position) => {
-    let duration = position > this.props.position ? (position - this.props.position) * 5 : (this.props.position - position) * 5;
+    const duration = position > this.props.position ? (position - this.props.position) * 5 : (this.props.position - position) * 5;
     Animated.parallel([
       Animated.timing(
         this.state.anim,
@@ -85,6 +99,26 @@ class Ship extends PureComponent {
     {
       useNativeDriver: true
     }).start();
+  }
+
+  setEnemyShipAnimation = () => {
+    const position = Dimensions.get('window').width + 200;
+    Animated.parallel([
+      Animated.timing(
+        this.state.anim,
+        {
+          toValue: position,
+          duration: 3000,
+          easing: Easing.linear,
+        }
+      )
+    ],
+    {
+      useNativeDriver: true
+    }).start();
+    setTimeout(() => {
+      this.props.removeShip(this.props.id);
+    }, 3000) 
   }
 }
 
