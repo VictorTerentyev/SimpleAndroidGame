@@ -6,136 +6,90 @@ import Frontier from '../../assets/videos/frontier.mp4';
 
 const initialState = {
   introVids: [NVidia, AMD, UE4, Frontier],
-  videoPaused: {
-    intro: false,
-    menu: true
-  },
-  displays: {
-    intro: 'flex',
-    game: 'none',
-    menu: {
-      menu: 'none',
-      main: 'none',
-      settings: 'none',
-      video: 'none',
-      audio: 'none',
-      gameplay: 'none',
-      credits: 'none',
-      exit: 'none'
-    }
-  },
-  settings: {
-    videoSettings: {
-      Brightness: 1.0
-    },
-    audioSettings: {
-      Volume: 1.0,
-      Effects: 1.0,
-      Music: 1.0,
-      Video: 1.0
-    },
-    gameSettings: {
-      mod: 'default'
-    }
-  },
-  game: {
-    state: 'deactivated',
-    ships: [{id: 0, health: 3, position: 0, side: 'left'}],
-    shots: []
-  }
+  introPause: false,
+  menuPause: true,
+  introDisp: 'flex',
+  gameDisp: 'none',
+  menuDisp: 'none',
+  mainDisp: 'none',
+  settingsDisp: 'none',
+  videoDisp: 'none',
+  audioDisp: 'none',
+  gameplayDisp: 'none',
+  creditsDisp: 'none',
+  exitDisp: 'none',
+  Brightness: 1.0,
+  Volume: 1.0,
+  Effects: 1.0,
+  Music: 1.0,
+  Video: 1.0,
+  mod: 'default',
+  state: 'deactivated',
+  ships: [{id: 0, health: 3, positionY: 0, positionX: 0, side: 'left'}],
+  shots: []
 }
 
 export default function simpleAndroidGame (state = initialState, action) {
 
   switch (action.type) {
 
-    case types.SET_DISPLAYS:
+    case types.SET_DISPLAY:
       return ({
         ...state,
-        displays: action.displays || initialState.displays
+        [action.display]: action.value
       })
 
     case types.VIDEO_PLAY:
       return ({
         ...state,
-        videoPaused: action.videoPaused || initialState.vidioPaused,
+        [action.video]: action.value,
       })
 
-    case types.SET_VIDEO_SETTINGS:
+    case types.SET_SETTING:
       return ({
         ...state,
-        settings: {
-          videoSettings: action.settings || initialState.settings.videoSettings,
-          audioSettings: state.settings.audioSettings
-        }
-      })
-
-    case types.SET_AUDIO_SETTINGS:
-      return ({
-        ...state,
-        settings: {
-          videoSettings: state.settings.videoSettings,
-          audioSettings: action.settings || initialState.settings.audioSettings
-        }
+        [action.setting]: action.value
       })
 
     case types.SET_GAME_STATE:
       return ({
         ...state,
-        game: {
-          ...state.game,
-          state: action.state
-        }
+        state: action.state || initialState.state
       })
 
     case types.SET_POSITION:
-      state.game.ships[0].position = action.position;  
+      state.ships[0].positionY = action.positionY;  
       return ({
         ...state,
-        game: {
-          ...state.game,
-          ships: state.game.ships
-        }
+        ships: state.ships
       })
 
     case types.ADD_SHIP:
-      state.game.ships.push(action.ship);
+      state.ships.push(action.ship);
       return ({
         ...state,
-        game: {
-          ...state.game,
-          ships: state.game.ships
-        }
+        ships: state.ships || initialState.ships
       })
 
     case types.ADD_SHOT:
-      state.game.shots.push(action.shot);
+      state.shots.push(action.shot);
       return ({
         ...state,
-        game: {
-          ...state.game,
-          shots: state.game.shots
-        }
+        shots: state.shots
       })
 
     case types.REMOVE_SHIP:
-      delete state.game.ships[action.id]  
+      delete state.ships[action.id]  
       return ({
         ...state,
-        game: {
-          ...state.game,
-          ships: state.game.ships
-        }
+        ships: state.ships
       })
 
-    case types.REMOVE_SHOOT:
-      delete state.game.shots[action.id];  
+    case types.REMOVE_SHOT:
+      delete state.shots[action.id];  
       return ({
         ...state,
-        game: {
-          ...state.game,
-          shots: state.game.shots
-        }
+        shots: state.shots
       })
 
     default:

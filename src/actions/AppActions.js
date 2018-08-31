@@ -1,30 +1,26 @@
 import * as types from '../constants/ActionTypes';
 
-export function setDisplays(displays) {
+export function setDisplay(display, value) {
   return {
-    type: types.SET_DISPLAYS,
-    displays
+    type: types.SET_DISPLAY,
+    display,
+    value
   };
 }
 
-export function videoPlay(videoPaused) {
+export function videoPlay(video, value) {
   return {
     type: types.VIDEO_PLAY,
-    videoPaused
+    video,
+    value
   };
 }
 
-export function setVideoSettings(settings) {
+export function setSetting(setting, value) {
   return {
-    type: types.SET_VIDEO_SETTINGS,
-    settings
-  };
-}
-
-export function setAudioSettings(settings) {
-  return {
-    type: types.SET_AUDIO_SETTINGS,
-    settings
+    type: types.SET_SETTING,
+    setting,
+    value
   };
 }
 
@@ -35,10 +31,10 @@ export function setGameState(state) {
   };
 }
 
-export function setPosition(position) {
+export function setPosition(positionY) {
   return {
     type: types.SET_POSITION,
-    position
+    positionY
   };
 }
 

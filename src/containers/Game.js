@@ -18,8 +18,8 @@ import {
 
 import * as AppActions from '../actions/AppActions';
 
-import Ship from '../components/Game/ship';
-import Shot from '../components/Game/shot';
+import ShipsList from '../components/Game/shipsList';
+import ShotsList from '../components/Game/shotsList';
 import Controller from '../components/Game/controller';
 
 import Sound from 'react-native-sound';
@@ -27,9 +27,9 @@ import Sound from 'react-native-sound';
 class Game extends PureComponent {
   render() {
     const {
-      appDisps: { appDisps },
+      state: { state },
+      ships: { ships },
       display: { display },
-      game: { game },
       brightness: { brightness },
       dispatch,
       componentDidMount,
@@ -38,7 +38,7 @@ class Game extends PureComponent {
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
-      <View style={this.setDisplay()} renderToHardwareTextureAndroid>
+      <View style={this.setDisplay()}>
         <Animated.Image 
           style={[
             this.setBackground(),
@@ -75,32 +75,8 @@ class Game extends PureComponent {
             </View>
           </View>
           <View style={styles.game}>
-            {Object.values(this.props.game.ships).map((e) => {
-              return (
-                <Ship
-                  key={e.id}
-                  id={e.id}
-                  health={e.health}
-                  position={e.position}
-                  side={e.side}
-                  removeShip={actions.removeShip}
-                  addShot={actions.addShot}
-                /> 
-              );
-            })}
-
-            {Object.values(this.props.game.shots).map((e) => {
-              return (
-                <Shot 
-                  key={e.id}
-                  id={e.id}
-                  positionY={e.positionY}
-                  positionX={e.positionX}
-                  side={e.side}
-                  removeShot={actions.removeShot}
-                /> 
-              );
-            })}
+            <ShipsList addShip={actions.addShip}/>
+            <ShotsList />
           </View>
         </View>
         <Controller
@@ -114,8 +90,7 @@ class Game extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      state: 'deactivated',
-      states: ['active', 'resumed', 'paused', 'deactivated'],
+      appState: AppState.currentState,
       textColor: '#fafafa',
       btnBackground: {},
       bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)}),
@@ -130,50 +105,20 @@ class Game extends PureComponent {
   componentDidMount = () => {
     this.setBgAnimation();
     this.setHealth();
-    this.creatEnemyShip();
   }
 
   componentWillReceiveProps(nextProps) {
+    alert(this.props.positionY);
     if(nextProps.display === 'flex') {
       this.state.bgMusic.play();
     } else { 
       this.state.bgMusic.pause();
     };
-
-    if(this.state.state !== 'active' && this.state.state !== 'resumed') {
-      this.creatEnemyShip();
-      this.setState({state: nextProps.game.state});
-    };
-  }
-
-  initSession = (state) => {
-    switch (state) {
-      case 'active':
-        this.setGameState(this.props.game);
-        this.setBgAnimation();
-        break;
-      case 'resumed':
-        this.setGameState(this.props.game);
-        this.setBgAnimation();
-        break;
-      case 'paused':
-        this.setGameState(this.props.game);
-        Animated.timing(
-          this.state.bgAnim
-        ).stop();
-        break;
-      case 'deactivated':
-        this.setGameState(this.props.game);
-        Animated.timing(
-          this.state.bgAnim
-        ).stop();
-        break;
-    }
   }
 
   setHealth = () => {
     let array = [];
-    for (let i = 0; i < this.props.game.ships[0].health; i++) {
+    for (let i = 0; i < this.props.ships[0].health; i++) {
       array.push(
         <Image 
           key={i}
@@ -186,34 +131,12 @@ class Game extends PureComponent {
     this.setState({ hitPoints: array });
   }
 
-  creatEnemyShip = () => {
-    let context = this;
-    let random = Math.random() * (15000 - 12000) + 500;
-    (function loop() {
-      random = Math.random() * (15000 - 12000) + 500;
-      setTimeout(function() {
-        if (context.props.game.state === 'active' || context.props.game.state === 'resumed') {
-          context.props.addShip({
-            id: context.props.game.ships.length,
-            health: 3,
-            position: Math.random() * Dimensions.get('window').height,
-            side: 'right' 
-          });
-          loop();
-        }
-      }, random);
-    }());
-  }
-
   menuActionHandle = () => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
-    obj.menu.menu = 'flex';
-    obj.menu.main = 'flex';
-    obj.game = 'none';
-    this.props.setDisplays(obj);
+    this.props.setDisplay('menuDisp', 'flex');
+    this.props.setDisplay('mainDisp', 'flex');
+    this.props.setDisplay('gameDisp', 'none');
     this.props.setGameState('paused');
-    this.setState({state: 'pause'});
   }
 
   setDisplay = () => {
@@ -318,10 +241,12 @@ class Game extends PureComponent {
 }
 
 Game.propTypes = {
-  appDisps: PropTypes.object,
+  state: PropTypes.string,
+  ships: PropTypes.array,
   display: PropTypes.string,
-  game: PropTypes.object,
   brightness: PropTypes.number,
+  setGameState: PropTypes.func,
+  setDisplay: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -371,10 +296,10 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.game,
-    game: state.simpleAndroidGame.game,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
+    state: state.simpleAndroidGame.state,
+    ships: state.simpleAndroidGame.ships,
+    display: state.simpleAndroidGame.gameDisp,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 

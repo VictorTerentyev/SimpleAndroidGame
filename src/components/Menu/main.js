@@ -21,10 +21,9 @@ import Sound from 'react-native-sound';
 class MainMenu extends PureComponent {
   render() {
     const {
-      appDisps: { appDisps },
+      state: { state },
       display: { display },
       brightness: { brightness },
-      game: { game },
       dispatch
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -64,6 +63,7 @@ class MainMenu extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       btnBackgrounds: {
         Start: {},
         Settings: {},
@@ -76,20 +76,16 @@ class MainMenu extends PureComponent {
         Credits: '#fafafa',
         Exit: '#fafafa'
       },
-      appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
+    this.props.setDisplay('mainDisp', 'none');
     switch (item) {
       case 'Start':
-        obj.menu.menu = 'none';
-        obj.menu.main = 'none';
-        obj.game = 'flex';
-        switch (this.props.game.state) {
+        switch (this.props.state) {
           case 'deactivated':
             this.props.setPosition(Dimensions.get('window').height * 0.30);
             this.props.setGameState('active');
@@ -99,21 +95,17 @@ class MainMenu extends PureComponent {
             this.props.setGameState('resumed');
             break;
         }
-        this.props.setDisplays(obj);
-        
+        this.props.setDisplay('menuDisp', 'none');
+        this.props.setDisplay('gameDisp', 'flex');
         break;
       case 'Settings':
-        obj.menu.main = 'none';
-        obj.menu.settings = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('settingsDisp', 'flex');
         break;
       case 'Credits':
-        obj.menu.credits = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('creditsDisp', 'flex');
         break;
       case 'Exit':
-        obj.menu.exit = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('exitDisp', 'flex');
         break;
     }
   }
@@ -171,10 +163,12 @@ class MainMenu extends PureComponent {
 }
 
 MainMenu.propTypes = {
-  appDisps: PropTypes.object,
+  state: PropTypes.string,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  game: PropTypes.object,
+  setGameState: PropTypes.func,
+  setDisplay: PropTypes.func,
+  setPosition: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -210,10 +204,9 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.main,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    game: state.simpleAndroidGame.game
+    state: state.simpleAndroidGame.state,
+    display: state.simpleAndroidGame.mainDisp,
+    brightness: state.simpleAndroidGame.Brightness,
   };
 };
 

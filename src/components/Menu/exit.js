@@ -23,7 +23,6 @@ import BtnBackgroundImage from '../../../assets/images/btn.png';
 class Exit extends PureComponent {
   render() {
     const {
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
       dispatch
@@ -68,6 +67,7 @@ class Exit extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       btnBackgrounds: {
         Cancel: {},
         Exit: {}
@@ -82,11 +82,10 @@ class Exit extends PureComponent {
 
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
     switch (item) {
       case 'Cancel':
-        obj.menu.exit = 'none';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('mainDisp', 'flex');
+        this.props.setDisplay('exitDisp', 'none');
         break;
       case 'Exit':
         ReactExit.exitApp();
@@ -148,9 +147,9 @@ class Exit extends PureComponent {
 }
 
 Exit.propTypes = {
-  appDisps: PropTypes.object,
-  displays: PropTypes.string,
+  display: PropTypes.string,
   brightness: PropTypes.number,
+  setDisplay: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -197,9 +196,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.exit,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
+    display: state.simpleAndroidGame.exitDisp,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 

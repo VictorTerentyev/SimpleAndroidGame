@@ -11,7 +11,11 @@ import {
 
 class Controller extends PureComponent {
   render() {
-    const { game: { game }, dispatch } = this.props;
+    const {
+      ships: { ships },
+      shots: { shots },
+      dispatch
+    } = this.props;
 
     return (
       <View style={styles.container}>
@@ -33,21 +37,17 @@ class Controller extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-  }
-
   actionHandle = (action, event) => {
     switch (action) {
       case 'move':
-        let position = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 * 0.1;
-        this.props.setPosition(position);
+        let positionY = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 * 0.1;
+        this.props.setPosition(positionY);
         break;
       case 'shoot':
         let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
-          id: this.props.game.shots.length,
-          positionY: this.props.game.ships[0].position + middle,
+          id: this.props.shots.length,
+          positionY: this.props.ships[0].positionY + middle,
           positionX: 0,
           side: 'left'
         };
@@ -58,7 +58,10 @@ class Controller extends PureComponent {
 }
 
 Controller.propTypes = {
-  game: PropTypes.object,
+  ships: PropTypes.array,
+  shots: PropTypes.array,
+  setPosition: PropTypes.func,
+  addShot: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -84,7 +87,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    game: state.simpleAndroidGame.game
+    ships: state.simpleAndroidGame.ships,
+    shots: state.simpleAndroidGame.shots
   };
 };
 

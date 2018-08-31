@@ -19,7 +19,6 @@ import Sound from 'react-native-sound';
 class Credits extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
       dispatch
@@ -55,22 +54,17 @@ class Credits extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       btnBackground: {},
       textColor: '#fafafa',
-      appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay()
-    let obj = this.props.appDisps;
-    obj.menu.credits = 'none';
-    this.props.setDisplays(obj);
+    this.props.setDisplay('mainDisp', 'flex');
+    this.props.setDisplay('creditsDisp', 'none');
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -124,7 +118,6 @@ class Credits extends PureComponent {
 }
 
 Credits.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
   dispatch: PropTypes.func
@@ -175,9 +168,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.credits,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
+    display: state.simpleAndroidGame.creditsDisp,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 

@@ -13,7 +13,7 @@ import {
 
 class Shot extends PureComponent {
   render() {
-    const { game: { display }, dispatch } = this.props;
+    const { dispatch } = this.props;
 
     return (
       <Animated.View
@@ -54,7 +54,7 @@ class Shot extends PureComponent {
         top: this.props.positionY,
         width: '10%',
         height: '6%',
-        zIndex: -2
+        zIndex: 0
       }
     });
     return styles.container;
@@ -94,7 +94,11 @@ class Shot extends PureComponent {
 }
 
 Shot.propTypes = {
-  game: PropTypes.object,
+  id: PropTypes.number,
+  positionX: PropTypes.number,
+  positionY: PropTypes.number,
+  side: PropTypes.string,
+  removeShot: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -105,13 +109,5 @@ const styles = StyleSheet.create({
     height: '100%'
   }
 });
-
-const stateMap = (state) => {
-  return {
-    game: state.simpleAndroidGame.game
-  };
-};
-
-export default connect(stateMap)(Shot);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Shot);

@@ -25,15 +25,13 @@ class MainContainer extends PureComponent {
       <View style={styles.container}>
         <StatusBar hidden/>
         <Intro
-          setDisplays={actions.setDisplays}
+          setDisplay={actions.setDisplay}
           videoPlay={actions.videoPlay}
         />
         <Menu />
         <Game
-          setDisplays={actions.setDisplays}
+          setDisplay={actions.setDisplay}
           setGameState={actions.setGameState}
-          setPosition={actions.setPosition}
-          addShip={actions.addShip}
         />
       </View>
     );
@@ -48,13 +46,12 @@ let styles = StyleSheet.create({
 });
 
 MainContainer.propTypes = {
-  appProps: PropTypes.object,
   dispatch: PropTypes.func
 }
 
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGame
+    
   };
 };
 

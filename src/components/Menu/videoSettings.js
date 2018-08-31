@@ -21,10 +21,8 @@ import Sound from 'react-native-sound';
 class VideoSettings extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
-      videoSettings: { videoSettings },
-      audioSettings: { audioSettings },
+      brightness: { brightness },
       dispatch 
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
@@ -48,7 +46,7 @@ class VideoSettings extends PureComponent {
                     maximumTrackTintColor={'#fdb023'}
                     thumbTintColor={'#fd8723'}
                     onValueChange={(value) => this.handleSliderValueChange(value, item)}
-                    value={this.state.videoSettings[item]}
+                    value={this.state[item]}
                   />
                 </ImageBackground>
                 <Text style={styles.afterText}>100</Text>
@@ -80,20 +78,18 @@ class VideoSettings extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      videoSettings: this.props.videoSettings,
+      appState: AppState.currentState,
+      Brightness: this.props.brightness,
       btnBackground: {},
       textColor: '#fafafa',
-      appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
-    obj.menu.settings = 'flex';
-    obj.menu.video = 'none';
-    this.props.setDisplays(obj);
+    this.props.setDisplay('settingsDisp', 'flex');
+    this.props.setDisplay('videoDisp', 'none');
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -122,7 +118,7 @@ class VideoSettings extends PureComponent {
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
-        opacity: this.state.videoSettings.Brightness
+        opacity: this.state.Brightness
       }
     });
     return styles.container;
@@ -145,10 +141,8 @@ class VideoSettings extends PureComponent {
   }
 
   handleSliderValueChange = (val, item) => {
-    let videoSettings = this.state.videoSettings;
-    videoSettings[item] = val;
-    this.setState({ videoSettings: videoSettings });
-    this.props.setVideoSettings(videoSettings);
+    this.setState({ [item]: val });
+    this.props.setSetting(item, val);
     if (this.state.btnSound.getCurrentTime !== 0) {
       this.state.btnSound.stop();
       this.state.btnSound.play();
@@ -157,10 +151,10 @@ class VideoSettings extends PureComponent {
 }
 
 VideoSettings.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
-  videoSettings: PropTypes.object,
-  audioSettings: PropTypes.object,
+  brightness: PropTypes.number,
+  setDisplay: PropTypes.func,
+  setSetting: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -232,10 +226,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.video,
-    videoSettings: state.simpleAndroidGame.settings.videoSettings,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    display: state.simpleAndroidGame.videoDisp,
+    brightness: state.simpleAndroidGame.Brightness,
   };
 };
 

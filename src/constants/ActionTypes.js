@@ -1,7 +1,6 @@
-export const SET_DISPLAYS = 'SET_DISPLAYS';
+export const SET_DISPLAY = 'SET_DISPLAY';
 export const VIDEO_PLAY = 'VIDEO_PLAY';
-export const SET_VIDEO_SETTINGS = 'SET_VIDEO_SETTINGS';
-export const SET_AUDIO_SETTINGS = 'SET_AUDIO_SETTINGS';
+export const SET_SETTING = 'SET_SETTING';
 export const SET_GAME_STATE = 'SET_GAME_STATE';
 export const SET_POSITION = 'SET_POSITION';
 export const ADD_SHIP = 'ADD_SHIP';

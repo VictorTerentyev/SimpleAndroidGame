@@ -15,11 +15,12 @@ import {
 
 class Ship extends PureComponent {
   render() {
-    const { 
-      game: { display },
+    const {
+      ships: { ships },
+      shots: { shots },
       dispatch,
-      componentWillReceiveProps,
-      componentDidMount
+      componentDidMount,
+      componentWillReceiveProps
     } = this.props;
     return (
       <Animated.View
@@ -45,7 +46,6 @@ class Ship extends PureComponent {
     super(props);
     const position = this.props.side === 'left' ? 'top' : 'right';
     this.state = {
-      display: 'flex',
       measurements: {},
       position: position,
       anim: new Animated.Value(this.props.position)
@@ -59,12 +59,12 @@ class Ship extends PureComponent {
       (function loop() {
           let random = Math.random() * (10000 - 7000) + 500;
           setTimeout(function() {
-          if (context.props.game.state === 'active' || context.props.game.state === 'resumed') {
+          if (context.props.state === 'active' || context.props.state === 'resumed') {
             context.measure();
             let middle = Dimensions.get('window').height * 0.9 * 0.07;
             let obj = { 
-              id: context.props.game.shots.length,
-              positionY: context.props.game.ships[context.props.id].positionY + middle,
+              id: context.props.shots.length,
+              positionY: context.props.ships[context.props.id].positionY + middle,
               positionX: context.state.measurements.fx, 
               side: 'right'
             };
@@ -79,6 +79,7 @@ class Ship extends PureComponent {
   componentWillReceiveProps = (nextProps) => {
     if (this.props.side === 'left') {
       this.setBgAnimation(nextProps.position);
+      alert(this.props.positionX);
     }
   }
 
@@ -151,8 +152,17 @@ class Ship extends PureComponent {
 }
 
 Ship.propTypes = {
-  game: PropTypes.object,
-  dispatch: PropTypes.func
+  id: PropTypes.number,
+  health: PropTypes.number,
+  position: PropTypes.number,
+  side: PropTypes.string,
+  ships: PropTypes.array,
+  shots: PropTypes.array,
+  removeShip: PropTypes.func,
+  addShot: PropTypes.func,
+  dispatch: PropTypes.func,
+  componentDidMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -164,7 +174,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    game: state.simpleAndroidGame.game
+    ships: state.simpleAndroidGame.ships,
+    shots: state.simpleAndroidGame.shots
   };
 };
 

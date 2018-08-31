@@ -21,10 +21,12 @@ import Sound from 'react-native-sound';
 class AudioSettings extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
-      audioSettings: { audioSettings },
+      volume: { volume },
+      effects: { effects },
+      music: { music },
+      video: { video },
       componentWillReceiveProps,
       dispatch 
     } = this.props;
@@ -49,7 +51,7 @@ class AudioSettings extends PureComponent {
                     maximumTrackTintColor={'#fdb023'}
                     thumbTintColor={'#fd8723'}
                     onValueChange={(value) => this.handleSliderValueChange(value, item)}
-                    value={this.state.audioSettings[item]}
+                    value={this.state[item]}
                   />
                 </ImageBackground>
                 <Text style={styles.afterText}>100</Text>
@@ -81,10 +83,13 @@ class AudioSettings extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      audioSettings: this.props.audioSettings,
+      appState: AppState.currentState,
+      Volume: this.props.volume,
+      Effects: this.props.effects,
+      Music: this.props.music,
+      Video: this.props.video,
       btnBackground: {},
       textColor: '#fafafa',
-      appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {})
@@ -92,17 +97,15 @@ class AudioSettings extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.state.btnSound.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Effects);
-    this.state.bgMenuMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
-    this.state.bgGameMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
+    this.state.btnSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.bgMenuMusic.setVolume(nextProps.volume * nextProps.music);
+    this.state.bgGameMusic.setVolume(nextProps.volume * nextProps.music);
   }
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
-    obj.menu.settings = 'flex';
-    obj.menu.audio = 'none';
-    this.props.setDisplays(obj);
+    this.props.setDisplay('settingsDisp', 'flex');
+    this.props.setDisplay('audioDisp', 'none');
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -153,10 +156,8 @@ class AudioSettings extends PureComponent {
   }
 
   handleSliderValueChange = (val, item) => {
-    let audioSettings = this.state.audioSettings;
-    audioSettings[item] = val;
-    this.setState({ audioSettings: audioSettings });
-    this.props.setAudioSettings(audioSettings);
+    this.setState({ [item]: val });
+    this.props.setSetting(item, val);
     if (this.state.btnSound.getCurrentTime !== 0) {
       this.state.btnSound.stop();
       this.state.btnSound.play();
@@ -165,10 +166,15 @@ class AudioSettings extends PureComponent {
 }
 
 AudioSettings.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  audioSettings: PropTypes.object,
+  volume: PropTypes.number,
+  effects: PropTypes.number,
+  music: PropTypes.number,
+  effects: PropTypes.number,
+  video: PropTypes.number,
+  setDisplay: PropTypes.func,
+  setSetting: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -240,10 +246,12 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.audio,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    display: state.simpleAndroidGame.audioDisp,
+    brightness: state.simpleAndroidGame.Brightness,
+    volume: state.simpleAndroidGame.Volume,
+    effects: state.simpleAndroidGame.Effects,
+    music: state.simpleAndroidGame.Music,
+    video: state.simpleAndroidGame.Video
   };
 };
 

@@ -27,7 +27,6 @@ import Exit from '../components/Menu/exit';
 class Menu extends PureComponent {
   render() {
     const { 
-      appProps: { appProps }, 
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
@@ -49,21 +48,21 @@ class Menu extends PureComponent {
         />
         <View style={this.setVideoBrightness()}/>
         <MainMenu 
-          setDisplays={actions.setDisplays}
+          setDisplay={actions.setDisplay}
           setPosition={actions.setPosition}
           setGameState={actions.setGameState}
         />
-        <Settings setDisplays={actions.setDisplays}/>
+        <Settings setDisplay={actions.setDisplay}/>
         <VideoSettings
-          setDisplays={actions.setDisplays}
-          setVideoSettings={actions.setVideoSettings}
+          setDisplay={actions.setDisplay}
+          setSetting={actions.setSetting}
         />
         <AudioSettings
-          setDisplays={actions.setDisplays}
-          setAudioSettings={actions.setAudioSettings}
+          setDisplay={actions.setDisplay}
+          setSetting={actions.setSetting}
         />
-        <Credits setDisplays={actions.setDisplays}/>
-        <Exit setDisplays={actions.setDisplays}/>
+        <Credits setDisplay={actions.setDisplay}/>
+        <Exit setDisplay={actions.setDisplay}/>
       </View>
     );
   }
@@ -133,19 +132,18 @@ let styles = StyleSheet.create({
 });
 
 Menu.propTypes = {
-  appProps: PropTypes.object,
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
-  dispatch: PropTypes.func
+  dispatch: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func
 }
 
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGame,
-    display: state.simpleAndroidGame.displays.menu.menu,
-    bgPaused: state.simpleAndroidGame.videoPaused.menu,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
+    display: state.simpleAndroidGame.menuDisp,
+    bgPaused: state.simpleAndroidGame.menuPause,
+    brightness: state.simpleAndroidGame.Brightness,
   };
 };
 

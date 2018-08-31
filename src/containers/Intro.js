@@ -18,11 +18,10 @@ class Intro extends PureComponent {
   render() {
     const {
       introVids: { introVids },
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
-      audioSettings: { audioSettings },
-
+      volume: { volume },
+      video: { video },
       dispatch
     } = this.props;
 
@@ -37,7 +36,7 @@ class Intro extends PureComponent {
             style={styles.backgroundVideo}
             paused={this.state.paused}
             onEnd={() => this.introControlHandle()}
-            volume={this.props.audioSettings.Volume * this.props.audioSettings.video}
+            volume={this.props.volume * this.props.video}
           />
           <View style={this.setVideoBrightness()}/>
         </TouchableOpacity>
@@ -59,12 +58,11 @@ class Intro extends PureComponent {
     } 
     else {
       this.setState({ paused: true });
-      this.props.videoPlay({ intro: true, menu: false });
-      let obj = this.props.appDisps;
-      obj.intro = 'none';
-      obj.menu.menu = 'flex';
-      obj.menu.main = 'flex';
-      this.props.setDisplays(obj);
+      this.props.videoPlay('introPause', true);
+      this.props.videoPlay('menuPause', false);
+      this.props.setDisplay('introDisp', 'none');
+      this.props.setDisplay('menuDisp', 'flex');
+      this.props.setDisplay('mainDisp', 'flex');
     }
   }
 
@@ -97,10 +95,12 @@ class Intro extends PureComponent {
 
 Intro.propTypes = {
   introVids: PropTypes.array,
-  appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  audioSettings: PropTypes.object,
+  volume: PropTypes.number,
+  video: PropTypes.number,
+  videoPlay: PropTypes.func,
+  setDisplay: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -120,10 +120,10 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     introVids: state.simpleAndroidGame.introVids,
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.intro,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    display: state.simpleAndroidGame.introDisp,
+    brightness: state.simpleAndroidGame.Brightness,
+    volume: state.simpleAndroidGame.Volume,
+    video: state.simpleAndroidGame.Video
   };
 };
 
