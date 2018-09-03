@@ -21,6 +21,7 @@ import * as AppActions from '../actions/AppActions';
 import ShipsList from '../components/Game/shipsList';
 import ShotsList from '../components/Game/shotsList';
 import Controller from '../components/Game/controller';
+import Hitpoints from '../components/Game/hitpoints';
 
 import Sound from 'react-native-sound';
 
@@ -28,7 +29,11 @@ class Game extends PureComponent {
   render() {
     const {
       state: { state },
-      ships: { ships },
+      hitpoints: { hitpoints },
+      position: { position },
+      enemyShips: { enemyShips },
+      shots: { shots },
+      enemyShots: { enemyShots },
       display: { display },
       brightness: { brightness },
       dispatch,
@@ -55,10 +60,8 @@ class Game extends PureComponent {
         <View style={this.setBgBrightness()}/>
         <View style={this.setBrightness()}>
           <View style={styles.menu}>
-            <View style={styles.health}>
-              {this.state.hitPoints.map(e => {
-                return (e);
-              })}
+            <View style={styles.hitpoints}>
+              <Hitpoints/>
             </View>
             <View style={styles.menuBtn}>
               <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
@@ -75,7 +78,10 @@ class Game extends PureComponent {
             </View>
           </View>
           <View style={styles.game}>
-            <ShipsList addShip={actions.addShip}/>
+            <ShipsList
+              addShip={actions.addShip}
+              addEnemyShip={actions.addEnemyShip}
+            />
             <ShotsList />
           </View>
         </View>
@@ -96,7 +102,6 @@ class Game extends PureComponent {
       bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)}),
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgAnim: new Animated.Value(0),
-      hitPoints: [],
       score: 0
     };
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -104,31 +109,14 @@ class Game extends PureComponent {
 
   componentDidMount = () => {
     this.setBgAnimation();
-    this.setHealth();
   }
 
   componentWillReceiveProps(nextProps) {
-    alert(this.props.positionY);
     if(nextProps.display === 'flex') {
       this.state.bgMusic.play();
     } else { 
       this.state.bgMusic.pause();
     };
-  }
-
-  setHealth = () => {
-    let array = [];
-    for (let i = 0; i < this.props.ships[0].health; i++) {
-      array.push(
-        <Image 
-          key={i}
-          style={styles.hitPoint}
-          source={{uri: 'hitpoint'}}
-          resizeMode="contain"
-        />
-      );
-    };
-    this.setState({ hitPoints: array });
   }
 
   menuActionHandle = () => {
@@ -138,7 +126,7 @@ class Game extends PureComponent {
     this.props.setDisplay('gameDisp', 'none');
     this.props.setGameState('paused');
   }
-
+  
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
@@ -242,7 +230,11 @@ class Game extends PureComponent {
 
 Game.propTypes = {
   state: PropTypes.string,
-  ships: PropTypes.array,
+  hitpoints: PropTypes.number,
+  position: PropTypes.number,
+  enemyShips: PropTypes.array,
+  shots: PropTypes.array,
+  enemyShots: PropTypes.array,
   display: PropTypes.string,
   brightness: PropTypes.number,
   setGameState: PropTypes.func,
@@ -263,17 +255,9 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '90%',
   },
-  health: {
+  hitpoints: {
     width: '20%',
-    height: '100%',
-    flexDirection: 'row', 
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start'  
-  },
-  hitPoint: {
-    height: '100%',
-    width: '33%',
-    marginLeft: '5%'
+    height: '100%'
   },
   menuBtn: {
     width: '20%',
@@ -297,7 +281,11 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
-    ships: state.simpleAndroidGame.ships,
+    hitpoints: state.simpleAndroidGame.hitpoints,
+    position: state.simpleAndroidGame.position,
+    enemyShips: state.simpleAndroidGame.enemyShips,
+    shots: state.simpleAndroidGame.shots,
+    enemyShots: state.simpleAndroidGame.enemyShots,
     display: state.simpleAndroidGame.gameDisp,
     brightness: state.simpleAndroidGame.Brightness
   };

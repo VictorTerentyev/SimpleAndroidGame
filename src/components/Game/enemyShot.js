@@ -11,7 +11,7 @@ import {
   Easing
 } from 'react-native';
 
-class Shot extends PureComponent {
+class EnemyShot extends PureComponent {
   render() {
     const { dispatch } = this.props;
 
@@ -20,7 +20,7 @@ class Shot extends PureComponent {
         style={[
           this.setDisplay(),
           {
-            right: this.state.shotPosAnim
+            left: this.state.shotPosAnim
           }
         ]}
       >
@@ -40,8 +40,8 @@ class Shot extends PureComponent {
     super(props);
     this.state = {
       display: 'flex',
-      source: {uri: 'blue_shot'},
-      shotPosAnim: new Animated.Value(0),
+      source: {uri: 'red_shot'},
+      shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0)
     };
     this.setBgAnimation();
@@ -51,7 +51,8 @@ class Shot extends PureComponent {
     const styles = StyleSheet.create({
       container: {
         position: 'absolute',
-        top: this.props.position,
+        top: this.props.positionY,
+        left: this.props.positionX,
         width: '10%',
         height: '6%',
         zIndex: 0
@@ -61,7 +62,7 @@ class Shot extends PureComponent {
   }
 
   setBgAnimation = () => {
-    let value = Dimensions.get('window').width + 200;
+    let value = Dimensions.get('window').width + 200 + this.props.positionX;
     Animated.parallel([
       Animated.timing(
         this.state.shotPosAnim,
@@ -84,13 +85,13 @@ class Shot extends PureComponent {
       useNativeDriver: true
     }).start();
     setTimeout(() => {
-      this.props.removeShot(this.props.id);
+      this.props.removeEnemyShot(this.props.id);
     }, 2500);
   }
 }
 
-Shot.propTypes = {
-  removeShot: PropTypes.func,
+EnemyShot.propTypes = {
+  removeEnemyShot: PropTypes.func,
   dispatch: PropTypes.func
 }
 
@@ -108,6 +109,6 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Shot);
+export default connect(stateMap)(EnemyShot);
 
-AppRegistry.registerComponent('SimpleAndroidGame', () => Shot);
+AppRegistry.registerComponent('SimpleAndroidGame', () => EnemyShot);

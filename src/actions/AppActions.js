@@ -31,16 +31,23 @@ export function setGameState(state) {
   };
 }
 
-export function setPosition(positionY) {
+export function setPosition(position) {
   return {
     type: types.SET_POSITION,
-    positionY
+    position
   };
 }
 
 export function addShip(ship) {
   return {
     type: types.ADD_SHIP,
+    ship
+  };
+}
+
+export function addEnemyShip(ship) {
+  return {
+    type: types.ADD_ENEMY_SHIP,
     ship
   };
 }
@@ -52,9 +59,16 @@ export function addShot(shot) {
   };
 }
 
-export function removeShip(id) {
+export function addEnemyShot(shot) {
   return {
-    type: types.REMOVE_SHIP,
+    type: types.ADD_ENEMY_SHOT,
+    shot
+  };
+}
+
+export function removeEnemyShip(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP,
     id
   };
 }
@@ -62,6 +76,13 @@ export function removeShip(id) {
 export function removeShot(id) {
   return {
     type: types.REMOVE_SHOT,
+    id
+  };
+}
+
+export function removeEnemyShot(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHOT,
     id
   };
 }

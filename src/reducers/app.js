@@ -25,8 +25,11 @@ const initialState = {
   Video: 1.0,
   mod: 'default',
   state: 'deactivated',
-  ships: [{id: 0, health: 3, positionY: 0, positionX: 0, side: 'left'}],
-  shots: []
+  hitpoints: 3,
+  position: 0,
+  shots: [],
+  enemyShips: [],
+  enemyShots: []
 }
 
 export default function simpleAndroidGame (state = initialState, action) {
@@ -57,18 +60,24 @@ export default function simpleAndroidGame (state = initialState, action) {
         state: action.state || initialState.state
       })
 
-    case types.SET_POSITION:
-      state.ships[0].positionY = action.positionY;  
+    case types.SET_POSITION:  
       return ({
         ...state,
-        ships: state.ships
+        position: action.position
       })
 
-    case types.ADD_SHIP:
-      state.ships.push(action.ship);
+    case types.ADD__SHIP:
       return ({
         ...state,
-        ships: state.ships || initialState.ships
+        hitpoints: action.hitpoints || initialState.hitpoints,
+        position: action.position || initialState.position
+      })
+
+    case types.ADD_ENEMY_SHIP:
+      state.enemyShips.push(action.ship);
+      return ({
+        ...state,
+        enemyShips: state.enemyShips
       })
 
     case types.ADD_SHOT:
@@ -78,11 +87,18 @@ export default function simpleAndroidGame (state = initialState, action) {
         shots: state.shots
       })
 
-    case types.REMOVE_SHIP:
-      delete state.ships[action.id]  
+    case types.ADD_ENEMY_SHOT:
+      state.enemyShots.push(action.shot);
       return ({
         ...state,
-        ships: state.ships
+        enemyShots: state.enemyShots
+      })
+
+    case types.REMOVE_ENEMY_SHIP:
+      delete state.enemyShips[action.id]  
+      return ({
+        ...state,
+        enemyShips: state.enemyShips
       })
 
     case types.REMOVE_SHOT:
@@ -90,6 +106,13 @@ export default function simpleAndroidGame (state = initialState, action) {
       return ({
         ...state,
         shots: state.shots
+      })
+
+    case types.REMOVE_ENEMY_SHOT:
+      delete state.enemyShots[action.id];  
+      return ({
+        ...state,
+        enemyShots: state.enemyShots
       })
 
     default:

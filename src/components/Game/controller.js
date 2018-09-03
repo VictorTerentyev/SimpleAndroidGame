@@ -12,7 +12,7 @@ import {
 class Controller extends PureComponent {
   render() {
     const {
-      ships: { ships },
+      position: { position },
       shots: { shots },
       dispatch
     } = this.props;
@@ -47,9 +47,7 @@ class Controller extends PureComponent {
         let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
           id: this.props.shots.length,
-          positionY: this.props.ships[0].positionY + middle,
-          positionX: 0,
-          side: 'left'
+          position: this.props.position + middle,
         };
         this.props.addShot(obj);
         break;
@@ -58,7 +56,7 @@ class Controller extends PureComponent {
 }
 
 Controller.propTypes = {
-  ships: PropTypes.array,
+  position: PropTypes.number,
   shots: PropTypes.array,
   setPosition: PropTypes.func,
   addShot: PropTypes.func,
@@ -87,7 +85,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    ships: state.simpleAndroidGame.ships,
+    position: state.simpleAndroidGame.position,
     shots: state.simpleAndroidGame.shots
   };
 };

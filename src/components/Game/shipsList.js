@@ -12,12 +12,15 @@ import {
 import * as AppActions from '../../actions/AppActions';
 
 import Ship from './ship';
+import EnemyShip from './enemyShip';
 
 class ShipsList extends PureComponent {
   render() {
     const {
       state: { state },
-      ships: { ships },
+      hitpoints: { hitpoints },
+      position: { position },
+      enemyShips: { enemyShips },
       dispatch,
       componentWillReceiveProps
     } = this.props;
@@ -25,17 +28,17 @@ class ShipsList extends PureComponent {
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
-        {Object.values(this.props.ships).map((e) => {
+        <Ship/>
+        {Object.values(this.state.enemyShips).map((e) => {
           return (
-            <Ship
+            <EnemyShip
               key={e.id}
               id={e.id}
               health={e.health}
               positionY={e.positionY}
               positionX={e.positionX}
-              side={e.side}
-              removeShip={actions.removeShip}
-              addShot={actions.addShot}
+              removeEnemyShip={actions.removeEnemyShip}
+              addEnemyShot={actions.addEnemyShot}
             /> 
           );
         })}
@@ -43,36 +46,53 @@ class ShipsList extends PureComponent {
     );
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      enemyShips: this.props.enemyShips,
+      loopState: 'deactivated'
+    }
+  }
+
   componentWillReceiveProps = (nextProps) => {
-    if(nextProps.state === 'active' || nextProps.state === 'resumed') {
-      this.creatEnemyShip();
-    };
+    if (nextProps.state === 'active' || nextProps.state === 'resumed') {
+      if (this.state.loopState !== 'active') {
+        this.creatEnemyShipLoop();
+        this.setState({loopState: 'active'});
+      }
+    }
+  }
+
+  creatEnemyShipLoop = (value) => {
+    let random = value || Math.random() * (15000 - 12000) + 500;
+    setTimeout(this.creatEnemyShip.bind(this), random);
+    this.setState({enemyShips: this.props.enemyShips});
+    this.forceUpdate();
   }
 
   creatEnemyShip = () => {
-    let context = this;
     let random = Math.random() * (15000 - 12000) + 500;
-    (function loop() {
-      random = Math.random() * (15000 - 12000) + 500;
-      setTimeout(function() {
-        if (context.props.state === 'active' || context.props.state === 'resumed') {
-          context.props.addShip({
-            id: context.props.ships.length,
-            health: 3,
-            position: Math.random() * Dimensions.get('window').height,
-            side: 'right' 
-          });
-          loop();
-        }
-      }, random);
-    }());
+    if (this.props.state === 'active' || this.props.state === 'resumed') {
+      this.props.addEnemyShip({
+        id: this.props.enemyShips.length,
+        hitpoints: 3,
+        positionY: Math.random() * Dimensions.get('window').height,
+        positionX: 0
+      });
+      this.creatEnemyShipLoop(random);
+    } else {
+      this.setState({loopState: 'deactivated'});
+      return;
+    }
   }
 }
 
 ShipsList.propTypes = {
   state: PropTypes.string,
-  ships: PropTypes.array,
-  addShip: PropTypes.func,
+  hitpoints: PropTypes.number,
+  position: PropTypes.number,
+  enemyShips: PropTypes.array,
+  addEnemyShip: PropTypes.func,
   dispatch: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
 }
@@ -90,7 +110,9 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
-    ships: state.simpleAndroidGame.ships
+    hitpoints: state.simpleAndroidGame.hitpoints,
+    position: state.simpleAndroidGame.position,
+    enemyShips: state.simpleAndroidGame.enemyShips
   };
 };
 

@@ -11,36 +11,64 @@ import {
 import * as AppActions from '../../actions/AppActions';
 
 import Shot from './shot';
+import EnemyShot from './enemyShot';
 
 class ShotsList extends PureComponent {
   render() {
     const {
       shots: { shots },
-      dispatch
+      enemyShots: { enemyShots },
+      dispatch,
+      componentWillReceivePorps
     } = this.props;
     const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
-        {Object.values(this.props.shots).map((e) => {
+        {Object.values(this.state.shots).map((e) => {
+          return (
+            <Shot 
+              key={e.id}
+              id={e.id}
+              position={e.position}
+              removeShot={actions.removeShot}
+            /> 
+          );
+        })}
+        {Object.values(this.state.enemyShots).map((e) => {
           return (
             <Shot 
               key={e.id}
               id={e.id}
               positionY={e.positionY}
               positionX={e.positionX}
-              side={e.side}
-              removeShot={actions.removeShot}
+              removeEnemyShot={actions.removeEnemyShot}
             /> 
           );
         })}
       </View>
     );
   }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      shots: this.props.shots,
+      enemyShots: this.props.enemyShots
+    }
+  }
+
+  componentWillReceivePorps = (nextProps) => {
+    this.setState({
+      shots: nextProps.shots,
+      enemyShots: nextProps.enemyShots
+    });
+  }
 }
 
 ShotsList.propTypes = {
   shots: PropTypes.array,
+  enemyShots: PropTypes.array,
   dispatch: PropTypes.func
 }
 
@@ -56,7 +84,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    shots: state.simpleAndroidGame.shots
+    shots: state.simpleAndroidGame.shots,
+    enemyShots: state.simpleAndroidGame.enemyShots
   };
 };
 
