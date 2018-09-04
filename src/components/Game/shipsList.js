@@ -27,7 +27,7 @@ class ShipsList extends PureComponent {
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
         <Ship/>
-        {Object.values(this.state.enemyShips).map((e) => {
+        {this.state.enemyShips.map((e) => {
           return (
             <EnemyShip
               key={e.id}

@@ -29,7 +29,8 @@ const initialState = {
   position: 0,
   shots: [],
   enemyShips: [],
-  enemyShots: []
+  enemyShots: [],
+  score: 0
 }
 
 export default function simpleAndroidGame (state = initialState, action) {

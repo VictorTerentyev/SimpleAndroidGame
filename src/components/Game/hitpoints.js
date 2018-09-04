@@ -63,7 +63,7 @@ Hitpoints.propTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    width: '20%',
     height: '100%',
     flexDirection: 'row', 
   },

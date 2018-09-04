@@ -6,10 +6,13 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
+  AppState
 } from 'react-native';
 
 import { setPosition, addShot } from '../../actions/AppActions';
+
+import Sound from 'react-native-sound';
 
 class Controller extends PureComponent {
   render() {
@@ -39,6 +42,14 @@ class Controller extends PureComponent {
     );
   }
 
+  constructor() {
+    super();
+    this.state = {
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
   actionHandle = (action, event) => {
     switch (action) {
       case 'move':
@@ -46,6 +57,8 @@ class Controller extends PureComponent {
         this.props.setPosition(positionY);
         break;
       case 'shoot':
+
+        this.checkShotSoundDoublePlay();
         let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
           id: this.props.shots.length,
@@ -54,6 +67,22 @@ class Controller extends PureComponent {
         this.props.addShot(obj);
         break;
     }
+  }
+
+  checkShotSoundDoublePlay = () => {
+    if (this.state.shotSound.getCurrentTime !== 0) {
+      this.state.shotSound.stop();
+      this.state.shotSound.play();
+    }
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.shotSound.play();
+    } else {
+      this.state.shotSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 }
 

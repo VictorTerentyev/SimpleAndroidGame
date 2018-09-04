@@ -90,12 +90,16 @@ class AudioSettings extends PureComponent {
       textColor: '#fafafa',
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {})
+      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
   }
 
   componentWillReceiveProps(nextProps) {
     this.state.btnSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.shotSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.enemyShotSound.setVolume(nextProps.volume * nextProps.effects);
     this.state.bgMenuMusic.setVolume(nextProps.volume * nextProps.music);
     this.state.bgGameMusic.setVolume(nextProps.volume * nextProps.music);
   }
