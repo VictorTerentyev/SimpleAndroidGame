@@ -10,8 +10,6 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
-
 import Intro from './Intro';
 import Menu from './Menu';
 import Game from './Game';
@@ -19,20 +17,13 @@ import Game from './Game';
 class MainContainer extends PureComponent {
   render() {
     const { dispatch } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.container}>
         <StatusBar hidden/>
-        <Intro
-          setDisplay={actions.setDisplay}
-          videoPlay={actions.videoPlay}
-        />
-        <Menu />
-        <Game
-          setDisplay={actions.setDisplay}
-          setGameState={actions.setGameState}
-        />
+        <Intro/>
+        <Menu/>
+        <Game/>
       </View>
     );
   }
@@ -49,12 +40,6 @@ MainContainer.propTypes = {
   dispatch: PropTypes.func
 }
 
-const stateMap = (state) => {
-  return {
-    
-  };
-};
-
-export default connect(stateMap)(MainContainer);
+export default connect()(MainContainer);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => MainContainer);

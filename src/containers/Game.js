@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -16,7 +15,7 @@ import {
   Dimensions
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import { setDisplay, setGameState } from '../actions/AppActions';
 
 import ShipsList from '../components/Game/shipsList';
 import ShotsList from '../components/Game/shotsList';
@@ -40,7 +39,6 @@ class Game extends PureComponent {
       componentDidMount,
       componentWillReceiveProps
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -78,17 +76,11 @@ class Game extends PureComponent {
             </View>
           </View>
           <View style={styles.game}>
-            <ShipsList
-              addShip={actions.addShip}
-              addEnemyShip={actions.addEnemyShip}
-            />
-            <ShotsList />
+            <ShipsList/>
+            <ShotsList/>
           </View>
         </View>
-        <Controller
-          setPosition={actions.setPosition}
-          addShot={actions.addShot}
-        />
+        <Controller/>
       </View>
     );
   }
@@ -291,6 +283,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Game);
+const mapDispatchToProps = {
+  setDisplay,
+  setGameState
+};
+
+export default connect(stateMap, mapDispatchToProps)(Game);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Game);

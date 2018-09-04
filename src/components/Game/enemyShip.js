@@ -13,6 +13,10 @@ import {
   findNodeHandle
 } from 'react-native';
 
+import EnemyShot from './enemyShot';
+
+import { removeEnemyShip, addEnemyShot } from '../../actions/AppActions';
+
 class EnemyShip extends PureComponent {
   render() {
     const {
@@ -22,6 +26,7 @@ class EnemyShip extends PureComponent {
       componentDidMount,
       componentWillReceiveProps
     } = this.props;
+    
     return (
       <Animated.View
         ref={(ref) => { this.ship = ref }}
@@ -115,7 +120,7 @@ class EnemyShip extends PureComponent {
     }).start();
     setTimeout(() => {
       this.props.removeEnemyShip(this.props.id);
-    }, 3000) 
+    }, 3000)
   }
 }
 
@@ -143,6 +148,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(EnemyShip);
+const mapDispatchToProps = {
+  removeEnemyShip,
+  addEnemyShot
+};
+
+export default connect(stateMap, mapDispatchToProps)(EnemyShip);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => EnemyShip);

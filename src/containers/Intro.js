@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -10,7 +9,7 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import { setDisplay, videoPlay } from '../actions/AppActions';
 
 import Video from 'react-native-video';
 
@@ -127,6 +126,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Intro);
+const mapDispatchToProps = {
+  setDisplay,
+  videoPlay
+};
+
+export default connect(stateMap, mapDispatchToProps)(Intro);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Intro);

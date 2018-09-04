@@ -11,6 +11,8 @@ import {
   Easing
 } from 'react-native';
 
+import { removeEnemyShot } from '../../actions/AppActions';
+
 class EnemyShot extends PureComponent {
   render() {
     const { dispatch } = this.props;
@@ -55,7 +57,7 @@ class EnemyShot extends PureComponent {
         left: this.props.positionX,
         width: '10%',
         height: '6%',
-        zIndex: 0
+        zIndex: -2
       }
     });
     return styles.container;
@@ -97,7 +99,6 @@ EnemyShot.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
-    position: 'relative',
     width: '100%',
     height: '100%'
   }
@@ -109,6 +110,10 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(EnemyShot);
+const mapDispatchToProps = {
+  removeEnemyShot
+};
+
+export default connect(stateMap, mapDispatchToProps)(EnemyShot);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => EnemyShot);

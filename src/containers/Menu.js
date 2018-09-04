@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,8 +8,6 @@ import {
   SectionList,
   AppState
 } from 'react-native';
-
-import * as AppActions from '../actions/AppActions';
 
 import Video from 'react-native-video';
 import MenuBg from '../../assets/videos/menu.mp4';
@@ -33,7 +30,6 @@ class Menu extends PureComponent {
       componentWillReceiveProps,
       dispatch
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -47,22 +43,12 @@ class Menu extends PureComponent {
           style={styles.bgVideo}
         />
         <View style={this.setVideoBrightness()}/>
-        <MainMenu 
-          setDisplay={actions.setDisplay}
-          setPosition={actions.setPosition}
-          setGameState={actions.setGameState}
-        />
-        <Settings setDisplay={actions.setDisplay}/>
-        <VideoSettings
-          setDisplay={actions.setDisplay}
-          setSetting={actions.setSetting}
-        />
-        <AudioSettings
-          setDisplay={actions.setDisplay}
-          setSetting={actions.setSetting}
-        />
-        <Credits setDisplay={actions.setDisplay}/>
-        <Exit setDisplay={actions.setDisplay}/>
+        <MainMenu/>
+        <Settings/>
+        <VideoSettings/>
+        <AudioSettings/>
+        <Credits/>
+        <Exit/>
       </View>
     );
   }

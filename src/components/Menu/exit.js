@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -14,7 +13,7 @@ import {
 
 import ReactExit from 'react-native-exit-app';
 
-import * as AppActions from '../../actions/AppActions';
+import { setDisplay } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -27,7 +26,6 @@ class Exit extends PureComponent {
       brightness: { brightness },
       dispatch
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.bgContainer}>
@@ -201,6 +199,10 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Exit);
+const mapDispatchToProps = {
+  setDisplay
+};
+
+export default connect(stateMap, mapDispatchToProps)(Exit);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Exit);

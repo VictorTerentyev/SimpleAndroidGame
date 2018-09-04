@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,7 +8,7 @@ import {
   View
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { addShip, addEnemyShip } from '../../actions/AppActions';
 
 import Ship from './ship';
 import EnemyShip from './enemyShip';
@@ -24,7 +23,6 @@ class ShipsList extends PureComponent {
       dispatch,
       componentWillReceiveProps
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
@@ -37,8 +35,6 @@ class ShipsList extends PureComponent {
               health={e.health}
               positionY={e.positionY}
               positionX={e.positionX}
-              removeEnemyShip={actions.removeEnemyShip}
-              addEnemyShot={actions.addEnemyShot}
             /> 
           );
         })}
@@ -67,7 +63,6 @@ class ShipsList extends PureComponent {
     let random = value || Math.random() * (15000 - 12000) + 500;
     setTimeout(this.creatEnemyShip.bind(this), random);
     this.setState({enemyShips: this.props.enemyShips});
-    this.forceUpdate();
   }
 
   creatEnemyShip = () => {
@@ -116,6 +111,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(ShipsList);
+const mapDispatchToProps = {
+  addShip,
+  addEnemyShip
+};
+
+export default connect(stateMap, mapDispatchToProps)(ShipsList);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => ShipsList);

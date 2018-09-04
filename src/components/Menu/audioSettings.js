@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -14,7 +13,7 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { setDisplay, setSetting } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -30,7 +29,6 @@ class AudioSettings extends PureComponent {
       componentWillReceiveProps,
       dispatch 
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -255,6 +253,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(AudioSettings);
+const mapDispatchToProps = {
+  setDisplay,
+  setSetting
+};
+
+export default connect(stateMap, mapDispatchToProps)(AudioSettings);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => AudioSettings);

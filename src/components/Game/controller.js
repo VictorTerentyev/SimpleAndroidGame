@@ -9,6 +9,8 @@ import {
   Dimensions
 } from 'react-native';
 
+import { setPosition, addShot } from '../../actions/AppActions';
+
 class Controller extends PureComponent {
   render() {
     const {
@@ -90,6 +92,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Controller);
+const mapDispatchToProps = {
+  setPosition,
+  addShot
+};
+
+export default connect(stateMap, mapDispatchToProps)(Controller);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Controller);

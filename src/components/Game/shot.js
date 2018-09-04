@@ -11,6 +11,8 @@ import {
   Easing
 } from 'react-native';
 
+import { removeShot } from '../../actions/AppActions';
+
 class Shot extends PureComponent {
   render() {
     const { dispatch } = this.props;
@@ -54,7 +56,7 @@ class Shot extends PureComponent {
         top: this.props.position,
         width: '10%',
         height: '6%',
-        zIndex: 0
+        zIndex: -2
       }
     });
     return styles.container;
@@ -96,7 +98,6 @@ Shot.propTypes = {
 
 const styles = StyleSheet.create({
   image: {
-    position: 'relative',
     width: '100%',
     height: '100%'
   }
@@ -108,6 +109,10 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Shot);
+const mapDispatchToProps = {
+  removeShot
+};
+
+export default connect(stateMap, mapDispatchToProps)(Shot);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Shot);

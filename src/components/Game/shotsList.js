@@ -1,14 +1,11 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
   View
 } from 'react-native';
-
-import * as AppActions from '../../actions/AppActions';
 
 import Shot from './shot';
 import EnemyShot from './enemyShot';
@@ -21,7 +18,6 @@ class ShotsList extends PureComponent {
       dispatch,
       componentWillReceivePorps
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
@@ -31,7 +27,6 @@ class ShotsList extends PureComponent {
               key={e.id}
               id={e.id}
               position={e.position}
-              removeShot={actions.removeShot}
             /> 
           );
         })}
@@ -42,7 +37,6 @@ class ShotsList extends PureComponent {
               id={e.id}
               positionY={e.positionY}
               positionX={e.positionX}
-              removeEnemyShot={actions.removeEnemyShot}
             /> 
           );
         })}

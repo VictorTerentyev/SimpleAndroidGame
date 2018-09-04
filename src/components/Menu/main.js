@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -14,7 +13,7 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { setDisplay, setPosition, setGameState } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -26,7 +25,6 @@ class MainMenu extends PureComponent {
       brightness: { brightness },
       dispatch
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -210,6 +208,12 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(MainMenu);
+const mapDispatchToProps = {
+  setDisplay,
+  setPosition,
+  setGameState
+};
+
+export default connect(stateMap, mapDispatchToProps)(MainMenu);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => MainMenu);
