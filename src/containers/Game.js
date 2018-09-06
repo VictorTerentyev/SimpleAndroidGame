@@ -14,7 +14,6 @@ import ShipsList from '../components/Game/shipsList';
 import ShotsList from '../components/Game/shotsList';
 import Controller from '../components/Game/controller';
 
-
 import Sound from 'react-native-sound';
 
 class Game extends PureComponent {
@@ -23,12 +22,9 @@ class Game extends PureComponent {
       state: { state },
       hitpoints: { hitpoints },
       position: { position },
-      enemyShips: { enemyShips },
       shots: { shots },
-      enemyShots: { enemyShots },
       display: { display },
       brightness: { brightness },
-      dispatch,
       componentDidMount,
       componentWillReceiveProps
     } = this.props;
@@ -58,7 +54,7 @@ class Game extends PureComponent {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if(nextProps.display === 'flex') {
+    if(['active', 'resumed'].includes(nextProps.state)) {
       this.state.bgMusic.play();
     } else { 
       this.state.bgMusic.pause();
@@ -124,14 +120,11 @@ Game.propTypes = {
   state: PropTypes.string,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
-  enemyShips: PropTypes.array,
   shots: PropTypes.array,
-  enemyShots: PropTypes.array,
   display: PropTypes.string,
   brightness: PropTypes.number,
   setGameState: PropTypes.func,
-  setDisplay: PropTypes.func,
-  dispatch: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -146,9 +139,7 @@ const stateMap = (state) => {
     state: state.simpleAndroidGame.state,
     hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
-    enemyShips: state.simpleAndroidGame.enemyShips,
     shots: state.simpleAndroidGame.shots,
-    enemyShots: state.simpleAndroidGame.enemyShots,
     display: state.simpleAndroidGame.gameDisp,
     brightness: state.simpleAndroidGame.Brightness
   };

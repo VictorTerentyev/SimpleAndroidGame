@@ -16,7 +16,6 @@ class GameBackground extends PureComponent {
     const {
       state: { state },
       brightness: { brightness },
-      dispatch,
       componentWillReceiveProps
     } = this.props;
 
@@ -107,8 +106,7 @@ class GameBackground extends PureComponent {
 
 GameBackground.propTypes = {
   state: PropTypes.string,
-  brightness: PropTypes.number,
-  dispatch: PropTypes.func
+  brightness: PropTypes.number
 }
 
 const styles = StyleSheet.create({

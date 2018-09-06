@@ -8,16 +8,20 @@ import {
   Image,
   Animated,
   Easing,
-  Dimensions
+  Dimensions,
+  AppState
 } from 'react-native';
+
+import { setCurrentShipPosition } from '../../actions/AppActions';
 
 class Ship extends PureComponent {
   render() {
     const {
+      display: { display },
       hitpoints: { hitpoints },
       position: { position },
-      dispatch,
-      componentWillReceiveProps
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
     return (
       <Animated.View
@@ -43,15 +47,25 @@ class Ship extends PureComponent {
     this.state = {
       anim: new Animated.Value(this.props.position),
     };
+    this.state.anim.addListener(({value}) => {
+      this.props.setCurrentShipPosition(value);
+    });
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setBgAnimation(nextProps.position);
+    if (this.props.hitpoints !== 0) {
+      this.setBgAnimation(nextProps.position);
+    }
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeListener(this.state.anim);
   }
 
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
+        display: this.props.display,
         position: 'absolute',
         top: this.props.position,
         left: 0, 
@@ -82,10 +96,12 @@ class Ship extends PureComponent {
 }
 
 Ship.propTypes = {
+  display: PropTypes.string,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
-  dispatch: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func
+  setCurrentShipPosition: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -97,11 +113,16 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    display: state.simpleAndroidGame.shipDisp,
     hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position
   };
 };
 
-export default connect(stateMap)(Ship);
+const mapDispatchToProps = {
+  setCurrentShipPosition
+};
+
+export default connect(stateMap, mapDispatchToProps)(Ship);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Ship);

@@ -16,8 +16,6 @@ import Game from './Game';
 
 class MainContainer extends PureComponent {
   render() {
-    const { dispatch } = this.props;
-
     return (
       <View style={styles.container}>
         <StatusBar hidden/>
@@ -35,10 +33,6 @@ let styles = StyleSheet.create({
     flex: 1
   }
 });
-
-MainContainer.propTypes = {
-  dispatch: PropTypes.func
-}
 
 export default connect()(MainContainer);
 

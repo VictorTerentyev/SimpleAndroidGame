@@ -20,14 +20,13 @@ class ShipsList extends PureComponent {
       hitpoints: { hitpoints },
       position: { position },
       enemyShips: { enemyShips },
-      dispatch,
       componentWillReceiveProps
     } = this.props;
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
         <Ship/>
-        {this.state.enemyShips.map((e) => {
+        {this.props.enemyShips.map((e) => {
           return (
             <EnemyShip
               key={e.id}
@@ -45,36 +44,34 @@ class ShipsList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      enemyShips: this.props.enemyShips,
       loopState: 'deactivated'
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.state === 'active' || nextProps.state === 'resumed') {
+    if (['active', 'resumed'].includes(nextProps.state)) {
       if (this.state.loopState !== 'active') {
-        this.creatEnemyShipLoop();
+        this.createEnemyShipLoop();
         this.setState({loopState: 'active'});
       }
     }
   }
 
-  creatEnemyShipLoop = (value) => {
-    let random = value || Math.random() * (15000 - 12000) + 500;
-    setTimeout(this.creatEnemyShip.bind(this), random);
-    this.setState({enemyShips: this.props.enemyShips});
+  createEnemyShipLoop = (value) => {
+    let random = value || Math.random() * (10000 - 7000) + 500;
+    setTimeout(this.createEnemyShip.bind(this), random);
   }
 
-  creatEnemyShip = () => {
-    let random = Math.random() * (15000 - 12000) + 500;
-    if (this.props.state === 'active' || this.props.state === 'resumed') {
+  createEnemyShip = () => {
+    let random = Math.random() * (10000 - 7000) + 500;
+    if (['active', 'resumed'].includes(this.props.state)) {
       this.props.addEnemyShip({
-        id: this.props.enemyShips.length,
+        id: Date.now(),
         hitpoints: 3,
         positionY: Math.random() * Dimensions.get('window').height,
         positionX: 0
       });
-      this.creatEnemyShipLoop(random);
+      this.createEnemyShipLoop(random);
     } else {
       this.setState({loopState: 'deactivated'});
       return;
@@ -88,7 +85,6 @@ ShipsList.propTypes = {
   position: PropTypes.number,
   enemyShips: PropTypes.array,
   addEnemyShip: PropTypes.func,
-  dispatch: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
 }
 

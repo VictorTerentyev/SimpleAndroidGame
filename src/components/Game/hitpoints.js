@@ -12,7 +12,6 @@ class Hitpoints extends PureComponent {
   render() {
     const {
       hitpoints: { hitpoints },
-      dispatch,
       componentWillReceiveProps
     } = this.props;
 
@@ -57,8 +56,7 @@ class Hitpoints extends PureComponent {
 }
 
 Hitpoints.propTypes = {
-  hitpoints: PropTypes.number,
-  dispatch: PropTypes.func
+  hitpoints: PropTypes.number
 }
 
 const styles = StyleSheet.create({

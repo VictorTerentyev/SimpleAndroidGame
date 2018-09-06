@@ -18,8 +18,8 @@ class Controller extends PureComponent {
   render() {
     const {
       position: { position },
-      shots: { shots },
-      dispatch
+      currentShipPosition: { currentShipPosition },
+      shots: { shots }
     } = this.props;
 
     return (
@@ -45,6 +45,7 @@ class Controller extends PureComponent {
   constructor() {
     super();
     this.state = {
+      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
       shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
     AppState.addEventListener('change', this.handleAppStateChange);
@@ -57,12 +58,10 @@ class Controller extends PureComponent {
         this.props.setPosition(positionY);
         break;
       case 'shoot':
-
         this.checkShotSoundDoublePlay();
-        let middle = Dimensions.get('window').height * 0.9 * 0.07;
         let obj = { 
-          id: this.props.shots.length,
-          position: this.props.position + middle,
+          id: Date.now(),
+          position: this.props.currentShipPosition + this.state.shipYMiddle,
         };
         this.props.addShot(obj);
         break;
@@ -88,10 +87,10 @@ class Controller extends PureComponent {
 
 Controller.propTypes = {
   position: PropTypes.number,
+  currentShipPosition: PropTypes.number,
   shots: PropTypes.array,
   setPosition: PropTypes.func,
-  addShot: PropTypes.func,
-  dispatch: PropTypes.func
+  addShot: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -117,6 +116,7 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     position: state.simpleAndroidGame.position,
+    currentShipPosition: state.simpleAndroidGame.currentShipPosition,
     shots: state.simpleAndroidGame.shots
   };
 };

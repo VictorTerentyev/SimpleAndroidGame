@@ -38,10 +38,24 @@ export function setPosition(position) {
   };
 }
 
+export function setCurrentShipPosition(position) {
+  return {
+    type: types.SET_CURRENT_SHIP_POSITION,
+    position
+  };
+}
+
 export function addShip(ship) {
   return {
     type: types.ADD_SHIP,
     ship
+  };
+}
+
+export function setShipHitpoints(hitpoints) {
+  return {
+    type: types.SET_SHIP_HITPOINTS,
+    hitpoints
   };
 }
 
@@ -84,5 +98,19 @@ export function removeEnemyShot(id) {
   return {
     type: types.REMOVE_ENEMY_SHOT,
     id
+  };
+}
+
+export function setScore(score) {
+  return {
+    type: types.SET_SCORE,
+    score
+  };
+}
+
+export function setControllerState(state) {
+  return {
+    type: types.SET_CONTROLLER_STATE,
+    state
   };
 }

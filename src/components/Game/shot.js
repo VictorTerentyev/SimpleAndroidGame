@@ -15,14 +15,16 @@ import { removeShot } from '../../actions/AppActions';
 
 class Shot extends PureComponent {
   render() {
-    const { dispatch } = this.props;
+    const {
+
+    } = this.props
 
     return (
       <Animated.View
         style={[
           this.setDisplay(),
           {
-            right: this.state.shotPosAnim
+            left: this.state.shotPosAnim
           }
         ]}
       >
@@ -31,7 +33,7 @@ class Shot extends PureComponent {
             styles.image,
             {transform: [{translateX: this.state.shotBgAnim}]}
           ]}
-          source={this.setBgSource()}
+          source={{uri: 'blue_shot'}}
           resizeMode="cover"
         />
       </Animated.View>
@@ -42,7 +44,6 @@ class Shot extends PureComponent {
     super(props);
     this.state = {
       display: 'flex',
-      source: {uri: 'blue_shot'},
       shotPosAnim: new Animated.Value(0),
       shotBgAnim: new Animated.Value(0)
     };
@@ -55,8 +56,7 @@ class Shot extends PureComponent {
         position: 'absolute',
         top: this.props.position,
         width: '10%',
-        height: '6%',
-        zIndex: -2
+        height: '6%'
       }
     });
     return styles.container;
@@ -84,16 +84,16 @@ class Shot extends PureComponent {
     ],
     {
       useNativeDriver: true
-    }).start();
-    setTimeout(() => {
-      this.props.removeShot(this.props.id);
-    }, 2500);
+    }).start(() => this.props.removeShot(this.props.id));
+  }
+
+  checkDamage = (positionX) => {
+
   }
 }
 
 Shot.propTypes = {
-  removeShot: PropTypes.func,
-  dispatch: PropTypes.func
+  removeShot: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-
+    
   };
-};
+}
 
 const mapDispatchToProps = {
   removeShot

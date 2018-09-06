@@ -26,8 +26,7 @@ class AudioSettings extends PureComponent {
       effects: { effects },
       music: { music },
       video: { video },
-      componentWillReceiveProps,
-      dispatch 
+      componentWillReceiveProps
     } = this.props;
 
     return (
@@ -176,8 +175,7 @@ AudioSettings.propTypes = {
   effects: PropTypes.number,
   video: PropTypes.number,
   setDisplay: PropTypes.func,
-  setSetting: PropTypes.func,
-  dispatch: PropTypes.func
+  setSetting: PropTypes.func
 }
 
 const styles = StyleSheet.create({

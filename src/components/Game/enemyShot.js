@@ -11,18 +11,22 @@ import {
   Easing
 } from 'react-native';
 
-import { removeEnemyShot } from '../../actions/AppActions';
+import { setDisplay, setShipHitpoints, removeEnemyShot } from '../../actions/AppActions';
 
 class EnemyShot extends PureComponent {
   render() {
-    const { dispatch } = this.props;
+    const {
+      hitpoints: { hitpoints },
+      currentShipPosition: { currentShipPosition },
+      componentWillUnmount
+    } = this.props;
 
     return (
       <Animated.View
         style={[
           this.setDisplay(),
           {
-            left: this.state.shotPosAnim
+            right: this.state.shotPosAnim
           }
         ]}
       >
@@ -31,7 +35,7 @@ class EnemyShot extends PureComponent {
             styles.image,
             {transform: [{translateX: this.state.shotBgAnim}]}
           ]}
-          source={this.setBgSource()}
+          source={{uri: 'red_shot'}}
           resizeMode="cover"
         />
       </Animated.View>
@@ -42,11 +46,20 @@ class EnemyShot extends PureComponent {
     super(props);
     this.state = {
       display: 'flex',
-      source: {uri: 'red_shot'},
+      screenWidth: Dimensions.get('window').width,
+      shipWidth: Dimensions.get('window').width * 0.9,
+      shipHeight: this.props.currentShipPosition + Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0)
     };
     this.setBgAnimation();
+    this.state.shotPosAnim.addListener(({value}) => {
+      this.checkDamage(value);
+    });
+  }
+
+  componentWillUnmount = () => {
+
   }
 
   setDisplay = () => {
@@ -54,24 +67,22 @@ class EnemyShot extends PureComponent {
       container: {
         position: 'absolute',
         top: this.props.positionY,
-        left: this.props.positionX,
         width: '10%',
-        height: '6%',
-        zIndex: -2
+        height: '6%'
       }
     });
     return styles.container;
   }
 
   setBgAnimation = () => {
-    let value = Dimensions.get('window').width + 200 + this.props.positionX;
+    let value = this.state.screenWidth + 200 + this.props.positionX;
     Animated.parallel([
       Animated.timing(
         this.state.shotPosAnim,
         {
           toValue: value,
-          duration: 2000,
-          easing: Easing.ease,
+          duration: 1000,
+          easing: Easing.linear,
         }
       ),
       Animated.timing(
@@ -85,16 +96,32 @@ class EnemyShot extends PureComponent {
     ],
     {
       useNativeDriver: true
-    }).start();
-    setTimeout(() => {
-      this.props.removeEnemyShot(this.props.id);
-    }, 2500);
+    }).start(() => this.props.removeEnemyShot(this.props.id));
+  }
+
+  checkDamage = (positionX) => {
+    if (positionX >= this.state.shipWidth && positionX <= Dimensions.get('window').width) {
+      if (this.props.positionY >= this.props.currentShipPosition && this.props.positionY <= this.state.shipHeight) {
+        if (this.props.hitpoints > 1) {
+          this.props.removeEnemyShot(this.props.id);
+          this.props.setShipHitpoints(this.props.hitpoints - 1);
+        }
+        else {
+          this.props.setDisplay('shipDisp', 'none');
+          this.props.setShipHitpoints(0);
+        }
+      }
+    }
   }
 }
 
 EnemyShot.propTypes = {
+  hitpoints: PropTypes.number,
+  currentShipPosition: PropTypes.number,
+  setDisplay: PropTypes.func,
+  setShipHitpoints: PropTypes.func,
   removeEnemyShot: PropTypes.func,
-  dispatch: PropTypes.func
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -106,11 +133,14 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-
+    hitpoints: state.simpleAndroidGame.hitpoints,
+    currentShipPosition: state.simpleAndroidGame.currentShipPosition
   };
-};
+}
 
 const mapDispatchToProps = {
+  setDisplay,
+  setShipHitpoints,
   removeEnemyShot
 };
 

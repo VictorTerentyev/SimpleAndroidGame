@@ -15,13 +15,12 @@ class ShotsList extends PureComponent {
     const {
       shots: { shots },
       enemyShots: { enemyShots },
-      dispatch,
       componentWillReceivePorps
     } = this.props;
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
-        {Object.values(this.state.shots).map((e) => {
+        {this.props.shots.map((e) => {
           return (
             <Shot 
               key={e.id}
@@ -30,9 +29,9 @@ class ShotsList extends PureComponent {
             /> 
           );
         })}
-        {Object.values(this.state.enemyShots).map((e) => {
+        {this.props.enemyShots.map((e) => {
           return (
-            <Shot 
+            <EnemyShot 
               key={e.id}
               id={e.id}
               positionY={e.positionY}
@@ -47,8 +46,7 @@ class ShotsList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      shots: this.props.shots,
-      enemyShots: this.props.enemyShots
+      
     }
   }
 
@@ -62,8 +60,7 @@ class ShotsList extends PureComponent {
 
 ShotsList.propTypes = {
   shots: PropTypes.array,
-  enemyShots: PropTypes.array,
-  dispatch: PropTypes.func
+  enemyShots: PropTypes.array
 }
 
 const styles = StyleSheet.create({
@@ -72,7 +69,8 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0
+    bottom: 0,
+    zIndex: -1
   }
 });
 

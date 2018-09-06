@@ -27,8 +27,7 @@ class Menu extends PureComponent {
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
-      componentWillReceiveProps,
-      dispatch
+      componentWillReceiveProps
     } = this.props;
 
     return (
@@ -121,7 +120,6 @@ Menu.propTypes = {
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
-  dispatch: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
 }
 

@@ -20,8 +20,7 @@ class Intro extends PureComponent {
       display: { display },
       brightness: { brightness },
       volume: { volume },
-      video: { video },
-      dispatch
+      video: { video }
     } = this.props;
 
     return (
@@ -99,8 +98,7 @@ Intro.propTypes = {
   volume: PropTypes.number,
   video: PropTypes.number,
   videoPlay: PropTypes.func,
-  setDisplay: PropTypes.func,
-  dispatch: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({

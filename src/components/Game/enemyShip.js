@@ -9,8 +9,7 @@ import {
   Animated,
   Easing,
   Dimensions,
-  UIManager,
-  findNodeHandle
+  AppState
 } from 'react-native';
 
 import EnemyShot from './enemyShot';
@@ -20,11 +19,12 @@ import { removeEnemyShip, addEnemyShot } from '../../actions/AppActions';
 class EnemyShip extends PureComponent {
   render() {
     const {
+      state: { state },
       enemyShips: { enemyShips },
       enemyShots: { enemyShots },
-      dispatch,
       componentDidMount,
-      componentWillReceiveProps
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
     
     return (
@@ -50,44 +50,51 @@ class EnemyShip extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      measurements: {},
+      exist: true,
+      random: Math.random() * (10000 - 9000) + 200,
+      loopState: 'deactivated',
+      positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
+      positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
       anim: new Animated.Value(this.props.positionX)
     };
+    this.state.anim.addListener(({value}) => this.positionX = value);
   }
 
   componentDidMount = () => {
     this.setEnemyShipAnimation();
-    this.addEnemyShotLoop();
+    if (this.state.loopState !== 'active') {
+      this.createEnemyShotLoop();
+      this.setState({loopState: 'active'});
+    }
   }
 
   componentWillReceiveProps = (nextProps) => {
     
   }
 
-  addEnemyShotLoop = () => {
-    let context = this;
-    let random = Math.random() * (10000 - 7000) + 500;
-    (function loop() {
-        let random = Math.random() * (10000 - 7000) + 500;
-        setTimeout(function() {
-        if (context.props.state === 'active' || context.props.state === 'resumed') {
-          context.measure();
-          let middle = Dimensions.get('window').height * 0.9 * 0.07;
-          let obj = { 
-            id: context.props.enemyShots.length,
-            positionY: context.props.enemyShips[context.props.id].positionY + middle,
-            positionX: context.state.measurements.fx
-          };
-          context.props.addEnemyShot(obj);
-        }
-      }, random);
-    }());
+  componentWillUnmount = () => {
+    clearTimeout(this.timerHandle);
+    AppState.removeListener(this.positionX);
   }
 
-  measure = () => {
-    UIManager.measure(findNodeHandle(this.ship), (x, y, width, height, fx, fy) => 
-      this.setState({measurements: { x, y, width, height, fx, fy }})
-    )
+  createEnemyShotLoop = (value) => {
+    this.setState({random: value || Math.random() * (10000 - 9000) + 500});
+    this.timerHandle = setTimeout(this.createEnemyShot.bind(this), this.state.random);
+  }
+
+  createEnemyShot = () => {
+    let random = Math.random() * (10000 - 9000) + 500;
+    if (['active', 'resumed'].includes(this.props.state) && this.state.exist === true) {
+      this.props.addEnemyShot({ 
+        id: Date.now(),
+        positionY: this.props.positionY + this.state.positionYMiddle,
+        positionX: this.positionX + this.state.positionXMiddle
+      });
+      this.createEnemyShotLoop(random);
+    } else {
+      this.setState({loopState: 'deactivated'});
+      return;
+    }
   }
 
   setDisplay = () => {
@@ -110,26 +117,23 @@ class EnemyShip extends PureComponent {
         this.state.anim,
         {
           toValue: position,
-          duration: 2000,
+          duration: 3000,
           easing: Easing.linear,
         }
       )
     ],
     {
       useNativeDriver: true
-    }).start();
-    setTimeout(() => {
-      this.props.removeEnemyShip(this.props.id);
-    }, 3000)
+    }).start(() => {this.props.removeEnemyShip(this.props.id)});
   }
 }
 
 EnemyShip.propTypes = {
+  state: PropTypes.string,
   enemyShips: PropTypes.array,
   enemyShots: PropTypes.array,
   removeEnemyShip: PropTypes.func,
   addEnemyShot: PropTypes.func,
-  dispatch: PropTypes.func,
   componentDidMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
 }
@@ -143,6 +147,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    state: state.simpleAndroidGame.state,
     enemyShips: state.simpleAndroidGame.enemyShips,
     enemyShots: state.simpleAndroidGame.enemyShots
   };

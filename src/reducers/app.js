@@ -10,6 +10,7 @@ const initialState = {
   menuPause: true,
   introDisp: 'flex',
   gameDisp: 'none',
+  shipDisp: 'flex',
   menuDisp: 'none',
   mainDisp: 'none',
   settingsDisp: 'none',
@@ -27,10 +28,12 @@ const initialState = {
   state: 'deactivated',
   hitpoints: 3,
   position: 0,
+  currentShipPosition: 0,
   shots: [],
   enemyShips: [],
   enemyShots: [],
-  score: 0
+  score: 0,
+  controllerState: 'deactivated'
 }
 
 export default function simpleAndroidGame (state = initialState, action) {
@@ -61,59 +64,92 @@ export default function simpleAndroidGame (state = initialState, action) {
         state: action.state || initialState.state
       })
 
-    case types.SET_POSITION:  
+    case types.SET_POSITION:
       return ({
         ...state,
         position: action.position
       })
 
-    case types.ADD__SHIP:
+    case types.SET_CURRENT_SHIP_POSITION:  
+      return ({
+        ...state,
+        currentShipPosition: action.position
+      })
+
+    case types.ADD_SHIP:
       return ({
         ...state,
         hitpoints: action.hitpoints || initialState.hitpoints,
         position: action.position || initialState.position
       })
 
-    case types.ADD_ENEMY_SHIP:
-      state.enemyShips.push(action.ship);
+    case types.SET_SHIP_HITPOINTS:
       return ({
         ...state,
-        enemyShips: state.enemyShips
+        hitpoints: action.hitpoints
+      })
+
+    case types.ADD_ENEMY_SHIP:
+      return ({
+        ...state,
+        enemyShips: [
+          ...state.enemyShips,
+          action.ship
+        ]
       })
 
     case types.ADD_SHOT:
-      state.shots.push(action.shot);
       return ({
         ...state,
-        shots: state.shots
+        shots: [
+          ...state.shots,
+          action.shot
+        ]
       })
 
     case types.ADD_ENEMY_SHOT:
-      state.enemyShots.push(action.shot);
       return ({
         ...state,
-        enemyShots: state.enemyShots
+        enemyShots: [
+          ...state.enemyShots,
+          action.shot
+        ]
       })
 
     case types.REMOVE_ENEMY_SHIP:
-      delete state.enemyShips[action.id]  
       return ({
         ...state,
-        enemyShips: state.enemyShips
+        enemyShips: [
+          ...state.enemyShips.filter(e => e.id !== action.id)
+        ]
       })
 
     case types.REMOVE_SHOT:
-      delete state.shots[action.id];  
       return ({
         ...state,
-        shots: state.shots
+        shots: [
+          ...state.shots.filter(e => e.id !== action.id)
+        ]
       })
 
-    case types.REMOVE_ENEMY_SHOT:
-      delete state.enemyShots[action.id];  
+    case types.REMOVE_ENEMY_SHOT: 
       return ({
         ...state,
-        enemyShots: state.enemyShots
+        enemyShots: [
+          ...state.enemyShots.filter(e => e.id !== action.id)
+        ]
+      })
+
+    case types.SET_SCORE:
+      return ({
+        ...state,
+        score: action.score
+      })
+
+    case types.SET_CONTROLLER_STATE:
+      return ({
+        ...state,
+        controllerState: action.state
       })
 
     default:
