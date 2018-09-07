@@ -11,12 +11,12 @@ import {
   Easing
 } from 'react-native';
 
-import { removeShot } from '../../actions/AppActions';
+import { removeShot, setEnemyShipProp, removeEnemyShip } from '../../actions/AppActions';
 
 class Shot extends PureComponent {
   render() {
     const {
-
+      enemyShips: { enemyShips }
     } = this.props
 
     return (
@@ -44,10 +44,17 @@ class Shot extends PureComponent {
     super(props);
     this.state = {
       display: 'flex',
+      screenWidth: Dimensions.get('window').width,
+      shotWidth: Dimensions.get('window').width * 0.9,
+      shipWidth: Dimensions.get('window').width * 0.9,
+      shipHeight: Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(0),
       shotBgAnim: new Animated.Value(0)
     };
     this.setBgAnimation();
+    this.state.shotPosAnim.addListener(({value}) => {
+      this.checkDamage(value);
+    });
   }
 
   setDisplay = () => {
@@ -63,7 +70,7 @@ class Shot extends PureComponent {
   }
 
   setBgAnimation = () => {
-    let value = Dimensions.get('window').width + 200;
+    let value = this.state.screenWidth + 200;
     Animated.parallel([
       Animated.timing(
         this.state.shotPosAnim,
@@ -88,12 +95,35 @@ class Shot extends PureComponent {
   }
 
   checkDamage = (positionX) => {
-
+    this.props.enemyShips.forEach((e) => {
+      //shot and ship cords
+      let shotRight = this.state.screenWidth - positionX + this.state.shotWidth;
+      let shotTop = this.props.positionY;
+      let shipLeft = e.currentPosition;
+      let shipRight = e.currentPosition + this.state.shipWidth;
+      let shipTop = e.positionY;
+      let shipBottom = e.positionY + this.state.shipHeight;
+      //check positions
+      if ( shotRight >= shipLeft && shotRight <= shipRight) {
+        if (shotTop >= shipTop && shotTop <= shipBottom) {
+          this.props.removeShot(this.props.id);
+          if (e.hitpoints > 0) {
+            this.props.setEnemyShipProp(e, 'hitpoints', e.hitpoints--);
+          }
+          else {
+            this.props.removeEnemyShip(e.id);
+          }
+        }
+      }
+    });
   }
 }
 
 Shot.propTypes = {
-  removeShot: PropTypes.func
+  enemyShips: PropTypes.array,
+  removeShot: PropTypes.func,
+  setEnemyShipProp: PropTypes.func,
+  removeEnemyShip: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -105,12 +135,14 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    
+    enemyShips: state.simpleAndroidGame.enemyShips
   };
 }
 
 const mapDispatchToProps = {
-  removeShot
+  removeShot,
+  setEnemyShipProp,
+  removeEnemyShip
 };
 
 export default connect(stateMap, mapDispatchToProps)(Shot);

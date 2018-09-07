@@ -29,7 +29,7 @@ class ShipsList extends PureComponent {
         {this.props.enemyShips.map((e) => {
           return (
             <EnemyShip
-              key={e.id}
+              key={e.key}
               id={e.id}
               health={e.health}
               positionY={e.positionY}
@@ -66,10 +66,12 @@ class ShipsList extends PureComponent {
     let random = Math.random() * (10000 - 7000) + 500;
     if (['active', 'resumed'].includes(this.props.state)) {
       this.props.addEnemyShip({
+        key: Date.now(),
         id: Date.now(),
         hitpoints: 3,
         positionY: Math.random() * Dimensions.get('window').height,
-        positionX: 0
+        positionX: 0,
+        currentPosition: 0
       });
       this.createEnemyShipLoop(random);
     } else {

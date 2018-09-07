@@ -76,6 +76,19 @@ export default function simpleAndroidGame (state = initialState, action) {
         currentShipPosition: action.position
       })
 
+    case types.SET_ENEMY_SHIP_PROP:
+      let index = state.enemyShips.indexOf(action.ship);
+      console.log(state.enemyShips)
+      return Object.assign({}, state, {
+        enemyShips: 
+          state.enemyShips.slice(0, index)
+          .concat([{
+            ...state.enemyShips[index],
+            [action.prop]: action.value,
+          }])
+          .concat(state.enemyShips.slice(index + 1))
+      })
+
     case types.ADD_SHIP:
       return ({
         ...state,

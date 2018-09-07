@@ -14,7 +14,7 @@ import {
 
 import EnemyShot from './enemyShot';
 
-import { removeEnemyShip, addEnemyShot } from '../../actions/AppActions';
+import { setEnemyShipProp, removeEnemyShip, addEnemyShot } from '../../actions/AppActions';
 
 class EnemyShip extends PureComponent {
   render() {
@@ -57,7 +57,17 @@ class EnemyShip extends PureComponent {
       positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
       anim: new Animated.Value(this.props.positionX)
     };
-    this.state.anim.addListener(({value}) => this.positionX = value);
+    this.state.anim.addListener(({value}) => {
+      let ship = {
+        id: this.props.id,
+        hitpoints: this.props.hitpoints,
+        positionY: this.props.positionY,
+        positionX: this.props.positionX,
+        currentPosition: this.props.currentPosition
+      }
+      this.positionX = value;
+      this.props.setEnemyShipProp(ship, 'currentPosition', this.positionX);
+    });
   }
 
   componentDidMount = () => {
@@ -132,6 +142,7 @@ EnemyShip.propTypes = {
   state: PropTypes.string,
   enemyShips: PropTypes.array,
   enemyShots: PropTypes.array,
+  setEnemyShipProp: PropTypes.func,
   removeEnemyShip: PropTypes.func,
   addEnemyShot: PropTypes.func,
   componentDidMount: PropTypes.func,
@@ -154,6 +165,7 @@ const stateMap = (state) => {
 };
 
 const mapDispatchToProps = {
+  setEnemyShipProp,
   removeEnemyShip,
   addEnemyShot
 };

@@ -70,8 +70,7 @@ class Ship extends PureComponent {
         top: this.props.position,
         left: 0, 
         width: '10%',
-        height: '20%',
-        zIndex: 0
+        height: '20%'
       }
     });
     return styles.container;

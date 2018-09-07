@@ -66,6 +66,15 @@ export function addEnemyShip(ship) {
   };
 }
 
+export function setEnemyShipProp(ship, prop, value) {
+  return {
+    type: types.SET_ENEMY_SHIP_PROP,
+    ship,
+    prop,
+    value
+  }
+}
+
 export function addShot(shot) {
   return {
     type: types.ADD_SHOT,

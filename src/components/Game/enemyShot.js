@@ -48,7 +48,7 @@ class EnemyShot extends PureComponent {
       display: 'flex',
       screenWidth: Dimensions.get('window').width,
       shipWidth: Dimensions.get('window').width * 0.9,
-      shipHeight: this.props.currentShipPosition + Dimensions.get('window').height * 0.2,
+      shipBottom: this.props.currentShipPosition + Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0)
     };
@@ -100,10 +100,18 @@ class EnemyShot extends PureComponent {
   }
 
   checkDamage = (positionX) => {
-    if (positionX >= this.state.shipWidth && positionX <= Dimensions.get('window').width) {
-      if (this.props.positionY >= this.props.currentShipPosition && this.props.positionY <= this.state.shipHeight) {
+    //shot and ship cords
+      let shotLeft = positionX;
+      let shotTop = this.props.positionY;
+      let shipRight = this.state.shipWidth;
+      let shipLeft = this.state.screenWidth;
+      let shipTop = this.props.currentShipPosition;
+      let shipBottom = this.state.shipBottom;
+    //check positions
+    if (shotLeft >= shipRight && shotLeft <= shipLeft) {
+      if (shotTop >= shipTop && shotTop <= shipBottom) {
+        this.props.removeEnemyShot(this.props.id);
         if (this.props.hitpoints > 1) {
-          this.props.removeEnemyShot(this.props.id);
           this.props.setShipHitpoints(this.props.hitpoints - 1);
         }
         else {
