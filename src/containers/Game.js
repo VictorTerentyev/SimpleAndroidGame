@@ -20,9 +20,6 @@ class Game extends PureComponent {
   render() {
     const {
       state: { state },
-      hitpoints: { hitpoints },
-      position: { position },
-      shots: { shots },
       display: { display },
       brightness: { brightness },
       componentDidMount,

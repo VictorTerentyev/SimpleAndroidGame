@@ -10,7 +10,10 @@ import {
   AppState
 } from 'react-native';
 
-import { setPosition, addShot } from '../../actions/AppActions';
+import {
+  setPosition,
+  addShot
+} from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -18,7 +21,7 @@ class Controller extends PureComponent {
   render() {
     const {
       position: { position },
-      currentShipPosition: { currentShipPosition },
+      currentPosition: { currentPosition },
       shots: { shots }
     } = this.props;
 
@@ -59,9 +62,9 @@ class Controller extends PureComponent {
         break;
       case 'shoot':
         this.checkShotSoundDoublePlay();
-        let obj = { 
+        let obj = {
           id: Date.now(),
-          position: this.props.currentShipPosition + this.state.shipYMiddle,
+          positionY: this.props.currentPosition + this.state.shipYMiddle,
         };
         this.props.addShot(obj);
         break;
@@ -87,7 +90,7 @@ class Controller extends PureComponent {
 
 Controller.propTypes = {
   position: PropTypes.number,
-  currentShipPosition: PropTypes.number,
+  currentPosition: PropTypes.number,
   shots: PropTypes.array,
   setPosition: PropTypes.func,
   addShot: PropTypes.func
@@ -116,7 +119,7 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     position: state.simpleAndroidGame.position,
-    currentShipPosition: state.simpleAndroidGame.currentShipPosition,
+    currentPosition: state.simpleAndroidGame.currentPosition,
     shots: state.simpleAndroidGame.shots
   };
 };

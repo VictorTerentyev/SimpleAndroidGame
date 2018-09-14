@@ -13,7 +13,12 @@ import {
   AppState
 } from 'react-native';
 
-import { setDisplay, setPosition, setGameState } from '../../actions/AppActions';
+import {
+  setDisplay,
+  setPosition,
+  setGameState,
+  setGameInitialState
+} from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -85,6 +90,7 @@ class MainMenu extends PureComponent {
       case 'Start':
         switch (this.props.state) {
           case 'deactivated':
+            this.props.setGameInitialState();
             this.props.setPosition(Dimensions.get('window').height * 0.30);
             this.props.setGameState('active');
             break;
@@ -94,7 +100,9 @@ class MainMenu extends PureComponent {
             break;
         }
         this.props.setDisplay('menuDisp', 'none');
+        this.props.setDisplay('mainDisp', 'none');
         this.props.setDisplay('gameDisp', 'flex');
+        this.props.setDisplay('shipDisp', 'flex');
         break;
       case 'Settings':
         this.props.setDisplay('settingsDisp', 'flex');
@@ -165,6 +173,7 @@ MainMenu.propTypes = {
   display: PropTypes.string,
   brightness: PropTypes.number,
   setGameState: PropTypes.func,
+  setGameInitialState: PropTypes.func,
   setDisplay: PropTypes.func,
   setPosition: PropTypes.func,
   dispatch: PropTypes.func
@@ -211,7 +220,8 @@ const stateMap = (state) => {
 const mapDispatchToProps = {
   setDisplay,
   setPosition,
-  setGameState
+  setGameState,
+  setGameInitialState
 };
 
 export default connect(stateMap, mapDispatchToProps)(MainMenu);

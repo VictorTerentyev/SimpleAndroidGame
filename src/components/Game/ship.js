@@ -12,7 +12,7 @@ import {
   AppState
 } from 'react-native';
 
-import { setCurrentShipPosition } from '../../actions/AppActions';
+import { setShipCurrentPosition } from '../../actions/AppActions';
 
 class Ship extends PureComponent {
   render() {
@@ -48,7 +48,7 @@ class Ship extends PureComponent {
       anim: new Animated.Value(this.props.position),
     };
     this.state.anim.addListener(({value}) => {
-      this.props.setCurrentShipPosition(value);
+      this.props.setShipCurrentPosition(value);
     });
   }
 
@@ -98,7 +98,7 @@ Ship.propTypes = {
   display: PropTypes.string,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
-  setCurrentShipPosition: PropTypes.func,
+  setShipCurrentPosition: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
 }
@@ -119,7 +119,7 @@ const stateMap = (state) => {
 };
 
 const mapDispatchToProps = {
-  setCurrentShipPosition
+  setShipCurrentPosition
 };
 
 export default connect(stateMap, mapDispatchToProps)(Ship);

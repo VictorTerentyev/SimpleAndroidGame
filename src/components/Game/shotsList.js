@@ -25,7 +25,7 @@ class ShotsList extends PureComponent {
             <Shot 
               key={e.id}
               id={e.id}
-              position={e.position}
+              positionY={e.positionY}
             /> 
           );
         })}

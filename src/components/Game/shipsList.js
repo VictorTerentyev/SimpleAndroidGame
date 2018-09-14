@@ -8,7 +8,12 @@ import {
   View
 } from 'react-native';
 
-import { addShip, addEnemyShip } from '../../actions/AppActions';
+import {
+  addShip,
+  addEnemyShip,
+  addEnemyShipHitpoints,
+  addEnemyShipCurrentPosition
+} from '../../actions/AppActions';
 
 import Ship from './ship';
 import EnemyShip from './enemyShip';
@@ -29,7 +34,7 @@ class ShipsList extends PureComponent {
         {this.props.enemyShips.map((e) => {
           return (
             <EnemyShip
-              key={e.key}
+              key={e.id}
               id={e.id}
               health={e.health}
               positionY={e.positionY}
@@ -65,13 +70,13 @@ class ShipsList extends PureComponent {
   createEnemyShip = () => {
     let random = Math.random() * (10000 - 7000) + 500;
     if (['active', 'resumed'].includes(this.props.state)) {
+      let id = Date.now();
+      this.props.addEnemyShipHitpoints({ id: id, hitpoints: 3});
+      this.props.addEnemyShipCurrentPosition({ id: id, currentPosition: 0});
       this.props.addEnemyShip({
-        key: Date.now(),
-        id: Date.now(),
-        hitpoints: 3,
+        id: id,
         positionY: Math.random() * Dimensions.get('window').height,
-        positionX: 0,
-        currentPosition: 0
+        positionX: 0
       });
       this.createEnemyShipLoop(random);
     } else {
@@ -87,6 +92,8 @@ ShipsList.propTypes = {
   position: PropTypes.number,
   enemyShips: PropTypes.array,
   addEnemyShip: PropTypes.func,
+  addEnemyShipHitpoints: PropTypes.func,
+  addEnemyShipCurrentPosition: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
 }
 
@@ -111,7 +118,9 @@ const stateMap = (state) => {
 
 const mapDispatchToProps = {
   addShip,
-  addEnemyShip
+  addEnemyShip,
+  addEnemyShipHitpoints,
+  addEnemyShipCurrentPosition
 };
 
 export default connect(stateMap, mapDispatchToProps)(ShipsList);

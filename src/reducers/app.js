@@ -1,4 +1,5 @@
 import * as types from '../constants/ActionTypes';
+
 import NVidia from '../../assets/videos/nvidia.mp4';
 import AMD from '../../assets/videos/amd.mp4';
 import UE4 from '../../assets/videos/ue4.mp4';
@@ -28,9 +29,11 @@ const initialState = {
   state: 'deactivated',
   hitpoints: 3,
   position: 0,
-  currentShipPosition: 0,
+  currentPosition: 0,
   shots: [],
   enemyShips: [],
+  enemyShipsCurrentPositions: [],
+  enemyShipsHitpoints: [],
   enemyShots: [],
   score: 0,
   controllerState: 'deactivated'
@@ -64,29 +67,63 @@ export default function simpleAndroidGame (state = initialState, action) {
         state: action.state || initialState.state
       })
 
+    case types.SET_GAME_INITIAL_STATE:
+      return ({
+        ...state,
+        hitpoints: 3,
+        currentPosition: 0,
+        shots: [],
+        enemyShips: [],
+        enemyShipsCurrentPositions: [],
+        enemyShipsHitpoints: [],
+        enemyShots: [],
+        score: 0,
+        controllerState: 'deactivated'
+      })
+
     case types.SET_POSITION:
       return ({
         ...state,
         position: action.position
       })
 
-    case types.SET_CURRENT_SHIP_POSITION:  
+    case types.SET_SHIP_HITPOINTS:
       return ({
         ...state,
-        currentShipPosition: action.position
+        hitpoints: action.hitpoints
       })
 
-    case types.SET_ENEMY_SHIP_PROP:
-      let index = state.enemyShips.indexOf(action.ship);
-      console.log(state.enemyShips)
-      return Object.assign({}, state, {
-        enemyShips: 
-          state.enemyShips.slice(0, index)
-          .concat([{
-            ...state.enemyShips[index],
-            [action.prop]: action.value,
-          }])
-          .concat(state.enemyShips.slice(index + 1))
+
+    case types.SET_SHIP_CURRENT_POSITION:  
+      return ({
+        ...state,
+        currentPosition: action.position
+      })
+
+    case types.SET_ENEMY_SHIP_HITPOINTS:
+      return ({
+        ...state,
+        enemyShipsHitpoints: [
+          ...state.enemyShipsHitpoints.filter((e) => {
+            if (e.id === action.id) {
+              e.hitpoints = action.hitpoints;
+            }
+            return e;
+          })
+        ]
+      })
+
+    case types.SET_ENEMY_SHIP_CURRENT_POSITION:
+      return ({
+        ...state,
+        enemyShipsCurrentPositions: [
+          ...state.enemyShipsCurrentPositions.filter((e) => {
+            if (e.id === action.id) {
+              e.currentPosition = action.position;
+            }
+            return e;
+          })
+        ]
       })
 
     case types.ADD_SHIP:
@@ -96,18 +133,30 @@ export default function simpleAndroidGame (state = initialState, action) {
         position: action.position || initialState.position
       })
 
-    case types.SET_SHIP_HITPOINTS:
-      return ({
-        ...state,
-        hitpoints: action.hitpoints
-      })
-
     case types.ADD_ENEMY_SHIP:
       return ({
         ...state,
         enemyShips: [
           ...state.enemyShips,
           action.ship
+        ]
+      })
+
+    case types.ADD_ENEMY_SHIP_HITPOINTS:
+      return ({
+        ...state,
+        enemyShipsHitpoints: [
+          ...state.enemyShipsHitpoints,
+          action.hitpoints
+        ]
+      })
+
+    case types.ADD_ENEMY_SHIP_CURRENT_POSITION:
+      return ({
+        ...state,
+        enemyShipsCurrentPositions: [
+          ...state.enemyShipsCurrentPositions,
+          action.position
         ]
       })
 
@@ -134,6 +183,22 @@ export default function simpleAndroidGame (state = initialState, action) {
         ...state,
         enemyShips: [
           ...state.enemyShips.filter(e => e.id !== action.id)
+        ]
+      })
+
+    case types.REMOVE_ENEMY_SHIP_HITPOINTS:
+      return ({
+        ...state,
+        enemyShipsHitpoints: [
+          ...state.enemyShipsHitpoints.filter(e => e.id !== action.id)
+        ]
+      })
+
+    case types.REMOVE_ENEMY_SHIP_CURRENT_POSITION:
+      return ({
+        ...state,
+        enemyShipsCurrentPositions: [
+          ...state.enemyShipsCurrentPositions.filter(e => e.id !== action.id)
         ]
       })
 

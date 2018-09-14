@@ -31,6 +31,12 @@ export function setGameState(state) {
   };
 }
 
+export function setGameInitialState() {
+  return {
+    type: types.SET_GAME_INITIAL_STATE
+  };
+}
+
 export function setPosition(position) {
   return {
     type: types.SET_POSITION,
@@ -38,9 +44,32 @@ export function setPosition(position) {
   };
 }
 
-export function setCurrentShipPosition(position) {
+export function setShipHitpoints(hitpoints) {
   return {
-    type: types.SET_CURRENT_SHIP_POSITION,
+    type: types.SET_SHIP_HITPOINTS,
+    hitpoints
+  };
+}
+
+export function setShipCurrentPosition(position) {
+  return {
+    type: types.SET_SHIP_CURRENT_POSITION,
+    position
+  };
+}
+
+export function setEnemyShipHitpoints(id, hitpoints) {
+  return {
+    type: types.SET_ENEMY_SHIP_HITPOINTS,
+    id,
+    hitpoints
+  };
+}
+
+export function setEnemyShipCurrentPosition(id, position) {
+  return {
+    type: types.SET_ENEMY_SHIP_CURRENT_POSITION,
+    id,
     position
   };
 }
@@ -52,13 +81,6 @@ export function addShip(ship) {
   };
 }
 
-export function setShipHitpoints(hitpoints) {
-  return {
-    type: types.SET_SHIP_HITPOINTS,
-    hitpoints
-  };
-}
-
 export function addEnemyShip(ship) {
   return {
     type: types.ADD_ENEMY_SHIP,
@@ -66,13 +88,18 @@ export function addEnemyShip(ship) {
   };
 }
 
-export function setEnemyShipProp(ship, prop, value) {
+export function addEnemyShipHitpoints(hitpoints) {
   return {
-    type: types.SET_ENEMY_SHIP_PROP,
-    ship,
-    prop,
-    value
-  }
+    type: types.ADD_ENEMY_SHIP_HITPOINTS,
+    hitpoints
+  };
+}
+
+export function addEnemyShipCurrentPosition(position) {
+  return {
+    type: types.ADD_ENEMY_SHIP_CURRENT_POSITION,
+    position
+  };
 }
 
 export function addShot(shot) {
@@ -92,6 +119,20 @@ export function addEnemyShot(shot) {
 export function removeEnemyShip(id) {
   return {
     type: types.REMOVE_ENEMY_SHIP,
+    id
+  };
+}
+
+export function removeEnemyShipHitpoints(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP_HITPOINTS,
+    id
+  };
+}
+
+export function removeEnemyShipCurrentPosition(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP_CURRENT_POSITION,
     id
   };
 }

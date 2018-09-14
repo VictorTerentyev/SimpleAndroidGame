@@ -11,13 +11,18 @@ import {
   Easing
 } from 'react-native';
 
-import { setDisplay, setShipHitpoints, removeEnemyShot } from '../../actions/AppActions';
+import {
+  setDisplay,
+  setGameState,
+  setShipHitpoints,
+  removeEnemyShot
+} from '../../actions/AppActions';
 
 class EnemyShot extends PureComponent {
   render() {
     const {
       hitpoints: { hitpoints },
-      currentShipPosition: { currentShipPosition },
+      currentPosition: { currentPosition },
       componentWillUnmount
     } = this.props;
 
@@ -47,8 +52,9 @@ class EnemyShot extends PureComponent {
     this.state = {
       display: 'flex',
       screenWidth: Dimensions.get('window').width,
+      shotHeight: Dimensions.get('window').height * 0.06,
       shipWidth: Dimensions.get('window').width * 0.9,
-      shipBottom: this.props.currentShipPosition + Dimensions.get('window').height * 0.2,
+      shipHeight: Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0)
     };
@@ -101,22 +107,27 @@ class EnemyShot extends PureComponent {
 
   checkDamage = (positionX) => {
     //shot and ship cords
-      let shotLeft = positionX;
-      let shotTop = this.props.positionY;
-      let shipRight = this.state.shipWidth;
-      let shipLeft = this.state.screenWidth;
-      let shipTop = this.props.currentShipPosition;
-      let shipBottom = this.state.shipBottom;
+    let shotLeft = positionX;
+    let shotTop = this.props.positionY;
+    let shotBottom = this.props.positionY + this.state.shotHeight;
+    let shipRight = this.state.shipWidth;
+    let shipLeft = this.state.screenWidth;
+    let shipTop = this.props.currentPosition;
+    let shipBottom = this.props.currentPosition + this.state.shipHeight;
     //check positions
     if (shotLeft >= shipRight && shotLeft <= shipLeft) {
-      if (shotTop >= shipTop && shotTop <= shipBottom) {
+      if (shotBottom >= shipTop && shotTop <= shipBottom) {
         this.props.removeEnemyShot(this.props.id);
-        if (this.props.hitpoints > 1) {
-          this.props.setShipHitpoints(this.props.hitpoints - 1);
-        }
-        else {
+        this.props.setShipHitpoints(this.props.hitpoints - 1);
+        if (this.props.hitpoints === 0) {
           this.props.setDisplay('shipDisp', 'none');
           this.props.setShipHitpoints(0);
+          setTimeout(() => {
+            this.props.setGameState('deactivated');
+            this.props.setDisplay('gameDisp', 'none');
+            this.props.setDisplay('menuDisp', 'flex');
+            this.props.setDisplay('mainDisp', 'flex');
+          }, 5000)
         }
       }
     }
@@ -125,8 +136,9 @@ class EnemyShot extends PureComponent {
 
 EnemyShot.propTypes = {
   hitpoints: PropTypes.number,
-  currentShipPosition: PropTypes.number,
+  currentPosition: PropTypes.number,
   setDisplay: PropTypes.func,
+  setGameState: PropTypes.func,
   setShipHitpoints: PropTypes.func,
   removeEnemyShot: PropTypes.func,
   componentWillUnmount: PropTypes.func
@@ -142,12 +154,13 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     hitpoints: state.simpleAndroidGame.hitpoints,
-    currentShipPosition: state.simpleAndroidGame.currentShipPosition
+    currentPosition: state.simpleAndroidGame.currentPosition
   };
 }
 
 const mapDispatchToProps = {
   setDisplay,
+  setGameState,
   setShipHitpoints,
   removeEnemyShot
 };

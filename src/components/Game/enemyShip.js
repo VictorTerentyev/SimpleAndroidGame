@@ -14,14 +14,18 @@ import {
 
 import EnemyShot from './enemyShot';
 
-import { setEnemyShipProp, removeEnemyShip, addEnemyShot } from '../../actions/AppActions';
+import {
+  setEnemyShipCurrentPosition,
+  removeEnemyShip,
+  removeEnemyShipHitpoints,
+  removeEnemyShipCurrentPosition,
+  addEnemyShot
+} from '../../actions/AppActions';
 
 class EnemyShip extends PureComponent {
   render() {
     const {
       state: { state },
-      enemyShips: { enemyShips },
-      enemyShots: { enemyShots },
       componentDidMount,
       componentWillReceiveProps,
       componentWillUnmount
@@ -58,15 +62,8 @@ class EnemyShip extends PureComponent {
       anim: new Animated.Value(this.props.positionX)
     };
     this.state.anim.addListener(({value}) => {
-      let ship = {
-        id: this.props.id,
-        hitpoints: this.props.hitpoints,
-        positionY: this.props.positionY,
-        positionX: this.props.positionX,
-        currentPosition: this.props.currentPosition
-      }
       this.positionX = value;
-      this.props.setEnemyShipProp(ship, 'currentPosition', this.positionX);
+      this.props.setEnemyShipCurrentPosition(this.props.id, value);
     });
   }
 
@@ -95,7 +92,7 @@ class EnemyShip extends PureComponent {
   createEnemyShot = () => {
     let random = Math.random() * (10000 - 9000) + 500;
     if (['active', 'resumed'].includes(this.props.state) && this.state.exist === true) {
-      this.props.addEnemyShot({ 
+      this.props.addEnemyShot({
         id: Date.now(),
         positionY: this.props.positionY + this.state.positionYMiddle,
         positionX: this.positionX + this.state.positionXMiddle
@@ -134,16 +131,20 @@ class EnemyShip extends PureComponent {
     ],
     {
       useNativeDriver: true
-    }).start(() => {this.props.removeEnemyShip(this.props.id)});
+    }).start(() => {
+      this.props.removeEnemyShipHitpoints(this.props.id);
+      this.props.removeEnemyShipCurrentPosition(this.props.id);
+      this.props.removeEnemyShip(this.props.id);
+    });
   }
 }
 
 EnemyShip.propTypes = {
   state: PropTypes.string,
-  enemyShips: PropTypes.array,
-  enemyShots: PropTypes.array,
-  setEnemyShipProp: PropTypes.func,
+  setEnemyShipCurrentPosition: PropTypes.func,
   removeEnemyShip: PropTypes.func,
+  removeEnemyShipHitpoints: PropTypes.func,
+  removeEnemyShipCurrentPosition: PropTypes.func,
   addEnemyShot: PropTypes.func,
   componentDidMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func
@@ -158,15 +159,15 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    state: state.simpleAndroidGame.state,
-    enemyShips: state.simpleAndroidGame.enemyShips,
-    enemyShots: state.simpleAndroidGame.enemyShots
+    state: state.simpleAndroidGame.state
   };
 };
 
 const mapDispatchToProps = {
-  setEnemyShipProp,
+  setEnemyShipCurrentPosition,
   removeEnemyShip,
+  removeEnemyShipHitpoints,
+  removeEnemyShipCurrentPosition,
   addEnemyShot
 };
 
