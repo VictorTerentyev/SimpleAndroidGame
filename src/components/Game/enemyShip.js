@@ -57,31 +57,50 @@ class EnemyShip extends PureComponent {
       exist: true,
       random: Math.random() * (10000 - 9000) + 200,
       loopState: 'deactivated',
+      screenWidth: Dimensions.get('window').width,
       positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
       positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
       anim: new Animated.Value(this.props.positionX)
     };
-    this.state.anim.addListener(({value}) => {
-      this.positionX = value;
-      this.props.setEnemyShipCurrentPosition(this.props.id, value);
-    });
+    this.positionX = 0;
   }
 
   componentDidMount = () => {
+    this.setListener();
     this.setEnemyShipAnimation();
-    if (this.state.loopState !== 'active') {
+    if (!this.timerHandle) {
       this.createEnemyShotLoop();
-      this.setState({loopState: 'active'});
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
-    
+    if (nextProps.state === 'paused') {
+      clearTimeout(this.timerHandle);
+      this.timerHandle = 0;
+      this.setState({
+        anim: new Animated.Value(this.positionX),
+      });
+      AppState.removeListener(this.positionX);
+    }
+    if (nextProps.state === 'resumed') {
+      this.setListener();
+      this.setEnemyShipAnimation();
+      if (!this.timerHandle) {
+        this.createEnemyShotLoop();
+      }
+    }
   }
 
   componentWillUnmount = () => {
     clearTimeout(this.timerHandle);
     AppState.removeListener(this.positionX);
+  }
+
+  setListener = () => {
+    this.state.anim.addListener(({value}) => {
+      this.positionX = value;
+      this.props.setEnemyShipCurrentPosition(this.props.id, value);
+    });
   }
 
   createEnemyShotLoop = (value) => {
@@ -91,17 +110,12 @@ class EnemyShip extends PureComponent {
 
   createEnemyShot = () => {
     let random = Math.random() * (10000 - 9000) + 500;
-    if (['active', 'resumed'].includes(this.props.state) && this.state.exist === true) {
-      this.props.addEnemyShot({
-        id: Date.now(),
-        positionY: this.props.positionY + this.state.positionYMiddle,
-        positionX: this.positionX + this.state.positionXMiddle
-      });
-      this.createEnemyShotLoop(random);
-    } else {
-      this.setState({loopState: 'deactivated'});
-      return;
-    }
+    this.props.addEnemyShot({
+      id: Date.now(),
+      positionY: this.props.positionY + this.state.positionYMiddle,
+      positionX: this.positionX + this.state.positionXMiddle
+    });
+    this.createEnemyShotLoop(random);
   }
 
   setDisplay = () => {
@@ -118,7 +132,7 @@ class EnemyShip extends PureComponent {
   }
 
   setEnemyShipAnimation = () => {
-    const position = Dimensions.get('window').width + 200;
+    const position = this.state.screenWidth + 200 + this.positionX;
     Animated.parallel([
       Animated.timing(
         this.state.anim,
@@ -132,9 +146,11 @@ class EnemyShip extends PureComponent {
     {
       useNativeDriver: true
     }).start(() => {
-      this.props.removeEnemyShipHitpoints(this.props.id);
-      this.props.removeEnemyShipCurrentPosition(this.props.id);
-      this.props.removeEnemyShip(this.props.id);
+      if (this.positionX > this.state.screenWidth) {
+        this.props.removeEnemyShipHitpoints(this.props.id);
+        this.props.removeEnemyShipCurrentPosition(this.props.id);
+        this.props.removeEnemyShip(this.props.id);
+      }
     });
   }
 }

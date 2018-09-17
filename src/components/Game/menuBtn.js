@@ -11,7 +11,10 @@ import {
   AppState
 } from 'react-native';
 
-import { setDisplay, setGameState } from '../../actions/AppActions';
+import {
+  setDisplay,
+  setGameState
+} from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 

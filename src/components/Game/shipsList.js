@@ -30,8 +30,10 @@ class ShipsList extends PureComponent {
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
-        <Ship/>
-        {this.props.enemyShips.map((e) => {
+        {this.state.ship.map(e => {
+          return (e);
+        })}
+        {this.props.enemyShips.map(e => {
           return (
             <EnemyShip
               key={e.id}
@@ -49,40 +51,41 @@ class ShipsList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      loopState: 'deactivated'
+      ship: [<Ship key={0}/>]
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
+    if (nextProps.hitpoints === 0) {
+      this.setState({ship: []});
+    }
+    if (['paused', 'deactivated'].includes(nextProps.state)) {
+      clearTimeout(this.timerHandle);
+      this.timerHandle = 0;
+    }
     if (['active', 'resumed'].includes(nextProps.state)) {
-      if (this.state.loopState !== 'active') {
+      if (!this.timerHandle) {
         this.createEnemyShipLoop();
-        this.setState({loopState: 'active'});
       }
     }
   }
 
   createEnemyShipLoop = (value) => {
     let random = value || Math.random() * (10000 - 7000) + 500;
-    setTimeout(this.createEnemyShip.bind(this), random);
+    this.timerHandle = setTimeout(this.createEnemyShip.bind(this), random);
   }
 
   createEnemyShip = () => {
     let random = Math.random() * (10000 - 7000) + 500;
-    if (['active', 'resumed'].includes(this.props.state)) {
-      let id = Date.now();
-      this.props.addEnemyShipHitpoints({ id: id, hitpoints: 3});
-      this.props.addEnemyShipCurrentPosition({ id: id, currentPosition: 0});
-      this.props.addEnemyShip({
-        id: id,
-        positionY: Math.random() * Dimensions.get('window').height,
-        positionX: 0
-      });
-      this.createEnemyShipLoop(random);
-    } else {
-      this.setState({loopState: 'deactivated'});
-      return;
-    }
+    let id = Date.now();
+    this.props.addEnemyShipHitpoints({ id: id, hitpoints: 3});
+    this.props.addEnemyShipCurrentPosition({ id: id, currentPosition: 0});
+    this.props.addEnemyShip({
+      id: id,
+      positionY: Math.random() * Dimensions.get('window').height,
+      positionX: 0
+    });
+    this.createEnemyShipLoop(random);
   }
 }
 

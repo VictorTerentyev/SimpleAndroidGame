@@ -14,8 +14,7 @@ class ShotsList extends PureComponent {
   render() {
     const {
       shots: { shots },
-      enemyShots: { enemyShots },
-      componentWillReceivePorps
+      enemyShots: { enemyShots }
     } = this.props;
 
     return (
@@ -41,20 +40,6 @@ class ShotsList extends PureComponent {
         })}
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      
-    }
-  }
-
-  componentWillReceivePorps = (nextProps) => {
-    this.setState({
-      shots: nextProps.shots,
-      enemyShots: nextProps.enemyShots
-    });
   }
 }
 

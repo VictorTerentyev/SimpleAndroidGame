@@ -14,6 +14,11 @@ import ShipsList from '../components/Game/shipsList';
 import ShotsList from '../components/Game/shotsList';
 import Controller from '../components/Game/controller';
 
+import {
+  setDisplay,
+  setGameState
+} from '../actions/AppActions';
+
 import Sound from 'react-native-sound';
 
 class Game extends PureComponent {
@@ -83,6 +88,12 @@ class Game extends PureComponent {
       this.state.bgMusic.play();
     } else {
       this.state.bgMusic.pause();
+      if (this.props.display === 'flex') {
+        this.props.setDisplay('menuDisp', 'flex');
+        this.props.setDisplay('mainDisp', 'flex');
+        this.props.setDisplay('gameDisp', 'none');
+        this.props.setGameState('paused');
+      }
     }
     this.setState({appState: nextAppState});
   }
@@ -142,6 +153,11 @@ const stateMap = (state) => {
   };
 };
 
-export default connect(stateMap)(Game);
+const mapDispatchToProps = {
+  setDisplay,
+  setGameState
+};
+
+export default connect(stateMap, mapDispatchToProps)(Game);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Game);

@@ -20,6 +20,7 @@ import Sound from 'react-native-sound';
 class Controller extends PureComponent {
   render() {
     const {
+      hitpoints: { hitpoints },
       position: { position },
       currentPosition: { currentPosition },
       shots: { shots }
@@ -28,6 +29,7 @@ class Controller extends PureComponent {
     return (
       <View style={styles.container}>
         <TouchableHighlight 
+          disabled={this.state.disabled}
           style={styles.moveController}
           underlayColor="transparent"
           onPressIn={(event) => this.actionHandle('move', event)} 
@@ -35,6 +37,7 @@ class Controller extends PureComponent {
           <View style={styles.moveController}/>
         </TouchableHighlight>
         <TouchableHighlight 
+          disabled={this.state.disabled} 
           style={styles.shootController}
           underlayColor="transparent"
           onPressIn={() => this.actionHandle('shoot')} 
@@ -48,10 +51,17 @@ class Controller extends PureComponent {
   constructor() {
     super();
     this.state = {
+      disabled: false,
       shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
       shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
     AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.hitpoints === 0) {
+      this.setState({disabled: true})
+    }
   }
 
   actionHandle = (action, event) => {
@@ -89,6 +99,7 @@ class Controller extends PureComponent {
 }
 
 Controller.propTypes = {
+  hitpoints: PropTypes.number,
   position: PropTypes.number,
   currentPosition: PropTypes.number,
   shots: PropTypes.array,
@@ -118,6 +129,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
     currentPosition: state.simpleAndroidGame.currentPosition,
     shots: state.simpleAndroidGame.shots

@@ -8,7 +8,8 @@ import {
   Image,
   Animated,
   Dimensions,
-  Easing
+  Easing,
+  AppState
 } from 'react-native';
 
 import {
@@ -21,8 +22,11 @@ import {
 class EnemyShot extends PureComponent {
   render() {
     const {
+      state: { state },
       hitpoints: { hitpoints },
       currentPosition: { currentPosition },
+      componentDidMount,
+      componentWillReceiveProps,
       componentWillUnmount
     } = this.props;
 
@@ -50,22 +54,48 @@ class EnemyShot extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      display: 'flex',
       screenWidth: Dimensions.get('window').width,
       shotHeight: Dimensions.get('window').height * 0.06,
       shipWidth: Dimensions.get('window').width * 0.9,
       shipHeight: Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(this.props.positionX),
-      shotBgAnim: new Animated.Value(0)
+      shotBgAnim: new Animated.Value(0),
+      resumedFlag: false
     };
-    this.setBgAnimation();
-    this.state.shotPosAnim.addListener(({value}) => {
-      this.checkDamage(value);
-    });
+    this.positionX = 0;
+  }
+
+  componentDidMount = () => {
+    this.setListener();
+    this.setAnimation();
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.state === 'paused') {
+      this.setState({
+        shotPosAnim: new Animated.Value(this.positionX),
+        resumedFlag: false
+      });
+      AppState.removeListener(this.state.shotPosAnim); 
+    }
+    if (nextProps.state === 'resumed') {
+      if (this.state.resumedFlag === false) {
+        this.setListener();
+        this.setAnimation();
+        this.setState({resumedFlag: true});
+      }
+    }
   }
 
   componentWillUnmount = () => {
+    AppState.removeListener(this.state.shotPosAnim);
+  }
 
+  setListener = () => {
+    this.state.shotPosAnim.addListener(({value}) => {
+      this.positionX = value;
+      this.checkDamage(value);
+    });
   }
 
   setDisplay = () => {
@@ -80,8 +110,8 @@ class EnemyShot extends PureComponent {
     return styles.container;
   }
 
-  setBgAnimation = () => {
-    let value = this.state.screenWidth + 200 + this.props.positionX;
+  setAnimation = () => {
+    let value = this.state.screenWidth + 200 + this.positionX;
     Animated.parallel([
       Animated.timing(
         this.state.shotPosAnim,
@@ -102,7 +132,11 @@ class EnemyShot extends PureComponent {
     ],
     {
       useNativeDriver: true
-    }).start(() => this.props.removeEnemyShot(this.props.id));
+    }).start(() => {
+      if (this.positionX > this.state.screenWidth) {
+        this.props.removeEnemyShot(this.props.id);
+      }
+    });
   }
 
   checkDamage = (positionX) => {
@@ -118,7 +152,7 @@ class EnemyShot extends PureComponent {
     if (shotLeft >= shipRight && shotLeft <= shipLeft) {
       if (shotBottom >= shipTop && shotTop <= shipBottom) {
         this.props.removeEnemyShot(this.props.id);
-        this.props.setShipHitpoints(this.props.hitpoints - 1);
+        this.props.setShipHitpoints(--this.props.hitpoints);
         if (this.props.hitpoints === 0) {
           this.props.setDisplay('shipDisp', 'none');
           this.props.setShipHitpoints(0);
@@ -135,12 +169,15 @@ class EnemyShot extends PureComponent {
 }
 
 EnemyShot.propTypes = {
+  state: PropTypes.string,
   hitpoints: PropTypes.number,
   currentPosition: PropTypes.number,
   setDisplay: PropTypes.func,
   setGameState: PropTypes.func,
   setShipHitpoints: PropTypes.func,
   removeEnemyShot: PropTypes.func,
+  componentDidMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
 }
 
@@ -153,6 +190,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    state: state.simpleAndroidGame.state,
     hitpoints: state.simpleAndroidGame.hitpoints,
     currentPosition: state.simpleAndroidGame.currentPosition
   };
