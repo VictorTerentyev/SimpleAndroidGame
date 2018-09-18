@@ -19,6 +19,8 @@ import {
   removeEnemyShot
 } from '../../actions/AppActions';
 
+import Sound from 'react-native-sound';
+
 class EnemyShot extends PureComponent {
   render() {
     const {
@@ -54,14 +56,19 @@ class EnemyShot extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      appState: AppState.currentState,
       screenWidth: Dimensions.get('window').width,
       shotHeight: Dimensions.get('window').height * 0.06,
       shipWidth: Dimensions.get('window').width * 0.9,
       shipHeight: Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(this.props.positionX),
       shotBgAnim: new Animated.Value(0),
-      resumedFlag: false
+      resumedFlag: false,
+      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      shotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.shotSound.play()}),
+      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
+    AppState.addEventListener('change', this.handleAppStateChange);
     this.positionX = 0;
   }
 
@@ -139,6 +146,24 @@ class EnemyShot extends PureComponent {
     });
   }
 
+  checkSoundDoublePlay = (sound) => {
+    if (sound.getCurrentTime !== 0) {
+      sound.stop();
+      sound.play();
+    }
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.shotSound.play();
+      this.state.boomSound.play();
+    } else {
+      this.state.shotSound.pause();
+      this.state.boomSound.pause();
+    }
+    this.setState({appState: nextAppState});
+  }
+
   checkDamage = (positionX) => {
     //shot and ship cords
     let shotLeft = positionX;
@@ -151,9 +176,10 @@ class EnemyShot extends PureComponent {
     //check positions
     if (shotLeft >= shipRight && shotLeft <= shipLeft) {
       if (shotBottom >= shipTop && shotTop <= shipBottom) {
+        this.checkSoundDoublePlay(this.state.boomSound);
         this.props.removeEnemyShot(this.props.id);
         this.props.setShipHitpoints(--this.props.hitpoints);
-        if (this.props.hitpoints === 0) {
+        if (--this.props.hitpoints === 0) {
           this.props.setDisplay('shipDisp', 'none');
           this.props.setShipHitpoints(0);
           setTimeout(() => {
@@ -161,6 +187,7 @@ class EnemyShot extends PureComponent {
             this.props.setDisplay('gameDisp', 'none');
             this.props.setDisplay('menuDisp', 'flex');
             this.props.setDisplay('mainDisp', 'flex');
+            this.state.bgMusic.stop();
           }, 5000)
         }
       }

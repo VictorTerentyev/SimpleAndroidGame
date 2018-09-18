@@ -51,22 +51,34 @@ class ShipsList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      ship: [<Ship key={0}/>]
+      ship: [],
+      activeFlag: false
     }
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.hitpoints === 0) {
-      this.setState({ship: []});
-    }
-    if (['paused', 'deactivated'].includes(nextProps.state)) {
-      clearTimeout(this.timerHandle);
-      this.timerHandle = 0;
+    if (nextProps.state === 'active' && this.state.activeFlag !== true) {
+      this.setState({
+        ship: [<Ship key={Date.now()}/>],
+        activeFlag: true
+      });
     }
     if (['active', 'resumed'].includes(nextProps.state)) {
       if (!this.timerHandle) {
         this.createEnemyShipLoop();
       }
+    }
+    if (['paused', 'deactivated'].includes(nextProps.state)) {
+      clearTimeout(this.timerHandle);
+      this.timerHandle = 0;
+    }
+    if (this.props.state === 'deactivated') {
+      this.setState({activeFlag: false});
+    }
+    if (nextProps.hitpoints === 0) {
+      this.setState({
+        ship: []
+      });
     }
   }
 
@@ -76,16 +88,18 @@ class ShipsList extends PureComponent {
   }
 
   createEnemyShip = () => {
-    let random = Math.random() * (10000 - 7000) + 500;
-    let id = Date.now();
-    this.props.addEnemyShipHitpoints({ id: id, hitpoints: 3});
-    this.props.addEnemyShipCurrentPosition({ id: id, currentPosition: 0});
-    this.props.addEnemyShip({
-      id: id,
-      positionY: Math.random() * Dimensions.get('window').height,
-      positionX: 0
-    });
-    this.createEnemyShipLoop(random);
+    if (['active', 'resumed'].includes(this.props.state)) {
+      let random = Math.random() * (10000 - 7000) + 500;
+      let id = Date.now();
+      this.props.addEnemyShipHitpoints({ id: id, hitpoints: 3});
+      this.props.addEnemyShipCurrentPosition({ id: id, currentPosition: 0});
+      this.props.addEnemyShip({
+        id: id,
+        positionY: Math.random() * Dimensions.get('window').height,
+        positionX: 0
+      });
+      this.createEnemyShipLoop(random);
+    }
   }
 }
 

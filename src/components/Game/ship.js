@@ -84,7 +84,7 @@ class Ship extends PureComponent {
         {
           toValue: position,
           duration: duration,
-          easing: Easing.ease,
+          easing: Easing.linear,
         }
       )
     ],

@@ -32,16 +32,16 @@ class Hitpoints extends PureComponent {
   }
 
   componentDidMount = () => {
-    this.setHealth();
+    this.setHealth(this.props.hitpoints);
   }
 
-  componentWillReceiveProps = () => {
-    this.setHealth();
+  componentWillReceiveProps = (nextProps) => {
+    this.setHealth(nextProps.hitpoints);
   }
 
-  setHealth = () => {
+  setHealth = (hitpoints) => {
     let array = [];
-    for (let i = 0; i < this.props.hitpoints; i++) {
+    for (let i = 0; i < hitpoints; i++) {
       array.push(
         <Image 
           key={i}

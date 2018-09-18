@@ -23,7 +23,7 @@ import Exit from '../components/Menu/exit';
 
 class Menu extends PureComponent {
   render() {
-    const { 
+    const {
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
@@ -62,7 +62,7 @@ class Menu extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.display === 'flex') {
+    if(nextProps.display === 'flex' && this.state.appState === 'active') {
       this.state.bgMusic.play();
     } 
     else { 

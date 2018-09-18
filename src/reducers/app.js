@@ -1,5 +1,7 @@
 import * as types from '../constants/ActionTypes';
 
+import { Dimensions } from 'react-native';
+
 import NVidia from '../../assets/videos/nvidia.mp4';
 import AMD from '../../assets/videos/amd.mp4';
 import UE4 from '../../assets/videos/ue4.mp4';
@@ -28,15 +30,15 @@ const initialState = {
   mod: 'default',
   state: 'deactivated',
   hitpoints: 3,
-  position: 0,
-  currentPosition: 0,
+  position: Dimensions.get('window').height * 0.30,
+  currentPosition: Dimensions.get('window').height * 0.30,
   shots: [],
   enemyShips: [],
   enemyShipsCurrentPositions: [],
   enemyShipsHitpoints: [],
   enemyShots: [],
   score: 0,
-  controllerState: 'deactivated'
+  controllerState: false
 }
 
 export default function simpleAndroidGame (state = initialState, action) {
@@ -70,15 +72,16 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.SET_GAME_INITIAL_STATE:
       return ({
         ...state,
-        hitpoints: 3,
-        currentPosition: 0,
-        shots: [],
-        enemyShips: [],
-        enemyShipsCurrentPositions: [],
-        enemyShipsHitpoints: [],
-        enemyShots: [],
-        score: 0,
-        controllerState: 'deactivated'
+        position: initialState.position,
+        hitpoints: initialState.hitpoints,
+        currentPosition: initialState.currentPosition,
+        shots: initialState.shots,
+        enemyShips: initialState.enemyShips,
+        enemyShipsCurrentPositions: initialState.enemyShipsCurrentPositions,
+        enemyShipsHitpoints: initialState.enemyShipsHitpoints,
+        enemyShots: initialState.enemyShots,
+        score: initialState.score,
+        controllerState: initialState.controllerState
       })
 
     case types.SET_POSITION:

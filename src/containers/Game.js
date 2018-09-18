@@ -50,7 +50,9 @@ class Game extends PureComponent {
     super(props);
     this.state = {
       appState: AppState.currentState,
-      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)}),
+      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1)
+      })
     };
     AppState.addEventListener('change', this.handleAppStateChange);
   }
@@ -58,7 +60,7 @@ class Game extends PureComponent {
   componentWillReceiveProps = (nextProps) => {
     if(['active', 'resumed'].includes(nextProps.state)) {
       this.state.bgMusic.play();
-    } else { 
+    } else {
       this.state.bgMusic.pause();
     };
   }

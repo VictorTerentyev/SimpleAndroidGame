@@ -21,6 +21,8 @@ import {
   removeEnemyShipCurrentPosition
 } from '../../actions/AppActions';
 
+import Sound from 'react-native-sound';
+
 class Shot extends PureComponent {
   render() {
     const {
@@ -58,6 +60,7 @@ class Shot extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      appState: AppState.currentState,
       screenWidth: Dimensions.get('window').width,
       shotWidth: Dimensions.get('window').width * 0.1,
       shotHeight: Dimensions.get('window').height * 0.06,
@@ -65,8 +68,11 @@ class Shot extends PureComponent {
       shipHeight: Dimensions.get('window').height * 0.2,
       shotPosAnim: new Animated.Value(0),
       shotBgAnim: new Animated.Value(0),
-      resumedFlag: false
+      resumedFlag: false,
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.shotSound.play()}),
+      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
+    AppState.addEventListener('change', this.handleAppStateChange);
     this.positionX = 0;
   }
 
@@ -144,6 +150,24 @@ class Shot extends PureComponent {
     });
   }
 
+  checkSoundDoublePlay = (sound) => {
+    if (sound.getCurrentTime !== 0) {
+      sound.stop();
+      sound.play();
+    }
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.shotSound.play();
+      this.state.boomSound.play();
+    } else {
+      this.state.shotSound.pause();
+      this.state.boomSound.pause();
+    }
+    this.setState({appState: nextAppState});
+  }
+
   checkDamage = (positionX) => {
     this.props.enemyShipsCurrentPositions.forEach((e) => {
       //shot and ship cords
@@ -166,6 +190,7 @@ class Shot extends PureComponent {
       if (shotRight >= shipLeft && shotRight <= shipRight) {
         if (shotBottom >= shipTop && shotTop <= shipBottom) {
           let hitpoints = 0;
+          this.checkSoundDoublePlay(this.state.boomSound);
           this.props.enemyShipsHitpoints.forEach((elem) => {
             if (elem.id === e.id) {
               hitpoints = elem.hitpoints;

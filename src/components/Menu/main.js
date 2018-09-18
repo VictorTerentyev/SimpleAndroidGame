@@ -91,7 +91,6 @@ class MainMenu extends PureComponent {
         switch (this.props.state) {
           case 'deactivated':
             this.props.setGameInitialState();
-            this.props.setPosition(Dimensions.get('window').height * 0.30);
             this.props.setGameState('active');
             break;
 

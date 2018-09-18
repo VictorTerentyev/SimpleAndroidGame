@@ -6,16 +6,14 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  Dimensions,
-  AppState
+  Dimensions
 } from 'react-native';
 
 import {
+  setControllerState,
   setPosition,
   addShot
 } from '../../actions/AppActions';
-
-import Sound from 'react-native-sound';
 
 class Controller extends PureComponent {
   render() {
@@ -23,13 +21,14 @@ class Controller extends PureComponent {
       hitpoints: { hitpoints },
       position: { position },
       currentPosition: { currentPosition },
-      shots: { shots }
+      shots: { shots },
+      controllerState: { controllerState }
     } = this.props;
 
     return (
       <View style={styles.container}>
         <TouchableHighlight 
-          disabled={this.state.disabled}
+          disabled={this.props.controllerState}
           style={styles.moveController}
           underlayColor="transparent"
           onPressIn={(event) => this.actionHandle('move', event)} 
@@ -37,7 +36,7 @@ class Controller extends PureComponent {
           <View style={styles.moveController}/>
         </TouchableHighlight>
         <TouchableHighlight 
-          disabled={this.state.disabled} 
+          disabled={this.props.controllerState} 
           style={styles.shootController}
           underlayColor="transparent"
           onPressIn={() => this.actionHandle('shoot')} 
@@ -52,15 +51,13 @@ class Controller extends PureComponent {
     super();
     this.state = {
       disabled: false,
-      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
+      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07
     };
-    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.hitpoints === 0) {
-      this.setState({disabled: true})
+      this.props.setControllerState(true);
     }
   }
 
@@ -71,7 +68,6 @@ class Controller extends PureComponent {
         this.props.setPosition(positionY);
         break;
       case 'shoot':
-        this.checkShotSoundDoublePlay();
         let obj = {
           id: Date.now(),
           positionY: this.props.currentPosition + this.state.shipYMiddle,
@@ -80,22 +76,6 @@ class Controller extends PureComponent {
         break;
     }
   }
-
-  checkShotSoundDoublePlay = () => {
-    if (this.state.shotSound.getCurrentTime !== 0) {
-      this.state.shotSound.stop();
-      this.state.shotSound.play();
-    }
-  }
-
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.shotSound.play();
-    } else {
-      this.state.shotSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
 }
 
 Controller.propTypes = {
@@ -103,6 +83,8 @@ Controller.propTypes = {
   position: PropTypes.number,
   currentPosition: PropTypes.number,
   shots: PropTypes.array,
+  controllerState: PropTypes.bool,
+  setControllerState: PropTypes.func,
   setPosition: PropTypes.func,
   addShot: PropTypes.func
 }
@@ -132,11 +114,13 @@ const stateMap = (state) => {
     hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
     currentPosition: state.simpleAndroidGame.currentPosition,
-    shots: state.simpleAndroidGame.shots
+    shots: state.simpleAndroidGame.shots,
+    controllerState: state.simpleAndroidGame.controllerState
   };
 };
 
 const mapDispatchToProps = {
+  setControllerState,
   setPosition,
   addShot
 };

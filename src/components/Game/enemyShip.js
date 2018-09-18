@@ -109,13 +109,15 @@ class EnemyShip extends PureComponent {
   }
 
   createEnemyShot = () => {
-    let random = Math.random() * (10000 - 9000) + 500;
-    this.props.addEnemyShot({
-      id: Date.now(),
-      positionY: this.props.positionY + this.state.positionYMiddle,
-      positionX: this.positionX + this.state.positionXMiddle
-    });
-    this.createEnemyShotLoop(random);
+    if (['active', 'resumed'].includes(this.props.state)) {
+      let random = Math.random() * (10000 - 9000) + 500;
+      this.props.addEnemyShot({
+        id: Date.now(),
+        positionY: this.props.positionY + this.state.positionYMiddle,
+        positionX: this.positionX + this.state.positionXMiddle
+      });
+      this.createEnemyShotLoop(random);
+    }
   }
 
   setDisplay = () => {
