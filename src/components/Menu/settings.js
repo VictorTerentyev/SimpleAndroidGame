@@ -19,6 +19,7 @@ import Sound from 'react-native-sound';
 class Settings extends PureComponent {
   render() {
     const {
+      state: { state },
       display: { display },
       brightness: { brightness },
       dispatch
@@ -150,6 +151,7 @@ class Settings extends PureComponent {
 
 
 Settings.propTypes = {
+  state: PropTypes.string,
   display: PropTypes.string,
   brightness: PropTypes.number,
   setDisplay: PropTypes.func,
@@ -188,6 +190,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    state: state.simpleAndroidGame.state,
     display: state.simpleAndroidGame.settingsDisp,
     brightness: state.simpleAndroidGame.Brightness
   };

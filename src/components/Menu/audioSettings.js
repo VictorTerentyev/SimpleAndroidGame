@@ -13,7 +13,10 @@ import {
   AppState
 } from 'react-native';
 
-import { setDisplay, setSetting } from '../../actions/AppActions';
+import {
+  setDisplay,
+  setSetting
+} from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
@@ -157,12 +160,9 @@ class AudioSettings extends PureComponent {
   }
 
   handleSliderValueChange = (val, item) => {
+    this.checkBtnSoundDoublePlay();
     this.setState({ [item]: val });
     this.props.setSetting(item, val);
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
   }
 }
 
@@ -175,7 +175,8 @@ AudioSettings.propTypes = {
   effects: PropTypes.number,
   video: PropTypes.number,
   setDisplay: PropTypes.func,
-  setSetting: PropTypes.func
+  setSetting: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func
 }
 
 const styles = StyleSheet.create({

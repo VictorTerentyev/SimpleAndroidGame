@@ -18,6 +18,7 @@ import MainMenu from '../components/Menu/main';
 import Settings from '../components/Menu/settings';
 import VideoSettings from '../components/Menu/videoSettings';
 import AudioSettings from '../components/Menu/audioSettings';
+import GameplaySettings from '../components/Menu/gameplaySettings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
@@ -46,6 +47,7 @@ class Menu extends PureComponent {
         <Settings/>
         <VideoSettings/>
         <AudioSettings/>
+        <GameplaySettings/>
         <Credits/>
         <Exit/>
       </View>

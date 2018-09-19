@@ -31,9 +31,10 @@ export function setGameState(state) {
   };
 }
 
-export function setGameInitialState() {
+export function setGameInitialState(hitpoints) {
   return {
-    type: types.SET_GAME_INITIAL_STATE
+    type: types.SET_GAME_INITIAL_STATE,
+    hitpoints
   };
 }
 

@@ -73,7 +73,7 @@ export default function simpleAndroidGame (state = initialState, action) {
       return ({
         ...state,
         position: initialState.position,
-        hitpoints: initialState.hitpoints,
+        hitpoints: action.hitpoints || initialState.hitpoints,
         currentPosition: initialState.currentPosition,
         shots: initialState.shots,
         enemyShips: initialState.enemyShips,

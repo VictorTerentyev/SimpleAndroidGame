@@ -28,7 +28,7 @@ class MainMenu extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      dispatch
+      mod: { mod }
     } = this.props;
 
     return (
@@ -90,7 +90,12 @@ class MainMenu extends PureComponent {
       case 'Start':
         switch (this.props.state) {
           case 'deactivated':
-            this.props.setGameInitialState();
+            if (this.props.mod === 'hardcore') {
+              this.props.setGameInitialState(1);
+            } 
+            else {
+              this.props.setGameInitialState();
+            }
             this.props.setGameState('active');
             break;
 
@@ -171,11 +176,11 @@ MainMenu.propTypes = {
   state: PropTypes.string,
   display: PropTypes.string,
   brightness: PropTypes.number,
+  mod: PropTypes.string,
   setGameState: PropTypes.func,
   setGameInitialState: PropTypes.func,
   setDisplay: PropTypes.func,
-  setPosition: PropTypes.func,
-  dispatch: PropTypes.func
+  setPosition: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -213,6 +218,7 @@ const stateMap = (state) => {
     state: state.simpleAndroidGame.state,
     display: state.simpleAndroidGame.mainDisp,
     brightness: state.simpleAndroidGame.Brightness,
+    mod: state.simpleAndroidGame.mod
   };
 };
 

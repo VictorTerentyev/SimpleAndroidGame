@@ -31,7 +31,7 @@ class Controller extends PureComponent {
           disabled={this.props.controllerState}
           style={styles.moveController}
           underlayColor="transparent"
-          onPressIn={(event) => this.actionHandle('move', event)} 
+          onPress={(event) => this.setPositionHandle(event)} 
         >
           <View style={styles.moveController}/>
         </TouchableHighlight>
@@ -39,7 +39,10 @@ class Controller extends PureComponent {
           disabled={this.props.controllerState} 
           style={styles.shootController}
           underlayColor="transparent"
-          onPressIn={() => this.actionHandle('shoot')} 
+          onPressIn={() => {
+            this.addShotLoop(0);
+          }}
+          onPressOut={() => this.clearTimer()} 
         >
           <View style={styles.shootController}/>
         </TouchableHighlight>
@@ -51,30 +54,40 @@ class Controller extends PureComponent {
     super();
     this.state = {
       disabled: false,
+      shootFlag: false,
       shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07
-    };
+    };    
   }
 
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.hitpoints === 0) {
       this.props.setControllerState(true);
+      this.clearTimer();
     }
   }
 
-  actionHandle = (action, event) => {
-    switch (action) {
-      case 'move':
-        let positionY = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 * 0.1;
-        this.props.setPosition(positionY);
-        break;
-      case 'shoot':
-        let obj = {
-          id: Date.now(),
-          positionY: this.props.currentPosition + this.state.shipYMiddle,
-        };
-        this.props.addShot(obj);
-        break;
-    }
+  clearTimer = () => {
+    clearTimeout(this.timerHandle);
+    this.timerHandle = 0;
+  }
+
+  setPositionHandle = (event) => {
+    let positionY = event.nativeEvent.locationY - Dimensions.get('window').height * 0.9 * 0.1;
+    this.props.setPosition(positionY);
+    this.setState({movePosition: positionY});
+  }
+
+  addShotLoop = (value) => {
+    this.timerHandle = setTimeout(this.addShot.bind(this), value);
+  }
+
+  addShot = () => {
+    let obj = {
+      id: Date.now(),
+      positionY: this.props.currentPosition + this.state.shipYMiddle,
+    };
+    this.props.addShot(obj);
+    this.addShotLoop(400);
   }
 }
 
