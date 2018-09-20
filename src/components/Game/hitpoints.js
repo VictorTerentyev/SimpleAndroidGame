@@ -31,7 +31,7 @@ class Hitpoints extends PureComponent {
     };
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
     this.setHealth(this.props.hitpoints);
   }
 

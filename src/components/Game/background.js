@@ -8,7 +8,7 @@ import {
   Image,
   Animated,
   Easing,
-  AppState,
+  AppState
 } from 'react-native';
 
 class GameBackground extends PureComponent {
@@ -16,7 +16,9 @@ class GameBackground extends PureComponent {
     const {
       state: { state },
       brightness: { brightness },
-      componentWillReceiveProps
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -46,6 +48,9 @@ class GameBackground extends PureComponent {
       appState: AppState.currentState, 
       anim: new Animated.Value(0),
     };
+  }
+
+  componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
@@ -57,6 +62,21 @@ class GameBackground extends PureComponent {
         this.state.anim
       ).stop();
     };
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.setBgAnimation();
+    } else {
+      Animated.timing(
+        this.state.anim
+      ).stop();
+    }
+    this.setState({appState: nextAppState});
   }
 
   setBgAnimation = () => {
@@ -91,22 +111,14 @@ class GameBackground extends PureComponent {
     });
     return styles.container;
   }
-
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.setBgAnimation();
-    } else {
-      Animated.timing(
-        this.state.anim
-      ).stop();
-    }
-    this.setState({appState: nextAppState});
-  }
 }
 
 GameBackground.propTypes = {
   state: PropTypes.string,
-  brightness: PropTypes.number
+  brightness: PropTypes.number,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

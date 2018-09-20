@@ -31,7 +31,7 @@ class Shot extends PureComponent {
       enemyShips: { enemyShips },
       enemyShipsHitpoints: { enemyShipsHitpoints },
       enemyShipsCurrentPositions: { enemyShipsCurrentPositions },
-      componentDidMount,
+      componentWillMount,
       componentWillReceiveProps,
       componentWillUnmount
     } = this.props
@@ -72,11 +72,11 @@ class Shot extends PureComponent {
       shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.shotSound.play()}),
       boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
-    AppState.addEventListener('change', this.handleAppStateChange);
     this.positionX = 0;
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
     this.setListener();
     this.setAnimation();
   }
@@ -99,7 +99,16 @@ class Shot extends PureComponent {
   }
 
   componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
     AppState.removeListener(this.state.shotPosAnim);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['active', 'resumed'].includes(this.props.state) && !['background', 'inactive'].includes(this.state.appState) && nextAppState !== 'active') {
+      this.state.shotSound.pause();
+      this.state.boomSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   setListener = () => {
@@ -153,19 +162,8 @@ class Shot extends PureComponent {
   checkSoundDoublePlay = (sound) => {
     if (sound.getCurrentTime !== 0) {
       sound.stop();
-      sound.play();
+      sound.play(() => sound.release());
     }
-  }
-
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.shotSound.play();
-      this.state.boomSound.play();
-    } else {
-      this.state.shotSound.pause();
-      this.state.boomSound.pause();
-    }
-    this.setState({appState: nextAppState});
   }
 
   checkDamage = (positionX) => {
@@ -226,7 +224,7 @@ Shot.propTypes = {
   removeEnemyShip: PropTypes.func,
   removeEnemyShipHitpoints: PropTypes.func,
   removeEnemyShipCurrentPosition: PropTypes.func,
-  componentDidMount: PropTypes.func,
+  componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
 }

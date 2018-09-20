@@ -40,14 +40,12 @@ class GameplaySettings extends PureComponent {
               <View style={styles.textRow}>
                 <Text style={styles.title}>{item}</Text>
                 <Text style={styles.text}>:</Text>
-                <ImageBackground style={styles.checkBgImg} source={{uri: 'menubtn'}}>
-                  <CheckBox 
-                    style={styles.check}
-                    onValueChange={(value) => this.handleCheckBoxChange(item, value)}
-                    disabled={this.state['disabled' + item]}
-                    value={this.state['value' + item]}
-                  />
-                </ImageBackground>
+                <CheckBox 
+                  style={styles.check}
+                  onValueChange={(value) => this.handleCheckBoxChange(item, value)}
+                  disabled={this.state['disabled' + item]}
+                  value={this.state['value' + item]}
+                />
               </View>
             }
             renderSectionHeader={({section}) => 

@@ -20,6 +20,7 @@ class Ship extends PureComponent {
       display: { display },
       hitpoints: { hitpoints },
       position: { position },
+      componentWillMount,
       componentWillReceiveProps,
       componentWillUnmount
     } = this.props;
@@ -47,9 +48,10 @@ class Ship extends PureComponent {
     this.state = {
       anim: new Animated.Value(this.props.position),
     };
-    this.state.anim.addListener(({value}) => {
-      this.props.setShipCurrentPosition(value);
-    });
+  }
+
+  componentWillMount = () => {
+    this.setListener();
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -60,6 +62,12 @@ class Ship extends PureComponent {
 
   componentWillUnmount = () => {
     AppState.removeListener(this.state.anim);
+  }
+
+  setListener = () => {
+    this.state.anim.addListener(({value}) => {
+      this.props.setShipCurrentPosition(value);
+    });
   }
 
   setDisplay = () => {
@@ -99,6 +107,7 @@ Ship.propTypes = {
   hitpoints: PropTypes.number,
   position: PropTypes.number,
   setShipCurrentPosition: PropTypes.func,
+  componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
 }

@@ -6,7 +6,8 @@ import {
   StyleSheet,
   View,
   TouchableHighlight,
-  Dimensions
+  Dimensions,
+  AppState
 } from 'react-native';
 
 import {
@@ -18,11 +19,15 @@ import {
 class Controller extends PureComponent {
   render() {
     const {
+      state: { state },
       hitpoints: { hitpoints },
       position: { position },
       currentPosition: { currentPosition },
       shots: { shots },
-      controllerState: { controllerState }
+      controllerState: { controllerState },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -39,8 +44,10 @@ class Controller extends PureComponent {
           disabled={this.props.controllerState} 
           style={styles.shootController}
           underlayColor="transparent"
-          onPressIn={() => {
-            this.addShotLoop(0);
+          onPressIn={(event) => {
+            if (this.state.shootDoubleTapFlag === false) {
+              this.addShotLoop(0, event);
+            }
           }}
           onPressOut={() => this.clearTimer()} 
         >
@@ -53,10 +60,17 @@ class Controller extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       disabled: false,
       shootFlag: false,
-      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07
-    };    
+      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+      moveDoubleTapFlag: false,
+      shootDoubleTapFlag: false
+    };
+  }
+
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -66,9 +80,21 @@ class Controller extends PureComponent {
     }
   }
 
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.clearTimer();
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['active', 'resumed'].includes(this.props.state) && !['background', 'inactive'].includes(this.state.appState) && nextAppState !== 'active') {
+      this.clearTimer();
+    }
+    this.setState({appState: nextAppState});
+  }
+
   clearTimer = () => {
+    this.setState({shootDoubleTapFlag: false});
     clearTimeout(this.timerHandle);
-    this.timerHandle = 0;
   }
 
   setPositionHandle = (event) => {
@@ -77,7 +103,8 @@ class Controller extends PureComponent {
     this.setState({movePosition: positionY});
   }
 
-  addShotLoop = (value) => {
+  addShotLoop = (value, event) => {
+    this.setState({shootDoubleTapFlag: true});
     this.timerHandle = setTimeout(this.addShot.bind(this), value);
   }
 
@@ -92,6 +119,7 @@ class Controller extends PureComponent {
 }
 
 Controller.propTypes = {
+  state: PropTypes.string,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
   currentPosition: PropTypes.number,
@@ -99,7 +127,10 @@ Controller.propTypes = {
   controllerState: PropTypes.bool,
   setControllerState: PropTypes.func,
   setPosition: PropTypes.func,
-  addShot: PropTypes.func
+  addShot: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -124,6 +155,7 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    state: state.simpleAndroidGame.state,
     hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
     currentPosition: state.simpleAndroidGame.currentPosition,

@@ -28,7 +28,9 @@ class Menu extends PureComponent {
       display: { display }, 
       bgPaused: { bgPaused },
       brightness: { brightness },
-      componentWillReceiveProps
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -60,6 +62,9 @@ class Menu extends PureComponent {
       appState: AppState.currentState,
       bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)})
     };
+  }
+
+  componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
@@ -70,6 +75,11 @@ class Menu extends PureComponent {
     else { 
       this.state.bgMusic.pause();
     }
+  }
+
+  componentWillUnmount = () => {
+    this.state.bgMusic.pause();
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -122,7 +132,9 @@ Menu.propTypes = {
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
-  componentWillReceiveProps: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const stateMap = (state) => {

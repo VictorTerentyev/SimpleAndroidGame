@@ -27,8 +27,9 @@ class Game extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      componentDidMount,
-      componentWillReceiveProps
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -51,18 +52,29 @@ class Game extends PureComponent {
     this.state = {
       appState: AppState.currentState,
       bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1)
+        this.state.bgMusic.setNumberOfLoops(-1);
       })
     };
+  }
+
+  componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {
     if(['active', 'resumed'].includes(nextProps.state)) {
       this.state.bgMusic.play();
-    } else {
+    } 
+    if (nextProps.state === 'paused') {
       this.state.bgMusic.pause();
-    };
+    }
+    if (nextProps.state === 'deactivated') {
+      this.state.bgMusic.stop();
+    }
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
   
   setDisplay = () => {
@@ -86,43 +98,16 @@ class Game extends PureComponent {
   }
 
   handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.bgMusic.play();
-    } else {
-      this.state.bgMusic.pause();
+    if (!['background', 'inactive'].includes(this.state.appState) && nextAppState !== 'active' ) { 
       if (this.props.display === 'flex') {
         this.props.setDisplay('menuDisp', 'flex');
         this.props.setDisplay('mainDisp', 'flex');
         this.props.setDisplay('gameDisp', 'none');
         this.props.setGameState('paused');
       }
+      this.state.bgMusic.pause();
     }
     this.setState({appState: nextAppState});
-  }
-
-  checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
-  }
-
-  changeUnderlayHandle = (color, img) => {
-    this.setState({
-      btnBackground: img,
-      textColor: color
-    });
-  }
-
-  setTextColor = () => {
-    const styles = StyleSheet.create({
-      textColor: {
-        fontFamily: 'Eurostile',
-        fontSize: 20,
-        color: this.state.textColor
-      }
-    });
-    return styles.textColor;
   }
 }
 
@@ -134,7 +119,10 @@ Game.propTypes = {
   display: PropTypes.string,
   brightness: PropTypes.number,
   setGameState: PropTypes.func,
-  setDisplay: PropTypes.func
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

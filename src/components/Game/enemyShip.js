@@ -26,7 +26,7 @@ class EnemyShip extends PureComponent {
   render() {
     const {
       state: { state },
-      componentDidMount,
+      componentWillMount,
       componentWillReceiveProps,
       componentWillUnmount
     } = this.props;
@@ -65,7 +65,7 @@ class EnemyShip extends PureComponent {
     this.positionX = 0;
   }
 
-  componentDidMount = () => {
+  componentWillMount = () => {
     this.setListener();
     this.setEnemyShipAnimation();
     if (!this.timerHandle) {
@@ -93,7 +93,7 @@ class EnemyShip extends PureComponent {
 
   componentWillUnmount = () => {
     clearTimeout(this.timerHandle);
-    AppState.removeListener(this.positionX);
+    AppState.removeListener(this.state.anim);
   }
 
   setListener = () => {
@@ -164,8 +164,9 @@ EnemyShip.propTypes = {
   removeEnemyShipHitpoints: PropTypes.func,
   removeEnemyShipCurrentPosition: PropTypes.func,
   addEnemyShot: PropTypes.func,
-  componentDidMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

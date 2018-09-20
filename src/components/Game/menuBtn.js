@@ -20,6 +20,11 @@ import Sound from 'react-native-sound';
 
 class GameMenuBtn extends PureComponent {
   render() {
+    const {
+      componentWillMount,
+      componentWillUnmount
+    } = this.props;
+
     return (
       <View style={styles.menuBtn}>
         <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
@@ -45,7 +50,23 @@ class GameMenuBtn extends PureComponent {
       appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
+  }
+
+  componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.btnSound.play();
+    } else {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   menuActionHandle = () => {
@@ -80,20 +101,13 @@ class GameMenuBtn extends PureComponent {
     });
     return styles.textColor;
   }
-
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
 }
 
 GameMenuBtn.propTypes = {
   setGameState: PropTypes.func,
-  setDisplay: PropTypes.func
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

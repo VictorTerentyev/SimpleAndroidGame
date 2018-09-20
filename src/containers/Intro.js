@@ -20,7 +20,8 @@ class Intro extends PureComponent {
       display: { display },
       brightness: { brightness },
       volume: { volume },
-      video: { video }
+      video: { video },
+      componentWillMount
     } = this.props;
 
     return (
@@ -48,6 +49,12 @@ class Intro extends PureComponent {
       index: 0,
       paused: false
     };
+  }
+
+  componentWillMount = () => {
+    if (this.props.display === 'none') {
+      this.setState({paused: true});
+    }
   }
 
   introControlHandle = () => {
@@ -98,7 +105,8 @@ Intro.propTypes = {
   volume: PropTypes.number,
   video: PropTypes.number,
   videoPlay: PropTypes.func,
-  setDisplay: PropTypes.func
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
