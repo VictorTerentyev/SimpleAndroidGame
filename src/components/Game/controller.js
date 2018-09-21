@@ -44,9 +44,9 @@ class Controller extends PureComponent {
           disabled={this.props.controllerState} 
           style={styles.shootController}
           underlayColor="transparent"
-          onPressIn={(event) => {
+          onPressIn={() => {
             if (this.state.shootDoubleTapFlag === false) {
-              this.addShotLoop(0, event);
+              this.addShotLoop(0);
             }
           }}
           onPressOut={() => this.clearTimer()} 
@@ -103,7 +103,7 @@ class Controller extends PureComponent {
     this.setState({movePosition: positionY});
   }
 
-  addShotLoop = (value, event) => {
+  addShotLoop = (value) => {
     this.setState({shootDoubleTapFlag: true});
     this.timerHandle = setTimeout(this.addShot.bind(this), value);
   }
