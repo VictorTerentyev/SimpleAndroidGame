@@ -126,8 +126,7 @@ class EnemyShip extends PureComponent {
         position: 'absolute',
         top: this.props.positionY,
         width: '10%',
-        height: '20%',
-        zIndex: -1
+        height: '20%'
       }
     });
     return styles.container;

@@ -38,8 +38,8 @@ class Game extends PureComponent {
         <View style={this.setBrightness()}>
           <Menu/>
           <View style={styles.game}>
-            <ShipsList/>
             <ShotsList/>
+            <ShipsList/>
           </View>
         </View>
         <Controller/>

@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import {
+  setDisplay,
   addShip,
   addEnemyShip,
   addEnemyShipHitpoints,
@@ -22,6 +23,7 @@ class ShipsList extends PureComponent {
   render() {
     const {
       state: { state },
+      shipDisp: { shipDisp },
       hitpoints: { hitpoints },
       position: { position },
       enemyShips: { enemyShips },
@@ -30,9 +32,7 @@ class ShipsList extends PureComponent {
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
-        {this.state.ship.map(e => {
-          return (e);
-        })}
+        <Ship/>
         {this.props.enemyShips.map(e => {
           return (
             <EnemyShip
@@ -51,7 +51,6 @@ class ShipsList extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      ship: [],
       activeFlag: false
     }
   }
@@ -76,9 +75,7 @@ class ShipsList extends PureComponent {
       this.setState({activeFlag: false});
     }
     if (nextProps.hitpoints === 0) {
-      this.setState({
-        ship: []
-      });
+      this.props.setDisplay({shipDisp: 'none'});
     }
   }
 
@@ -105,9 +102,11 @@ class ShipsList extends PureComponent {
 
 ShipsList.propTypes = {
   state: PropTypes.string,
+  shipDisp: PropTypes.string,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
   enemyShips: PropTypes.array,
+  setDisplay: PropTypes.func,
   addEnemyShip: PropTypes.func,
   addEnemyShipHitpoints: PropTypes.func,
   addEnemyShipCurrentPosition: PropTypes.func,
@@ -120,13 +119,14 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    bottom: 0 
+    bottom: 0
   }
 });
 
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
+    shipDisp: state.simpleAndroidGame.shipDisp,
     hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
     enemyShips: state.simpleAndroidGame.enemyShips
@@ -134,6 +134,7 @@ const stateMap = (state) => {
 };
 
 const mapDispatchToProps = {
+  setDisplay,
   addShip,
   addEnemyShip,
   addEnemyShipHitpoints,

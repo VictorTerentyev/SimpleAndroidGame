@@ -72,6 +72,7 @@ export default function simpleAndroidGame (state = initialState, action) {
     case types.SET_GAME_INITIAL_STATE:
       return ({
         ...state,
+        shipDisp: initialState.shipDisp,
         position: initialState.position,
         hitpoints: action.hitpoints || initialState.hitpoints,
         currentPosition: initialState.currentPosition,

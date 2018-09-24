@@ -35,7 +35,7 @@ class Ship extends PureComponent {
         renderToHardwareTextureAndroid
       >
         <Image
-          style={styles.image}
+          style={this.setImageDisplay()}
           source={{uri: 'cobra'}}
           resizeMode="stretch"
         />
@@ -46,6 +46,9 @@ class Ship extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
+      shipHeight: '100%',
+      shipWidth: '100%',
+      visibilityFlag: true,
       anim: new Animated.Value(this.props.position),
     };
   }
@@ -55,9 +58,23 @@ class Ship extends PureComponent {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.hitpoints !== 0) {
+    if (nextProps.hitpoints !== 0) {
       this.setBgAnimation(nextProps.position);
+      if (this.state.visibilityFlag === false) {
+        this.setState({
+          shipHeight: 100 + '%',
+          shipWidth: 100 + '%',
+          visibilityFlag: true
+        });
+      };
     }
+    else {
+      this.setState({
+        shipHeight: 0 + '%',
+        shipWidth: 0 + '%',
+        visibilityFlag: false
+      });
+    };
   }
 
   componentWillUnmount = () => {
@@ -75,13 +92,23 @@ class Ship extends PureComponent {
       container: {
         display: this.props.display,
         position: 'absolute',
-        top: this.props.position,
-        left: 0, 
         width: '10%',
-        height: '20%'
+        height: '20%',
+        top: this.props.position,
+        left: 0
       }
     });
     return styles.container;
+  }
+
+  setImageDisplay = () => {
+    const styles = StyleSheet.create({
+      image: {
+        width: this.state.shipHeight,
+        height: this.state.shipWidth
+      }
+    });
+    return styles.image;
   }
 
   setBgAnimation = (position) => {
@@ -111,13 +138,6 @@ Ship.propTypes = {
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
 }
-
-const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: '100%'
-  }
-});
 
 const stateMap = (state) => {
   return {

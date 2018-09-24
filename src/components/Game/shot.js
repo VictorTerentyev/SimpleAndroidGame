@@ -124,8 +124,7 @@ class Shot extends PureComponent {
         position: 'absolute',
         top: this.props.positionY,
         width: '10%',
-        height: '6%',
-        zIndex: -1
+        height: '6%'
       }
     });
     return styles.container;
