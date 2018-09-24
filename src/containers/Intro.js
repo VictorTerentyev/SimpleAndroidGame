@@ -9,6 +9,8 @@ import {
   AppState
 } from 'react-native';
 
+import { Immersive } from 'react-native-immersive';
+
 import { setDisplay, videoPlay } from '../actions/AppActions';
 
 import Video from 'react-native-video';
@@ -21,7 +23,8 @@ class Intro extends PureComponent {
       brightness: { brightness },
       volume: { volume },
       video: { video },
-      componentWillMount
+      componentWillMount,
+      componentDidMount
     } = this.props;
 
     return (
@@ -72,6 +75,8 @@ class Intro extends PureComponent {
   }
 
   setDisplay = () => {
+    Immersive.on();
+    Immersive.setImmersive(true);
     const styles = StyleSheet.create({
       container: {
         display: this.props.display,
@@ -97,7 +102,6 @@ class Intro extends PureComponent {
   }
 }
 
-
 Intro.propTypes = {
   introVids: PropTypes.array,
   display: PropTypes.string,
@@ -106,7 +110,8 @@ Intro.propTypes = {
   video: PropTypes.number,
   videoPlay: PropTypes.func,
   setDisplay: PropTypes.func,
-  componentWillMount: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentDidMount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

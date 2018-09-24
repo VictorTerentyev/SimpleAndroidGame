@@ -4,8 +4,10 @@ import com.facebook.react.ReactActivity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.app.ActionBar;
 
 public class MainActivity extends ReactActivity {
+
 
     /**
      * Returns the name of the main component registered from JavaScript.
@@ -22,9 +24,6 @@ public class MainActivity extends ReactActivity {
         enableFullScreen();
     }
 
-    //OnSystemUiVisibilityChangeListener
-
-    @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus) {

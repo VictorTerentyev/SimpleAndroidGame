@@ -19,6 +19,7 @@
     "react": "16.5.0",
     "react-native": "0.57.0",
     "react-native-exit-app": "^1.0.0",
+    "react-native-immersive": "^1.1.2",
     "react-native-sound": "^0.10.9",
     "react-native-video": "^3.2.1",
     "react-redux": "^5.0.7",
