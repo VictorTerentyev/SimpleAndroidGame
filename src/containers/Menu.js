@@ -68,18 +68,22 @@ class Menu extends PureComponent {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
+  componentDidMount = () => {
+    this.state.bgMusic.play();
+  }
+
   componentWillReceiveProps(nextProps) {
-    if(nextProps.display === 'flex' && this.state.appState === 'active') {
+    if (nextProps.display === 'flex') {
       this.state.bgMusic.play();
     } 
     else { 
       this.state.bgMusic.pause();
-    }
+    };
   }
 
   componentWillUnmount = () => {
-    this.state.bgMusic.pause();
     AppState.removeEventListener('change', this.handleAppStateChange);
+    this.state.bgMusic.pause();
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -87,7 +91,8 @@ class Menu extends PureComponent {
       this.state.bgMusic.play();
     } else {
       this.state.bgMusic.pause();
-    }
+      console.log('TRIGGERED + ' + nextAppState);
+    };
     this.setState({appState: nextAppState});
   }
 

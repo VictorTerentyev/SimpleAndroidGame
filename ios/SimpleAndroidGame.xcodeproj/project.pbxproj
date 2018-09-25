@@ -39,7 +39,6 @@
 		ADBDB9381DFEBF1600ED6528 /* libRCTBlob.a in Frameworks */ = {isa = PBXBuildFile; fileRef = ADBDB9271DFEBF0700ED6528 /* libRCTBlob.a */; };
 		CAFEBF7316944A69AE20A627 /* libRCTVideo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = AA7FC97B54E84F148489AACC /* libRCTVideo.a */; };
 		F4251D96297B465CB2FAB2AB /* libRNSound.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9ADAEC9141ED434BBD4A9ACC /* libRNSound.a */; };
-		54053B31A73A4F3E95C6DAF0 /* libRNExitApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9055CA30A78741068EB8F41C /* libRNExitApp.a */; };
 		1493DE1FA62C4286892EF649 /* Eurostile.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C751EAD26E714906AC71FA00 /* Eurostile.ttf */; };
 		992ACAD05C754DE1A72881B9 /* films.eurostile.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FD2D1181CA1240FCA43331F6 /* films.eurostile.ttf */; };
 /* End PBXBuildFile section */
@@ -351,8 +350,6 @@
 		AA7FC97B54E84F148489AACC /* libRCTVideo.a */ = {isa = PBXFileReference; name = "libRCTVideo.a"; path = "libRCTVideo.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		1E94D45CF7BB4757BDBA9DC4 /* RNSound.xcodeproj */ = {isa = PBXFileReference; name = "RNSound.xcodeproj"; path = "../node_modules/react-native-sound/RNSound.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		9ADAEC9141ED434BBD4A9ACC /* libRNSound.a */ = {isa = PBXFileReference; name = "libRNSound.a"; path = "libRNSound.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
-		03F40A46694F485890BE296D /* RNExitApp.xcodeproj */ = {isa = PBXFileReference; name = "RNExitApp.xcodeproj"; path = "../node_modules/react-native-exit-app/ios/RNExitApp.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
-		9055CA30A78741068EB8F41C /* libRNExitApp.a */ = {isa = PBXFileReference; name = "libRNExitApp.a"; path = "libRNExitApp.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 		C751EAD26E714906AC71FA00 /* Eurostile.ttf */ = {isa = PBXFileReference; name = "Eurostile.ttf"; path = "../assets/fonts/Eurostile.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		FD2D1181CA1240FCA43331F6 /* films.eurostile.ttf */ = {isa = PBXFileReference; name = "films.eurostile.ttf"; path = "../assets/fonts/films.eurostile.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
@@ -384,7 +381,6 @@
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
 				CAFEBF7316944A69AE20A627 /* libRCTVideo.a in Frameworks */,
 				F4251D96297B465CB2FAB2AB /* libRNSound.a in Frameworks */,
-				54053B31A73A4F3E95C6DAF0 /* libRNExitApp.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -573,7 +569,6 @@
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
 				C39D306D9A7A471CA1C5C0C8 /* RCTVideo.xcodeproj */,
 				1E94D45CF7BB4757BDBA9DC4 /* RNSound.xcodeproj */,
-				03F40A46694F485890BE296D /* RNExitApp.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1214,9 +1209,6 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleAndroidGame.app/SimpleAndroidGame";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1243,9 +1235,6 @@
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/SimpleAndroidGame.app/SimpleAndroidGame";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1327,9 +1316,6 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1364,9 +1350,6 @@
 				TVOS_DEPLOYMENT_TARGET = 9.2;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1400,9 +1383,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1436,9 +1416,6 @@
 				TVOS_DEPLOYMENT_TARGET = 10.1;
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
-					"\"$(SRCROOT)/$(TARGET_NAME)\"",
 				);
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",

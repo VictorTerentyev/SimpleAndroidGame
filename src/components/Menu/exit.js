@@ -8,10 +8,9 @@ import {
   Text,
   TouchableHighlight,
   ImageBackground,
-  AppState
+  AppState,
+  BackHandler
 } from 'react-native';
-
-import ReactExit from 'react-native-exit-app';
 
 import { setDisplay } from '../../actions/AppActions';
 
@@ -86,7 +85,7 @@ class Exit extends PureComponent {
         this.props.setDisplay('exitDisp', 'none');
         break;
       case 'Exit':
-        ReactExit.exitApp();
+        BackHandler.exitApp();
         break;
     }
   }

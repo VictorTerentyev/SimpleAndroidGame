@@ -28,7 +28,7 @@ class MainMenu extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      mod: { mod }
+      mode: { mode }
     } = this.props;
 
     return (
@@ -90,7 +90,7 @@ class MainMenu extends PureComponent {
       case 'Start':
         switch (this.props.state) {
           case 'deactivated':
-            if (this.props.mod === 'hardcore') {
+            if (this.props.mode === 'hardcore') {
               this.props.setGameInitialState(1);
             } 
             else {
@@ -218,7 +218,7 @@ const stateMap = (state) => {
     state: state.simpleAndroidGame.state,
     display: state.simpleAndroidGame.mainDisp,
     brightness: state.simpleAndroidGame.Brightness,
-    mod: state.simpleAndroidGame.mod
+    mode: state.simpleAndroidGame.mode
   };
 };
 

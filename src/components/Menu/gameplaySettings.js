@@ -5,115 +5,28 @@ import {
   AppRegistry,
   StyleSheet,
   View,
-  Text,
-  CheckBox,
-  SectionList,
-  TouchableHighlight,
-  ImageBackground,
-  AppState
+  Text
 } from 'react-native';
 
-import {
-  setDisplay,
-  setSetting
-} from '../../actions/AppActions';
-
-import Sound from 'react-native-sound';
+import ModeCheckbox from './gameplaySettingsModeCheckbox';
+import BackButton from './settingsItemsBackButton';
 
 class GameplaySettings extends PureComponent {
   render() {
     const { 
       display: { display },
-      brightness: { brightness },
-      state: { state },
-      componentWillReceiveProps
+      brightness: { brightness }
     } = this.props;
 
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
-          <SectionList
-            sections={[
-              {title: 'GAMEPLAY', data: ['Hardcore']}
-            ]}
-            renderItem={({item}) =>
-              <View style={styles.textRow}>
-                <Text style={styles.title}>{item}</Text>
-                <Text style={styles.text}>:</Text>
-                <CheckBox 
-                  style={styles.check}
-                  onValueChange={(value) => this.handleCheckBoxChange(item, value)}
-                  disabled={this.state['disabled' + item]}
-                  value={this.state['value' + item]}
-                />
-              </View>
-            }
-            renderSectionHeader={({section}) => 
-              <Text style={styles.header}>{section.title}</Text>
-            }
-            keyExtractor={(item, index) => index}
-          />
-          <View style={styles.btnContainer}>
-            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
-              <TouchableHighlight 
-                style={styles.btn}
-                underlayColor="transparent"
-                onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
-                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
-              > 
-                <Text style={this.setTextColor()}>Back</Text>
-              </TouchableHighlight>
-            </ImageBackground>
-          </View>
+          <Text style={styles.header}>GAMEPLAY</Text>
+          <ModeCheckbox/>
+          <BackButton currentDisplayName='gameplayDisp'/>
         </View>
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      disabledHardcore: false,
-      valueHardcore: false,
-      btnBackground: {},
-      textColor: '#fafafa',
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-  }
-
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.state === 'paused') {
-      this.setState({disabledHardcore: true});
-    }
-    if (nextProps.state === 'deactivated') {
-      this.setState({disabledHardcore: false});
-    } 
-  }
-
-  actionHandle = () => {
-    this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('settingsDisp', 'flex');
-    this.props.setDisplay('gameplayDisp', 'none');
-  }
-
-  changeUnderlayHandle = (color, img) => {
-    this.setState({
-      btnBackground: img,
-      textColor: color
-    });
-  }
-
-  setTextColor = () => {
-    const styles = StyleSheet.create({
-      textColor: {
-        fontFamily: 'Eurostile',
-        fontSize: 20,
-        color: this.state.textColor
-      }
-    });
-    return styles.textColor;
   }
 
   setDisplay = () => {
@@ -128,47 +41,11 @@ class GameplaySettings extends PureComponent {
     });
     return styles.container;
   }
-
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
-  checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
-  }
-
-  handleCheckBoxChange = (item, val) => {
-    this.checkBtnSoundDoublePlay();
-    switch (item) {
-      case 'Hardcore':
-        if (val === true) {
-          this.setState({valueHardcore: true});
-          this.props.setSetting('mod', 'hardcore');
-        } 
-        else {
-          this.setState({valueHardcore: false});
-          this.props.setSetting('mod', 'default');
-        } 
-        break;
-    }
-  }
 }
 
 GameplaySettings.propTypes = {
   display: PropTypes.string,
-  brightness: PropTypes.number,
-  state: PropTypes.string,
-  setDisplay: PropTypes.func,
-  setSetting: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func
+  brightness: PropTypes.number
 }
 
 const styles = StyleSheet.create({
@@ -182,67 +59,16 @@ const styles = StyleSheet.create({
     fontSize: 30,
     color: '#fafafa',
     fontFamily: 'Eurostile'
-  },
-  textRow: {
-    marginLeft: 6,
-    marginRight: 6,
-    marginBottom: 10,
-    flexDirection: 'row' 
-  },
-  text: {
-    fontFamily: 'Eurostile',
-    fontSize: 20,
-    color: '#fafafa',
-    marginRight: 10
-  },
-  title: {
-    fontFamily: 'Eurostile',
-    fontSize: 20,
-    color: '#fafafa',
-    marginRight: 10,
-    width: 100
-  },
-  btnContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'flex-end',
-    flex: 1
-  },
-  btn: {
-    justifyContent: 'center',
-    alignItems: 'center', 
-    backgroundColor: '#000000',
-    width: 100,
-    height: 40
-  },
-  btnBgImg: {
-    width: 100,
-    height: 40,
-    marginRight: 6,
-    alignSelf: 'flex-end' 
-  },
-  check: {
-    width: 50,
-    height: 50
-  },
-  checkBgImg: {
-    width: 50,
-    height: 50
   }
 });
 
 const stateMap = (state) => {
   return {
     display: state.simpleAndroidGame.gameplayDisp,
-    brightness: state.simpleAndroidGame.Brightness,
-    state: state.simpleAndroidGame.state
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 
-const mapDispatchToProps = {
-  setDisplay,
-  setSetting
-};
-
-export default connect(stateMap, mapDispatchToProps)(GameplaySettings);
+export default connect(stateMap)(GameplaySettings);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => GameplaySettings);

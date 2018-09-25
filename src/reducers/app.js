@@ -27,7 +27,7 @@ const initialState = {
   Effects: 1.0,
   Music: 1.0,
   Video: 1.0,
-  mod: 'default',
+  mode: 'default',
   state: 'deactivated',
   hitpoints: 3,
   position: Dimensions.get('window').height * 0.30,

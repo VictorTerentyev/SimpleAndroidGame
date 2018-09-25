@@ -24,7 +24,6 @@ class ShipsList extends PureComponent {
     const {
       state: { state },
       shipDisp: { shipDisp },
-      hitpoints: { hitpoints },
       position: { position },
       enemyShips: { enemyShips },
       componentWillReceiveProps
@@ -73,8 +72,6 @@ class ShipsList extends PureComponent {
     }
     if (this.props.state === 'deactivated') {
       this.setState({activeFlag: false});
-    }
-    if (nextProps.hitpoints === 0) {
       this.props.setDisplay({shipDisp: 'none'});
     }
   }
@@ -103,7 +100,6 @@ class ShipsList extends PureComponent {
 ShipsList.propTypes = {
   state: PropTypes.string,
   shipDisp: PropTypes.string,
-  hitpoints: PropTypes.number,
   position: PropTypes.number,
   enemyShips: PropTypes.array,
   setDisplay: PropTypes.func,
@@ -127,7 +123,6 @@ const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
     shipDisp: state.simpleAndroidGame.shipDisp,
-    hitpoints: state.simpleAndroidGame.hitpoints,
     position: state.simpleAndroidGame.position,
     enemyShips: state.simpleAndroidGame.enemyShips
   };

@@ -70,10 +70,14 @@ class EnemyShip extends PureComponent {
     this.setEnemyShipAnimation();
     if (!this.timerHandle) {
       this.createEnemyShotLoop();
-    }
+    };
   }
 
   componentWillReceiveProps = (nextProps) => {
+    if (nextProps.state === 'deactivated') {
+      clearTimeout(this.timerHandle);
+      this.timerHandle = 0;
+    };
     if (nextProps.state === 'paused') {
       clearTimeout(this.timerHandle);
       this.timerHandle = 0;
@@ -81,14 +85,14 @@ class EnemyShip extends PureComponent {
         anim: new Animated.Value(this.positionX),
       });
       AppState.removeListener(this.positionX);
-    }
+    };
     if (nextProps.state === 'resumed') {
       this.setListener();
       this.setEnemyShipAnimation();
       if (!this.timerHandle) {
         this.createEnemyShotLoop();
-      }
-    }
+      };
+    };
   }
 
   componentWillUnmount = () => {
@@ -117,7 +121,7 @@ class EnemyShip extends PureComponent {
         positionX: this.positionX + this.state.positionXMiddle
       });
       this.createEnemyShotLoop(random);
-    }
+    };
   }
 
   setDisplay = () => {
@@ -151,7 +155,7 @@ class EnemyShip extends PureComponent {
         this.props.removeEnemyShipHitpoints(this.props.id);
         this.props.removeEnemyShipCurrentPosition(this.props.id);
         this.props.removeEnemyShip(this.props.id);
-      }
+      };
     });
   }
 }

@@ -8,21 +8,23 @@ import {
   Text,
   Slider,
   SectionList,
-  TouchableHighlight,
   ImageBackground,
   AppState
 } from 'react-native';
 
-import { setDisplay, setSetting } from '../../actions/AppActions';
+import { setSetting } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
+
+import BackButton from './settingsItemsBackButton';
 
 class VideoSettings extends PureComponent {
   render() {
     const { 
       display: { display },
       brightness: { brightness },
-      dispatch 
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -55,19 +57,7 @@ class VideoSettings extends PureComponent {
             }
             keyExtractor={(item, index) => index}
           />
-          <View style={styles.btnContainer}>
-            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
-              <TouchableHighlight 
-                style={styles.btn}
-                underlayColor="transparent"
-                onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
-                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
-              > 
-                <Text style={this.setTextColor()}>Back</Text>
-              </TouchableHighlight>
-            </ImageBackground>
-          </View>
+          <BackButton currentDisplayName='videoDisp'/>
         </View>
       </View>
     );
@@ -78,36 +68,26 @@ class VideoSettings extends PureComponent {
     this.state = {
       appState: AppState.currentState,
       Brightness: this.props.brightness,
-      btnBackground: {},
-      textColor: '#fafafa',
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
-  actionHandle = () => {
-    this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('settingsDisp', 'flex');
-    this.props.setDisplay('videoDisp', 'none');
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
-  changeUnderlayHandle = (color, img) => {
-    this.setState({
-      btnBackground: img,
-      textColor: color
-    });
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  setTextColor = () => {
-    const styles = StyleSheet.create({
-      textColor: {
-        fontFamily: 'Eurostile',
-        fontSize: 20,
-        color: this.state.textColor
-      }
-    });
-    return styles.textColor;
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+      this.state.btnSound.play();
+    } else {
+      this.state.btnSound.pause();
+    };
+    this.setState({appState: nextAppState});
   }
-
 
   setDisplay = () => {
     const styles = StyleSheet.create({
@@ -122,38 +102,26 @@ class VideoSettings extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
     if (this.state.btnSound.getCurrentTime !== 0) {
       this.state.btnSound.stop();
       this.state.btnSound.play();
-    }
+    };
   }
 
   handleSliderValueChange = (val, item) => {
     this.setState({ [item]: val });
     this.props.setSetting(item, val);
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.checkBtnSoundDoublePlay();
   }
 }
 
 VideoSettings.propTypes = {
   display: PropTypes.string,
   brightness: PropTypes.number,
-  setDisplay: PropTypes.func,
   setSetting: PropTypes.func,
-  dispatch: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -193,24 +161,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 100
   },
-  btnContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'flex-end',
-    flex: 1
-  },
-  btn: {
-    justifyContent: 'center',
-    alignItems: 'center', 
-    backgroundColor: '#000000',
-    width: 100,
-    height: 40
-  },
-  btnBgImg: {
-    width: 100,
-    height: 40,
-    marginRight: 6,
-    alignSelf: 'flex-end' 
-  },
   sld: {
     width: 350,
     height: 20
@@ -230,7 +180,6 @@ const stateMap = (state) => {
 };
 
 const mapDispatchToProps = {
-  setDisplay,
   setSetting
 };
 

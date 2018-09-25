@@ -16,6 +16,7 @@ class GameBackground extends PureComponent {
     const {
       state: { state },
       brightness: { brightness },
+      display: { display },
       componentWillMount,
       componentWillReceiveProps,
       componentWillUnmount
@@ -55,7 +56,7 @@ class GameBackground extends PureComponent {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if(nextProps.state === 'active' || nextProps.state === 'resumed') {
+    if(nextProps.display === 'flex') {
       this.setBgAnimation();
     } else { 
       Animated.timing(
@@ -116,6 +117,7 @@ class GameBackground extends PureComponent {
 GameBackground.propTypes = {
   state: PropTypes.string,
   brightness: PropTypes.number,
+  display: PropTypes.string,
   componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
@@ -139,7 +141,8 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
-    brightness: state.simpleAndroidGame.Brightness
+    brightness: state.simpleAndroidGame.Brightness,
+    display: state.simpleAndroidGame.gameDisp
   };
 };
 
