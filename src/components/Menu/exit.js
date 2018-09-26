@@ -23,7 +23,8 @@ class Exit extends PureComponent {
     const {
       display: { display },
       brightness: { brightness },
-      dispatch
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -77,6 +78,21 @@ class Exit extends PureComponent {
     }
   }
 
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
+  }
+
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
     switch (item) {
@@ -126,20 +142,9 @@ class Exit extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 }
 
@@ -147,7 +152,8 @@ Exit.propTypes = {
   display: PropTypes.string,
   brightness: PropTypes.number,
   setDisplay: PropTypes.func,
-  dispatch: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

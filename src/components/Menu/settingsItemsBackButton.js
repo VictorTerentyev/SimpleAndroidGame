@@ -45,7 +45,7 @@ class SettingsBackButton extends PureComponent {
       appState: AppState.currentState,
       btnBackground: {},
       textColor: '#fafafa',
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
   }
 
@@ -58,10 +58,8 @@ class SettingsBackButton extends PureComponent {
   }
 
   handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.sound.pause();
     }
     this.setState({appState: nextAppState});
   }
@@ -91,10 +89,8 @@ class SettingsBackButton extends PureComponent {
   }
 
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.sound.stop();
+    this.state.sound.play();
   }
 }
 

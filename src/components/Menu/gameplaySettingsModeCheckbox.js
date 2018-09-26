@@ -18,7 +18,9 @@ class ModeCheckbox extends PureComponent {
   render() {
     const {
       state: { state },
-      componentWillReceiveProps
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -47,6 +49,10 @@ class ModeCheckbox extends PureComponent {
       sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
   }
+  
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
 
   componentWillReceiveProps = (nextProps) => {
     if (nextProps.state === 'paused') {
@@ -57,20 +63,15 @@ class ModeCheckbox extends PureComponent {
     };
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.sound.play();
-    } else {
-      this.state.sound.pause();
-    };
-    this.setState({appState: nextAppState});
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  checkSoundDoublePlay = () => {
-    if (this.state.sound.getCurrentTime !== 0) {
-      this.state.sound.stop();
-      this.state.sound.play();
-    };
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.sound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   handleCheckboxChange = (val) => {
@@ -99,12 +100,19 @@ class ModeCheckbox extends PureComponent {
     });
     return styles.button;
   }
+
+  checkSoundDoublePlay = () => {
+    this.state.sound.stop();
+    this.state.sound.play();
+  }
 }
 
 ModeCheckbox.propTypes = {
   state: PropTypes.string,
   setSetting: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

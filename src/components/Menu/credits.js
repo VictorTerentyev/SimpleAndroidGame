@@ -20,7 +20,8 @@ class Credits extends PureComponent {
     const { 
       display: { display },
       brightness: { brightness },
-      dispatch
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -57,6 +58,21 @@ class Credits extends PureComponent {
       textColor: '#fafafa',
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
+  }
+
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   actionHandle = () => {
@@ -98,27 +114,17 @@ class Credits extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 }
 
 Credits.propTypes = {
   display: PropTypes.string,
   brightness: PropTypes.number,
-  dispatch: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

@@ -28,7 +28,9 @@ class MainMenu extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      mode: { mode }
+      mode: { mode },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
 
     return (
@@ -81,6 +83,21 @@ class MainMenu extends PureComponent {
       },
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
+  }
+
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   actionHandle = (item) => {
@@ -155,20 +172,9 @@ class MainMenu extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 }
 
@@ -180,7 +186,9 @@ MainMenu.propTypes = {
   setGameState: PropTypes.func,
   setGameInitialState: PropTypes.func,
   setDisplay: PropTypes.func,
-  setPosition: PropTypes.func
+  setPosition: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

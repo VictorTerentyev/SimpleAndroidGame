@@ -79,12 +79,15 @@ class EnemyShot extends PureComponent {
   }
 
   componentWillReceiveProps = (nextProps) => {
+    if (nextProps.state === 'deactivated') {
+      AppState.removeListener(this.state.shotPosAnim);
+    };
     if (nextProps.state === 'paused') {
       this.pausedActionHandle(); 
-    }
+    };
     if (nextProps.state === 'resumed') {
       this.resumedActionHandle();
-    }
+    };
   }
 
   componentWillUnmount = () => {
@@ -171,10 +174,8 @@ class EnemyShot extends PureComponent {
   }
 
   checkSoundDoublePlay = (sound) => {
-    if (sound.getCurrentTime !== 0) {
-      sound.stop();
-      sound.play(() => {sound.release()});
-    }
+    sound.stop();
+    sound.play(() => {sound.release()});
   }
 
   checkDamage = (positionX) => {
@@ -193,8 +194,8 @@ class EnemyShot extends PureComponent {
         this.props.removeEnemyShot(this.props.id);
         this.props.setShipHitpoints(--this.props.hitpoints);
         if (--this.props.hitpoints === 0) {
-          this.props.setDisplay('shipDisp', 'none');
           this.props.setShipHitpoints(0);
+          this.props.setDisplay('shipDisp', 'none');
           this.props.setGameState('deactivated');
           setTimeout(() => {
             this.props.setDisplay('gameDisp', 'none');

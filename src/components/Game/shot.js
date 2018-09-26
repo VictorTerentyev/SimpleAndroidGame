@@ -160,10 +160,8 @@ class Shot extends PureComponent {
   }
 
   checkSoundDoublePlay = (sound) => {
-    if (sound.getCurrentTime !== 0) {
-      sound.stop();
-      sound.play(() => sound.release());
-    }
+    sound.stop();
+    sound.play(() => sound.release());
   }
 
   checkDamage = (positionX) => {
