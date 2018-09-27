@@ -9,7 +9,8 @@ import {
   Slider,
   SectionList,
   ImageBackground,
-  AppState
+  AppState,
+  AsyncStorage
 } from 'react-native';
 
 import { setSetting } from '../../actions/AppActions';
@@ -106,9 +107,19 @@ class VideoSettings extends PureComponent {
   }
 
   handleSliderValueChange = (val, item) => {
+    this.checkBtnSoundDoublePlay();
     this.setState({ [item]: val });
     this.props.setSetting(item, val);
-    this.checkBtnSoundDoublePlay();
+    this.storeData(item, val);
+  }
+
+  storeData = async (prop, value) => {
+    try {
+      await AsyncStorage.setItem(prop, value);
+    }
+    catch (error) {
+
+    }
   }
 }
 

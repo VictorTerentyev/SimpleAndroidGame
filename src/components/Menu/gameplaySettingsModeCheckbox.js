@@ -7,7 +7,8 @@ import {
   View,
   Text,
   TouchableHighlight,
-  AppState
+  AppState,
+  AsyncStorage
 } from 'react-native';
 
 import { setSetting } from '../../actions/AppActions';
@@ -82,6 +83,7 @@ class ModeCheckbox extends PureComponent {
         buttonBackgroundColor: '#fdb023'
       });
       this.props.setSetting('mode', 'hardcore');
+      this.storeData('mode', 'hardcore');
     } 
     else {
       this.setState({
@@ -89,6 +91,7 @@ class ModeCheckbox extends PureComponent {
         buttonBackgroundColor: '#fafafa'
       });
       this.props.setSetting('mode', 'default');
+      this.storeData('mode', 'default');
     };
   }
 
@@ -104,6 +107,15 @@ class ModeCheckbox extends PureComponent {
   checkSoundDoublePlay = () => {
     this.state.sound.stop();
     this.state.sound.play();
+  }
+
+  storeData = async (prop, value) => {
+    try {
+      await AsyncStorage.setItem(prop, value);
+    }
+    catch (error) {
+
+    }
   }
 }
 
