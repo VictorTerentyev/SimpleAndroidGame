@@ -22,9 +22,15 @@ import GameplaySettings from '../components/Menu/gameplaySettings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
+import {
+  setMenuMusicCurrentTime
+} from '../actions/AppActions';
+
 class Menu extends PureComponent {
   render() {
     const {
+      initFlag: { initFlag },
+      musicCurrentTime: { musicCurrentTime },
       display: { display }, 
       bgVideoPaused: { bgVideoPaused },
       brightness: { brightness },
@@ -60,16 +66,21 @@ class Menu extends PureComponent {
     this.state = {
       appState: AppState.currentState,
       bgVideoPaused: this.props.bgVideoPaused,
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)})
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+        if (this.state.appState === 'active' && this.props.initFlag === true) {
+          this.state.bgMusic.play();
+        };
+      })
     };
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.display === 'flex') {
+    if (nextProps.display === 'flex' && this.state.appState === 'active') {
       this.setState({bgVideoPaused: false});
       this.state.bgMusic.play();
     } 
@@ -81,6 +92,7 @@ class Menu extends PureComponent {
 
   componentWillUnmount = () => {
     AppState.removeEventListener('change', this.handleAppStateChange);
+    this.state.bgMusic.release();
   }
 
   handleAppStateChange = (nextAppState) => {
@@ -122,9 +134,12 @@ class Menu extends PureComponent {
 }
 
 Menu.propTypes = {
+  initFlag: PropTypes.bool,
   display: PropTypes.string,
   bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
+  musicCurrentTime: PropTypes.number,
+  setMenuMusicCurrentTime: PropTypes.func,
   componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
   componentWillUnmount: PropTypes.func
@@ -143,12 +158,18 @@ let styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
+    initFlag: state.simpleAndroidGame.menuInitFlag,
+    musicCurrentTime: state.simpleAndroidGame.menuMusicCurrentTime,
     display: state.simpleAndroidGame.menuDisp,
     bgVideoPaused: state.simpleAndroidGame.menuPause,
-    brightness: state.simpleAndroidGame.Brightness,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 
-export default connect(stateMap)(Menu);
+const mapDispatchToProps = {
+  setMenuMusicCurrentTime
+};
+
+export default connect(stateMap, mapDispatchToProps)(Menu);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Menu);

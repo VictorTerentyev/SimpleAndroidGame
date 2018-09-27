@@ -11,9 +11,9 @@ const initialState = {
   introVids: [NVidia, AMD, UE4, Frontier],
   introVidsCurrentIndex: 0,
   introVidsCurrentTime: 0,
-  introPause: false,
+  introPause: true,
   menuInitFlag: false,
-  menuMusicCurrentTime: 0,
+  menuMusicCurrentTime: 0.0,
   menuPause: true,
   introDisp: 'flex',
   gameDisp: 'none',
@@ -73,7 +73,7 @@ export default function simpleAndroidGame (state = initialState, action) {
         menuInitFlag: action.flag
       })
 
-    case types.SET_MENU_MUSIC_State:
+    case types.SET_MENU_MUSIC_CURRENT_TIME:
       return ({
         ...state,
         menuMusicCurrentTime: action.currentTime

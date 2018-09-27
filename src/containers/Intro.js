@@ -46,7 +46,7 @@ class Intro extends PureComponent {
             onLoad={this.introLoad}
             onProgress={this.introProgress}
             onEnd={() => this.introControlHandle()}
-            paused={this.state.paused}
+            paused={this.props.introPause}
             volume={this.props.volume * this.props.video}
             playWhenInactive
             style={styles.backgroundVideo}
@@ -62,8 +62,7 @@ class Intro extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      appState: 'background',
-      paused: false
+      appState: 'background'
     };
   }
 
@@ -72,13 +71,9 @@ class Intro extends PureComponent {
   }
 
   componentDidMount = () => {
-    this.player.seek(this.props.introVidsCurrentTime);
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.introPause === true) {
-      this.setState({paused: true});
-    };
+    if (this.props.display === 'flex') {
+      this.player.seek(this.props.introVidsCurrentTime);
+    }
   }
 
   componentWillUnmount = () => {
@@ -87,10 +82,10 @@ class Intro extends PureComponent {
 
   handleAppStateChange = (nextAppState) => {
     if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === 'flex') {
-      this.setState({paused: false});
+      this.props.videoPlay('introPause', false);
     }
     else {
-      this.setState({paused: true});
+      this.props.videoPlay('introPause', true);
     };
     this.setState({appState: nextAppState});
   }
@@ -105,10 +100,11 @@ class Intro extends PureComponent {
 
   introControlHandle = () => {
     if (this.props.introVidsCurrentIndex + 1 < this.props.introVids.length) {
-      this.props.setIntroVideosCurrentIndex(this.props.introVidsCurrentIndex + 1);
       this.props.setIntroVideosCurrentTime(0.0);
+      this.props.setIntroVideosCurrentIndex(this.props.introVidsCurrentIndex + 1);
     } 
     else {
+      this.props.setMenuInitFlag(true);
       this.props.videoPlay('introPause', true);
       this.props.videoPlay('menuPause', false);
       this.props.setDisplay('introDisp', 'none');
