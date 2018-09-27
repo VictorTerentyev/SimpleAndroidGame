@@ -1,17 +1,45 @@
 import * as types from '../constants/ActionTypes';
 
-export function setDisplay(display, value) {
-  return {
-    type: types.SET_DISPLAY,
-    display,
-    value
-  };
-}
-
 export function videoPlay(video, value) {
   return {
     type: types.VIDEO_PLAY,
     video,
+    value
+  };
+}
+
+export function setIntroVideosCurrentIndex(currentIndex) {
+  return {
+    type: types.SET_INTRO_VIDEOS_CURRENT_INDEX,
+    currentIndex
+  };
+}
+
+export function setIntroVideosCurrentTime(currentTime) {
+  return {
+    type: types.SET_INTRO_VIDEOS_CURRENT_TIME,
+    currentTime
+  };
+}
+
+export function setMenuInitFlag(flag) {
+  return {
+    type: types.SET_MENU_INIT_FLAG,
+    flag
+  };
+}
+
+export function setMenuMusicCurrentTime(currentTime) {
+  return {
+    type: types.SET_MENU_MUSIC_CURRENT_TIME,
+    currentTime
+  };
+}
+
+export function setDisplay(display, value) {
+  return {
+    type: types.SET_DISPLAY,
+    display,
     value
   };
 }

@@ -9,7 +9,11 @@ import Frontier from '../../assets/videos/frontier.mp4';
 
 const initialState = {
   introVids: [NVidia, AMD, UE4, Frontier],
+  introVidsCurrentIndex: 0,
+  introVidsCurrentTime: 0,
   introPause: false,
+  menuInitFlag: false,
+  menuMusicCurrentTime: 0,
   menuPause: true,
   introDisp: 'flex',
   gameDisp: 'none',
@@ -45,16 +49,40 @@ export default function simpleAndroidGame (state = initialState, action) {
 
   switch (action.type) {
 
+    case types.VIDEO_PLAY:
+      return ({
+        ...state,
+        [action.video]: action.value
+      })
+
+    case types.SET_INTRO_VIDEOS_CURRENT_INDEX:
+      return ({
+        ...state,
+        introVidsCurrentIndex: action.currentIndex
+      })
+
+    case types.SET_INTRO_VIDEOS_CURRENT_TIME:
+      return ({
+        ...state,
+        introVidsCurrentTime: action.currentTime
+      })
+
+    case types.SET_MENU_INIT_FLAG:
+      return ({
+        ...state,
+        menuInitFlag: action.flag
+      })
+
+    case types.SET_MENU_MUSIC_State:
+      return ({
+        ...state,
+        menuMusicCurrentTime: action.currentTime
+      })
+
     case types.SET_DISPLAY:
       return ({
         ...state,
         [action.display]: action.value
-      })
-
-    case types.VIDEO_PLAY:
-      return ({
-        ...state,
-        [action.video]: action.value,
       })
 
     case types.SET_SETTING:
