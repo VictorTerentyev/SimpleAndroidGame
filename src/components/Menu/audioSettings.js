@@ -104,7 +104,7 @@ class AudioSettings extends PureComponent {
   handleAppStateChange = (nextAppState) => {
     if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
       this.state.btnSound.pause();
-    }
+    };
     this.setState({appState: nextAppState});
   }
 
@@ -137,9 +137,7 @@ class AudioSettings extends PureComponent {
     try {
       await AsyncStorage.setItem(prop, value);
     }
-    catch (error) {
-
-    }
+    catch (error) {};
   }
 }
 

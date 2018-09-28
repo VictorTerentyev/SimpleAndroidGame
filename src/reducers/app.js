@@ -1,24 +1,11 @@
 import * as types from '../constants/ActionTypes';
 
-import {
-  Dimensions,
-  AsyncStorage
-} from 'react-native';
+import { Dimensions } from 'react-native';
 
 import NVidia from '../../assets/videos/nvidia.mp4';
 import AMD from '../../assets/videos/amd.mp4';
 import UE4 from '../../assets/videos/ue4.mp4';
 import Frontier from '../../assets/videos/frontier.mp4';
-
-retrieveData = async (prop) => {
-  try {
-    const value = AsyncStorage.getItem(prop);
-  } 
-  catch (error) {
-
-  }
-  return value;
-}
 
 const initialState = {
   introVids: [NVidia, AMD, UE4, Frontier],
@@ -39,12 +26,12 @@ const initialState = {
   gameplayDisp: 'none',
   creditsDisp: 'none',
   exitDisp: 'none',
-  Brightness: retrieveData('Brightness') || 1.0,
-  Volume: retrieveData('Volume') || 1.0,
-  Effects: retrieveData('Effects') || 1.0,
-  Music: retrieveData('Music') || 1.0,
-  Video: retrieveData('Video') || 1.0,
-  mode: retrieveData('mode') || 'default',
+  Brightness: 1.0,
+  Volume: 1.0,
+  Effects: 1.0,
+  Music: 1.0,
+  Video: 1.0,
+  mode: 'default',
   state: 'deactivated',
   hitpoints: 3,
   position: Dimensions.get('window').height * 0.30,

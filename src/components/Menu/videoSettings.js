@@ -75,6 +75,8 @@ class VideoSettings extends PureComponent {
 
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+    this.getData('Brightness');
+    this.props.setSetting('Brightness', this.state['Brightness']);
   }
 
   componentWillUnmount = () => {
@@ -108,18 +110,27 @@ class VideoSettings extends PureComponent {
 
   handleSliderValueChange = (val, item) => {
     this.checkBtnSoundDoublePlay();
+    this.storeData(item, val);
     this.setState({ [item]: val });
     this.props.setSetting(item, val);
-    this.storeData(item, val);
   }
 
   storeData = async (prop, value) => {
     try {
       await AsyncStorage.setItem(prop, value);
     }
-    catch (error) {
+    catch (error) {};
+  }
 
+  getData = async (prop) => {
+    try {
+      await AsyncStorage.getItem(prop).then(val => {
+        if (val !== null ) {
+          this.setState({ [prop]: val });
+        }
+      });
     }
+    catch (error) {};
   }
 }
 
@@ -182,7 +193,7 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     display: state.simpleAndroidGame.videoDisp,
-    brightness: state.simpleAndroidGame.Brightness,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 

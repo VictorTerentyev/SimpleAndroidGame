@@ -19,6 +19,7 @@ class ModeCheckbox extends PureComponent {
   render() {
     const {
       state: { state },
+      mode: { mode },
       componentWillMount,
       componentWillReceiveProps,
       componentWillUnmount
@@ -71,7 +72,7 @@ class ModeCheckbox extends PureComponent {
   handleAppStateChange = (nextAppState) => {
     if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
       this.state.sound.pause();
-    }
+    };
     this.setState({appState: nextAppState});
   }
 
@@ -113,14 +114,13 @@ class ModeCheckbox extends PureComponent {
     try {
       await AsyncStorage.setItem(prop, value);
     }
-    catch (error) {
-
-    }
+    catch (error) {};
   }
 }
 
 ModeCheckbox.propTypes = {
   state: PropTypes.string,
+  mode: PropTypes.string,
   setSetting: PropTypes.func,
   componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
@@ -157,7 +157,8 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    state: state.simpleAndroidGame.state
+    state: state.simpleAndroidGame.state,
+    mode: state.simpleAndroidGame.mode
   };
 };
 
