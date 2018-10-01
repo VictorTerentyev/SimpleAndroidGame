@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -14,20 +13,25 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import {
+  setDisplay,
+  setPosition,
+  setGameState,
+  setGameInitialState
+} from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
 class MainMenu extends PureComponent {
   render() {
     const {
-      appDisps: { appDisps },
+      state: { state },
       display: { display },
       brightness: { brightness },
-      game: { game },
-      dispatch
+      mode: { mode },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -64,6 +68,7 @@ class MainMenu extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       btnBackgrounds: {
         Start: {},
         Settings: {},
@@ -76,22 +81,38 @@ class MainMenu extends PureComponent {
         Credits: '#fafafa',
         Exit: '#fafafa'
       },
-      appState: AppState.currentState,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
+  }
+
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
+    this.props.setDisplay('mainDisp', 'none');
     switch (item) {
       case 'Start':
-        obj.menu.menu = 'none';
-        obj.menu.main = 'none';
-        obj.game = 'flex';
-        switch (this.props.game.state) {
+        switch (this.props.state) {
           case 'deactivated':
-            this.props.setPosition(Dimensions.get('window').height * 0.30);
+            if (this.props.mode === 'hardcore') {
+              this.props.setGameInitialState(1);
+            } 
+            else {
+              this.props.setGameInitialState();
+            }
             this.props.setGameState('active');
             break;
 
@@ -99,21 +120,19 @@ class MainMenu extends PureComponent {
             this.props.setGameState('resumed');
             break;
         }
-        this.props.setDisplays(obj);
-        
+        this.props.setDisplay('menuDisp', 'none');
+        this.props.setDisplay('mainDisp', 'none');
+        this.props.setDisplay('gameDisp', 'flex');
+        this.props.setDisplay('shipDisp', 'flex');
         break;
       case 'Settings':
-        obj.menu.main = 'none';
-        obj.menu.settings = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('settingsDisp', 'flex');
         break;
       case 'Credits':
-        obj.menu.credits = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('creditsDisp', 'flex');
         break;
       case 'Exit':
-        obj.menu.exit = 'flex';
-        this.props.setDisplays(obj);
+        this.props.setDisplay('exitDisp', 'flex');
         break;
     }
   }
@@ -153,29 +172,23 @@ class MainMenu extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 }
 
 MainMenu.propTypes = {
-  appDisps: PropTypes.object,
+  state: PropTypes.string,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  game: PropTypes.object,
-  dispatch: PropTypes.func
+  mod: PropTypes.string,
+  setGameState: PropTypes.func,
+  setGameInitialState: PropTypes.func,
+  setDisplay: PropTypes.func,
+  setPosition: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -210,13 +223,20 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.main,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    game: state.simpleAndroidGame.game
+    state: state.simpleAndroidGame.state,
+    display: state.simpleAndroidGame.mainDisp,
+    brightness: state.simpleAndroidGame.Brightness,
+    mode: state.simpleAndroidGame.mode
   };
 };
 
-export default connect(stateMap)(MainMenu);
+const mapDispatchToProps = {
+  setDisplay,
+  setPosition,
+  setGameState,
+  setGameInitialState
+};
+
+export default connect(stateMap, mapDispatchToProps)(MainMenu);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => MainMenu);

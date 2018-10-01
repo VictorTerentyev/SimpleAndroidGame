@@ -3,7 +3,7 @@ package com.simpleandroidgame;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
-import com.github.wumke.RNExitApp.RNExitAppPackage;
+import com.rnimmersive.RNImmersivePackage;
 import com.zmxv.RNSound.RNSoundPackage;
 import com.brentvatne.react.ReactVideoPackage;
 import com.facebook.react.ReactNativeHost;
@@ -26,7 +26,7 @@ public class MainApplication extends Application implements ReactApplication {
     protected List<ReactPackage> getPackages() {
       return Arrays.<ReactPackage>asList(
           new MainReactPackage(),
-            new RNExitAppPackage(),
+            new RNImmersivePackage(),
             new RNSoundPackage(),
             new ReactVideoPackage()
       );

@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,25 +8,25 @@ import {
   Text,
   Slider,
   SectionList,
-  TouchableHighlight,
   ImageBackground,
-  AppState
+  AppState,
+  AsyncStorage
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { setSetting } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
+
+import BackButton from './settingsItemsBackButton';
 
 class VideoSettings extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
-      videoSettings: { videoSettings },
-      audioSettings: { audioSettings },
-      dispatch 
+      brightness: { brightness },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -48,7 +47,7 @@ class VideoSettings extends PureComponent {
                     maximumTrackTintColor={'#fdb023'}
                     thumbTintColor={'#fd8723'}
                     onValueChange={(value) => this.handleSliderValueChange(value, item)}
-                    value={this.state.videoSettings[item]}
+                    value={this.state[item]}
                   />
                 </ImageBackground>
                 <Text style={styles.afterText}>100</Text>
@@ -59,19 +58,7 @@ class VideoSettings extends PureComponent {
             }
             keyExtractor={(item, index) => index}
           />
-          <View style={styles.btnContainer}>
-            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
-              <TouchableHighlight 
-                style={styles.btn}
-                underlayColor="transparent"
-                onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
-                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
-              > 
-                <Text style={this.setTextColor()}>Back</Text>
-              </TouchableHighlight>
-            </ImageBackground>
-          </View>
+          <BackButton currentDisplayName='videoDisp'/>
         </View>
       </View>
     );
@@ -80,40 +67,28 @@ class VideoSettings extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      videoSettings: this.props.videoSettings,
-      btnBackground: {},
-      textColor: '#fafafa',
       appState: AppState.currentState,
+      Brightness: this.props.brightness,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
   }
 
-  actionHandle = () => {
-    this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
-    obj.menu.settings = 'flex';
-    obj.menu.video = 'none';
-    this.props.setDisplays(obj);
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+    this.getData('Brightness');
+    this.props.setSetting('Brightness', this.state['Brightness']);
   }
 
-  changeUnderlayHandle = (color, img) => {
-    this.setState({
-      btnBackground: img,
-      textColor: color
-    });
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  setTextColor = () => {
-    const styles = StyleSheet.create({
-      textColor: {
-        fontFamily: 'Eurostile',
-        fontSize: 20,
-        color: this.state.textColor
-      }
-    });
-    return styles.textColor;
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
-
 
   setDisplay = () => {
     const styles = StyleSheet.create({
@@ -122,46 +97,49 @@ class VideoSettings extends PureComponent {
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
-        opacity: this.state.videoSettings.Brightness
+        opacity: this.state.Brightness
       }
     });
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 
   handleSliderValueChange = (val, item) => {
-    let videoSettings = this.state.videoSettings;
-    videoSettings[item] = val;
-    this.setState({ videoSettings: videoSettings });
-    this.props.setVideoSettings(videoSettings);
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
+    this.checkBtnSoundDoublePlay();
+    this.storeData(item, val);
+    this.setState({ [item]: val });
+    this.props.setSetting(item, val);
+  }
+
+  storeData = async (prop, value) => {
+    try {
+      await AsyncStorage.setItem(prop, value);
     }
+    catch (error) {};
+  }
+
+  getData = async (prop) => {
+    try {
+      await AsyncStorage.getItem(prop).then(val => {
+        if (val !== null ) {
+          this.setState({ [prop]: val });
+        }
+      });
+    }
+    catch (error) {};
   }
 }
 
 VideoSettings.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
-  videoSettings: PropTypes.object,
-  audioSettings: PropTypes.object,
-  dispatch: PropTypes.func
+  brightness: PropTypes.number,
+  setSetting: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -201,24 +179,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
     width: 100
   },
-  btnContainer: {
-    flexDirection: 'row', 
-    justifyContent: 'flex-end',
-    flex: 1
-  },
-  btn: {
-    justifyContent: 'center',
-    alignItems: 'center', 
-    backgroundColor: '#000000',
-    width: 100,
-    height: 40
-  },
-  btnBgImg: {
-    width: 100,
-    height: 40,
-    marginRight: 6,
-    alignSelf: 'flex-end' 
-  },
   sld: {
     width: 350,
     height: 20
@@ -232,13 +192,15 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.video,
-    videoSettings: state.simpleAndroidGame.settings.videoSettings,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    display: state.simpleAndroidGame.videoDisp,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 
-export default connect(stateMap)(VideoSettings);
+const mapDispatchToProps = {
+  setSetting
+};
+
+export default connect(stateMap, mapDispatchToProps)(VideoSettings);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => VideoSettings);

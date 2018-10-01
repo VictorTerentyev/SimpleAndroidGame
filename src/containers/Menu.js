@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,8 +8,6 @@ import {
   SectionList,
   AppState
 } from 'react-native';
-
-import * as AppActions from '../actions/AppActions';
 
 import Video from 'react-native-video';
 import MenuBg from '../../assets/videos/menu.mp4';
@@ -21,77 +18,92 @@ import MainMenu from '../components/Menu/main';
 import Settings from '../components/Menu/settings';
 import VideoSettings from '../components/Menu/videoSettings';
 import AudioSettings from '../components/Menu/audioSettings';
+import GameplaySettings from '../components/Menu/gameplaySettings';
 import Credits from '../components/Menu/credits';
 import Exit from '../components/Menu/exit';
 
+import {
+  setMenuMusicCurrentTime
+} from '../actions/AppActions';
+
 class Menu extends PureComponent {
   render() {
-    const { 
-      appProps: { appProps }, 
+    const {
+      initFlag: { initFlag },
+      musicCurrentTime: { musicCurrentTime },
       display: { display }, 
-      bgPaused: { bgPaused },
+      bgVideoPaused: { bgVideoPaused },
       brightness: { brightness },
+      componentWillMount,
       componentWillReceiveProps,
-      dispatch
+      componentWillUnmount
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
         <Video 
-          repeat
-          paused={this.props.bgPaused}
-          playInBackground
-          playWhenInactive
-          resizeMode='cover'
           source={MenuBg}
+          paused={this.state.bgVideoPaused}
+          playWhenInactive
+          repeat
           style={styles.bgVideo}
+          resizeMode='cover'
         />
         <View style={this.setVideoBrightness()}/>
-        <MainMenu 
-          setDisplays={actions.setDisplays}
-          setPosition={actions.setPosition}
-          setGameState={actions.setGameState}
-        />
-        <Settings setDisplays={actions.setDisplays}/>
-        <VideoSettings
-          setDisplays={actions.setDisplays}
-          setVideoSettings={actions.setVideoSettings}
-        />
-        <AudioSettings
-          setDisplays={actions.setDisplays}
-          setAudioSettings={actions.setAudioSettings}
-        />
-        <Credits setDisplays={actions.setDisplays}/>
-        <Exit setDisplays={actions.setDisplays}/>
+        <MainMenu/>
+        <Settings/>
+        <VideoSettings/>
+        <AudioSettings/>
+        <GameplaySettings/>
+        <Credits/>
+        <Exit/>
       </View>
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       appState: AppState.currentState,
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.bgMusic.setNumberOfLoops(-1)})
+      bgVideoPaused: this.props.bgVideoPaused,
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+        if (this.state.appState === 'active' && this.props.initFlag === true) {
+          this.state.bgMusic.play();
+        };
+      })
     };
+  }
+
+  componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps(nextProps) {
-    if(nextProps.display === 'flex') {
+    if (nextProps.display === 'flex' && this.state.appState === 'active') {
+      this.setState({bgVideoPaused: false});
       this.state.bgMusic.play();
     } 
-    else { 
+    else {
+      this.setState({bgVideoPaused: true});
       this.state.bgMusic.pause();
-    }
+    };
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+    this.state.bgMusic.release();
   }
 
   handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === 'flex') {
       this.state.bgMusic.play();
-    } else {
-      this.state.bgMusic.pause();
+      this.setState({bgVideoPaused: false});
     }
+    else {
+      this.state.bgMusic.pause();
+      this.setState({bgVideoPaused: true});
+    };
     this.setState({appState: nextAppState});
   }
 
@@ -121,6 +133,18 @@ class Menu extends PureComponent {
   }
 }
 
+Menu.propTypes = {
+  initFlag: PropTypes.bool,
+  display: PropTypes.string,
+  bgPaused: PropTypes.bool,
+  brightness: PropTypes.number,
+  musicCurrentTime: PropTypes.number,
+  setMenuMusicCurrentTime: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
+}
+
 let styles = StyleSheet.create({
   bgVideo: {
     position: 'absolute',
@@ -132,23 +156,20 @@ let styles = StyleSheet.create({
   }
 });
 
-Menu.propTypes = {
-  appProps: PropTypes.object,
-  display: PropTypes.string,
-  bgPaused: PropTypes.bool,
-  brightness: PropTypes.number,
-  dispatch: PropTypes.func
-}
-
 const stateMap = (state) => {
   return {
-    appProps: state.simpleAndroidGame,
-    display: state.simpleAndroidGame.displays.menu.menu,
-    bgPaused: state.simpleAndroidGame.videoPaused.menu,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
+    initFlag: state.simpleAndroidGame.menuInitFlag,
+    musicCurrentTime: state.simpleAndroidGame.menuMusicCurrentTime,
+    display: state.simpleAndroidGame.menuDisp,
+    bgVideoPaused: state.simpleAndroidGame.menuPause,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 
-export default connect(stateMap)(Menu);
+const mapDispatchToProps = {
+  setMenuMusicCurrentTime
+};
+
+export default connect(stateMap, mapDispatchToProps)(Menu);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Menu);

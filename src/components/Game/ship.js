@@ -8,30 +8,35 @@ import {
   Image,
   Animated,
   Easing,
-  Dimensions
+  Dimensions,
+  AppState
 } from 'react-native';
+
+import { setShipCurrentPosition } from '../../actions/AppActions';
 
 class Ship extends PureComponent {
   render() {
-    const { 
-      game: { display },
-      dispatch,
+    const {
+      display: { display },
+      hitpoints: { hitpoints },
+      position: { position },
+      componentWillMount,
       componentWillReceiveProps,
-      componentDidMount
+      componentWillUnmount
     } = this.props;
     return (
       <Animated.View
         style={[
           this.setDisplay(),
           {
-            [this.state.position]: this.state.anim
+            top: this.state.anim
           }
         ]}
         renderToHardwareTextureAndroid
       >
         <Image
-          style={styles.image}
-          source={this.setShipBg()}
+          style={this.setImageDisplay()}
+          source={{uri: 'cobra'}}
           resizeMode="stretch"
         />
       </Animated.View>
@@ -40,48 +45,70 @@ class Ship extends PureComponent {
 
   constructor(props) {
     super(props);
-    const position = this.props.side === 'left' ? 'top' : 'right';
     this.state = {
-      display: 'flex',
-      position: position,
-      anim: new Animated.Value(this.props.position)
+      shipHeight: '100%',
+      shipWidth: '100%',
+      visibilityFlag: true,
+      anim: new Animated.Value(this.props.position),
     };
   }
 
-  componentDidMount = () => {
-    if (this.props.side === 'right') {
-      this.setEnemyShipAnimation();
-    }
+  componentWillMount = () => {
+    this.setListener();
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.side === 'left') {
+    if (nextProps.hitpoints !== 0) {
       this.setBgAnimation(nextProps.position);
+      if (this.state.visibilityFlag === false) {
+        this.setState({
+          shipHeight: 100 + '%',
+          shipWidth: 100 + '%',
+          visibilityFlag: true
+        });
+      };
     }
+    else {
+      this.setState({
+        shipHeight: 0 + '%',
+        shipWidth: 0 + '%',
+        visibilityFlag: false
+      });
+    };
   }
 
-  setShipBg = () => {
-    if (this.props.side === 'left') {
-      return {uri: 'cobra'};
-    } 
-    else {
-      return {uri: 'eagle'}
-    }
+  componentWillUnmount = () => {
+    AppState.removeListener(this.state.anim);
+  }
+
+  setListener = () => {
+    this.state.anim.addListener(({value}) => {
+      this.props.setShipCurrentPosition(value);
+    });
   }
 
   setDisplay = () => {
-
     const styles = StyleSheet.create({
       container: {
+        display: this.props.display,
         position: 'absolute',
-        top: this.props.position,
-        [this.props.side]: 0, 
         width: '10%',
         height: '20%',
-        zIndex: -1
+        top: this.props.position,
+        left: 0
       }
     });
     return styles.container;
+  }
+
+  setImageDisplay = () => {
+    const styles = StyleSheet.create({
+      image: {
+        width: this.state.shipHeight,
+        height: this.state.shipWidth
+      }
+    });
+    return styles.image;
   }
 
   setBgAnimation = (position) => {
@@ -92,23 +119,6 @@ class Ship extends PureComponent {
         {
           toValue: position,
           duration: duration,
-          easing: Easing.ease,
-        }
-      )
-    ],
-    {
-      useNativeDriver: true
-    }).start();
-  }
-
-  setEnemyShipAnimation = () => {
-    const position = Dimensions.get('window').width + 200;
-    Animated.parallel([
-      Animated.timing(
-        this.state.anim,
-        {
-          toValue: position,
-          duration: 3000,
           easing: Easing.linear,
         }
       )
@@ -116,30 +126,31 @@ class Ship extends PureComponent {
     {
       useNativeDriver: true
     }).start();
-    setTimeout(() => {
-      this.props.removeShip(this.props.id);
-    }, 3000) 
   }
 }
 
 Ship.propTypes = {
-  game: PropTypes.object,
-  dispatch: PropTypes.func
+  display: PropTypes.string,
+  hitpoints: PropTypes.number,
+  position: PropTypes.number,
+  setShipCurrentPosition: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
-
-const styles = StyleSheet.create({
-  image: {
-    width: '100%',
-    height: '100%'
-  }
-});
 
 const stateMap = (state) => {
   return {
-    game: state.simpleAndroidGame.game
+    display: state.simpleAndroidGame.shipDisp,
+    hitpoints: state.simpleAndroidGame.hitpoints,
+    position: state.simpleAndroidGame.position
   };
 };
 
-export default connect(stateMap)(Ship);
+const mapDispatchToProps = {
+  setShipCurrentPosition
+};
+
+export default connect(stateMap, mapDispatchToProps)(Ship);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Ship);

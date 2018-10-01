@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -9,26 +8,30 @@ import {
   Text,
   Slider,
   SectionList,
-  TouchableHighlight,
   ImageBackground,
-  AppState
+  AppState,
+  AsyncStorage
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { setSetting } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
+
+import BackButton from './settingsItemsBackButton';
 
 class AudioSettings extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
-      audioSettings: { audioSettings },
+      volume: { volume },
+      effects: { effects },
+      music: { music },
+      video: { video },
+      componentWillMount,
       componentWillReceiveProps,
-      dispatch 
+      componentWillUnmount
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={this.setDisplay()}>
@@ -49,7 +52,7 @@ class AudioSettings extends PureComponent {
                     maximumTrackTintColor={'#fdb023'}
                     thumbTintColor={'#fd8723'}
                     onValueChange={(value) => this.handleSliderValueChange(value, item)}
-                    value={this.state.audioSettings[item]}
+                    value={this.state[item]}
                   />
                 </ImageBackground>
                 <Text style={styles.afterText}>100</Text>
@@ -60,19 +63,7 @@ class AudioSettings extends PureComponent {
             }
             keyExtractor={(item, index) => index}
           />
-          <View style={styles.btnContainer}>
-            <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
-              <TouchableHighlight 
-                style={styles.btn}
-                underlayColor="transparent"
-                onPress={() => this.actionHandle()}
-                onShowUnderlay={() => this.changeUnderlayHandle('#000000', {uri: 'menubtn'})}
-                onHideUnderlay={() => this.changeUnderlayHandle('#fafafa', {})}
-              > 
-                <Text style={this.setTextColor()}>Back</Text>
-              </TouchableHighlight>
-            </ImageBackground>
-          </View>
+          <BackButton currentDisplayName='audioDisp'/>
         </View>
       </View>
     );
@@ -81,46 +72,40 @@ class AudioSettings extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
-      audioSettings: this.props.audioSettings,
-      btnBackground: {},
-      textColor: '#fafafa',
       appState: AppState.currentState,
+      Volume: this.props.volume,
+      Effects: this.props.effects,
+      Music: this.props.music,
+      Video: this.props.video,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {})
+      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
   }
 
-  componentWillReceiveProps(nextProps) {
-    this.state.btnSound.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Effects);
-    this.state.bgMenuMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
-    this.state.bgGameMusic.setVolume(nextProps.audioSettings.Volume * nextProps.audioSettings.Music);
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
-  actionHandle = () => {
-    this.checkBtnSoundDoublePlay();
-    let obj = this.props.appDisps;
-    obj.menu.settings = 'flex';
-    obj.menu.audio = 'none';
-    this.props.setDisplays(obj);
+  componentWillReceiveProps = (nextProps) => {
+    this.state.btnSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.shotSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.enemyShotSound.setVolume(nextProps.volume * nextProps.effects);
+    this.state.bgMenuMusic.setVolume(nextProps.volume * nextProps.music);
+    this.state.bgGameMusic.setVolume(nextProps.volume * nextProps.music);
   }
 
-  changeUnderlayHandle = (color, img) => {
-    this.setState({
-      btnBackground: img,
-      textColor: color
-    });
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
   }
 
-  setTextColor = () => {
-    const styles = StyleSheet.create({
-      textColor: {
-        fontFamily: 'Eurostile',
-        fontSize: 20,
-        color: this.state.textColor
-      }
-    });
-    return styles.textColor;
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    };
+    this.setState({appState: nextAppState});
   }
 
   setDisplay = () => {
@@ -136,40 +121,38 @@ class AudioSettings extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 
   handleSliderValueChange = (val, item) => {
-    let audioSettings = this.state.audioSettings;
-    audioSettings[item] = val;
-    this.setState({ audioSettings: audioSettings });
-    this.props.setAudioSettings(audioSettings);
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
+    this.checkBtnSoundDoublePlay();
+    this.setState({ [item]: val });
+    this.props.setSetting(item, val);
+    this.storeData(item, val);
+  }
+
+  storeData = async (prop, value) => {
+    try {
+      await AsyncStorage.setItem(prop, value);
     }
+    catch (error) {};
   }
 }
 
 AudioSettings.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  audioSettings: PropTypes.object,
-  dispatch: PropTypes.func
+  volume: PropTypes.number,
+  effects: PropTypes.number,
+  music: PropTypes.number,
+  effects: PropTypes.number,
+  video: PropTypes.number,
+  setSetting: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -240,13 +223,19 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.audio,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    display: state.simpleAndroidGame.audioDisp,
+    brightness: state.simpleAndroidGame.Brightness,
+    volume: state.simpleAndroidGame.Volume,
+    effects: state.simpleAndroidGame.Effects,
+    music: state.simpleAndroidGame.Music,
+    video: state.simpleAndroidGame.Video
   };
 };
 
-export default connect(stateMap)(AudioSettings);
+const mapDispatchToProps = {
+  setSetting
+};
+
+export default connect(stateMap, mapDispatchToProps)(AudioSettings);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => AudioSettings);

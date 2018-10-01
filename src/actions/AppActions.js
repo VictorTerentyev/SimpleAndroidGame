@@ -1,30 +1,54 @@
 import * as types from '../constants/ActionTypes';
 
-export function setDisplays(displays) {
-  return {
-    type: types.SET_DISPLAYS,
-    displays
-  };
-}
-
-export function videoPlay(videoPaused) {
+export function videoPlay(video, value) {
   return {
     type: types.VIDEO_PLAY,
-    videoPaused
+    video,
+    value
   };
 }
 
-export function setVideoSettings(settings) {
+export function setIntroVideosCurrentIndex(currentIndex) {
   return {
-    type: types.SET_VIDEO_SETTINGS,
-    settings
+    type: types.SET_INTRO_VIDEOS_CURRENT_INDEX,
+    currentIndex
   };
 }
 
-export function setAudioSettings(settings) {
+export function setIntroVideosCurrentTime(currentTime) {
   return {
-    type: types.SET_AUDIO_SETTINGS,
-    settings
+    type: types.SET_INTRO_VIDEOS_CURRENT_TIME,
+    currentTime
+  };
+}
+
+export function setMenuInitFlag(flag) {
+  return {
+    type: types.SET_MENU_INIT_FLAG,
+    flag
+  };
+}
+
+export function setMenuMusicCurrentTime(currentTime) {
+  return {
+    type: types.SET_MENU_MUSIC_CURRENT_TIME,
+    currentTime
+  };
+}
+
+export function setDisplay(display, value) {
+  return {
+    type: types.SET_DISPLAY,
+    display,
+    value
+  };
+}
+
+export function setSetting(setting, value) {
+  return {
+    type: types.SET_SETTING,
+    setting,
+    value
   };
 }
 
@@ -35,9 +59,46 @@ export function setGameState(state) {
   };
 }
 
+export function setGameInitialState(hitpoints) {
+  return {
+    type: types.SET_GAME_INITIAL_STATE,
+    hitpoints
+  };
+}
+
 export function setPosition(position) {
   return {
     type: types.SET_POSITION,
+    position
+  };
+}
+
+export function setShipHitpoints(hitpoints) {
+  return {
+    type: types.SET_SHIP_HITPOINTS,
+    hitpoints
+  };
+}
+
+export function setShipCurrentPosition(position) {
+  return {
+    type: types.SET_SHIP_CURRENT_POSITION,
+    position
+  };
+}
+
+export function setEnemyShipHitpoints(id, hitpoints) {
+  return {
+    type: types.SET_ENEMY_SHIP_HITPOINTS,
+    id,
+    hitpoints
+  };
+}
+
+export function setEnemyShipCurrentPosition(id, position) {
+  return {
+    type: types.SET_ENEMY_SHIP_CURRENT_POSITION,
+    id,
     position
   };
 }
@@ -49,6 +110,27 @@ export function addShip(ship) {
   };
 }
 
+export function addEnemyShip(ship) {
+  return {
+    type: types.ADD_ENEMY_SHIP,
+    ship
+  };
+}
+
+export function addEnemyShipHitpoints(hitpoints) {
+  return {
+    type: types.ADD_ENEMY_SHIP_HITPOINTS,
+    hitpoints
+  };
+}
+
+export function addEnemyShipCurrentPosition(position) {
+  return {
+    type: types.ADD_ENEMY_SHIP_CURRENT_POSITION,
+    position
+  };
+}
+
 export function addShot(shot) {
   return {
     type: types.ADD_SHOT,
@@ -56,9 +138,30 @@ export function addShot(shot) {
   };
 }
 
-export function removeShip(id) {
+export function addEnemyShot(shot) {
   return {
-    type: types.REMOVE_SHIP,
+    type: types.ADD_ENEMY_SHOT,
+    shot
+  };
+}
+
+export function removeEnemyShip(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP,
+    id
+  };
+}
+
+export function removeEnemyShipHitpoints(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP_HITPOINTS,
+    id
+  };
+}
+
+export function removeEnemyShipCurrentPosition(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHIP_CURRENT_POSITION,
     id
   };
 }
@@ -67,5 +170,26 @@ export function removeShot(id) {
   return {
     type: types.REMOVE_SHOT,
     id
+  };
+}
+
+export function removeEnemyShot(id) {
+  return {
+    type: types.REMOVE_ENEMY_SHOT,
+    id
+  };
+}
+
+export function setScore(score) {
+  return {
+    type: types.SET_SCORE,
+    score
+  };
+}
+
+export function setControllerState(state) {
+  return {
+    type: types.SET_CONTROLLER_STATE,
+    state
   };
 }

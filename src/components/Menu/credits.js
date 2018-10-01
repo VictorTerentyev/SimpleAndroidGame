@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -12,19 +11,18 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../../actions/AppActions';
+import { setDisplay } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
 
 class Credits extends PureComponent {
   render() {
     const { 
-      appDisps: { appDisps },
       display: { display },
       brightness: { brightness },
-      dispatch
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-    const actions = bindActionCreators(AppActions, dispatch);
 
     return (
       <View style={styles.bgContainer}>
@@ -55,22 +53,32 @@ class Credits extends PureComponent {
   constructor() {
     super();
     this.state = {
+      appState: AppState.currentState,
       btnBackground: {},
       textColor: '#fafafa',
-      appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {
-        if (!error) {
-          //this.state.btnSound.setNumberOfLoops(-1);
-        }
-      })
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
+  }
+
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(nextAppState) && this.state.appState === 'active') {
+      this.state.btnSound.pause();
+    }
+    this.setState({appState: nextAppState});
   }
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay()
-    let obj = this.props.appDisps;
-    obj.menu.credits = 'none';
-    this.props.setDisplays(obj);
+    this.props.setDisplay('mainDisp', 'flex');
+    this.props.setDisplay('creditsDisp', 'none');
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -106,28 +114,17 @@ class Credits extends PureComponent {
     return styles.container;
   }
 
-  handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active') {
-      this.state.btnSound.play();
-    } else {
-      this.state.btnSound.pause();
-    }
-    this.setState({appState: nextAppState});
-  }
-
   checkBtnSoundDoublePlay = () => {
-    if (this.state.btnSound.getCurrentTime !== 0) {
-      this.state.btnSound.stop();
-      this.state.btnSound.play();
-    }
+    this.state.btnSound.stop();
+    this.state.btnSound.play();
   }
 }
 
 Credits.propTypes = {
-  appDisps: PropTypes.object,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  dispatch: PropTypes.func
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -175,12 +172,15 @@ const styles = StyleSheet.create({
 
 const stateMap = (state) => {
   return {
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.menu.credits,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness
+    display: state.simpleAndroidGame.creditsDisp,
+    brightness: state.simpleAndroidGame.Brightness
   };
 };
 
-export default connect(stateMap)(Credits);
+const mapDispatchToProps = {
+  setDisplay
+};
+
+export default connect(stateMap, mapDispatchToProps)(Credits);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Credits);

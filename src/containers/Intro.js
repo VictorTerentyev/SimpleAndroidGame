@@ -1,7 +1,6 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { bindActionCreators } from 'redux';
 import {
   AppRegistry,
   StyleSheet,
@@ -10,7 +9,15 @@ import {
   AppState
 } from 'react-native';
 
-import * as AppActions from '../actions/AppActions';
+import { Immersive } from 'react-native-immersive';
+
+import {
+  videoPlay,
+  setIntroVideosCurrentIndex,
+  setIntroVideosCurrentTime,
+  setMenuInitFlag,
+  setDisplay
+} from '../actions/AppActions';
 
 import Video from 'react-native-video';
 
@@ -18,26 +25,33 @@ class Intro extends PureComponent {
   render() {
     const {
       introVids: { introVids },
-      appDisps: { appDisps },
+      introVidsCurrentIndex: { introVidsCurrentIndex },
+      introVidsCurrentTime: { introVidsCurrentTime },
+      introPause: { introPause },
       display: { display },
       brightness: { brightness },
-      audioSettings: { audioSettings },
-
-      dispatch
+      volume: { volume },
+      video: { video },
+      componentWillMount,
+      componentDidMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
 
     return (
       <View style={this.setDisplay()}>
         <TouchableOpacity style={styles.btn} onPress={() => this.introControlHandle()}>
-          <Video 
-            playInBackground
-            playWhenInactive
-            resizeMode='cover'
-            source={this.props.introVids[this.state.index]}
-            style={styles.backgroundVideo}
-            paused={this.state.paused}
+          <Video
+            source={this.props.introVids[this.props.introVidsCurrentIndex]}
+            onLoad={this.introLoad}
+            onProgress={this.introProgress}
             onEnd={() => this.introControlHandle()}
-            volume={this.props.audioSettings.Volume * this.props.audioSettings.video}
+            paused={this.props.introPause}
+            volume={this.props.volume * this.props.video}
+            playWhenInactive
+            style={styles.backgroundVideo}
+            resizeMode='cover'
+            ref={(ref) => this.player = ref}
           />
           <View style={this.setVideoBrightness()}/>
         </TouchableOpacity>
@@ -45,30 +59,63 @@ class Intro extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
-      index: 0,
-      paused: false
+      appState: 'background'
     };
   }
 
-  introControlHandle = () => {
-    if (this.state.index + 1 < this.props.introVids.length) {
-      this.setState({index: this.state.index + 1});
-    } 
-    else {
-      this.setState({ paused: true });
-      this.props.videoPlay({ intro: true, menu: false });
-      let obj = this.props.appDisps;
-      obj.intro = 'none';
-      obj.menu.menu = 'flex';
-      obj.menu.main = 'flex';
-      this.props.setDisplays(obj);
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentDidMount = () => {
+    if (this.props.display === 'flex') {
+      this.player.seek(this.props.introVidsCurrentTime);
     }
   }
 
+  componentWillUnmount = () => {
+    AppState.removeEventListener('change', this.handleAppStateChange);
+  }
+
+  handleAppStateChange = (nextAppState) => {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === 'flex') {
+      this.props.videoPlay('introPause', false);
+    }
+    else {
+      this.props.videoPlay('introPause', true);
+    };
+    this.setState({appState: nextAppState});
+  }
+
+  introLoad = () => {
+    this.player.seek(this.props.introVidsCurrentTime);
+  }
+
+  introProgress = (progress) => {
+    this.props.setIntroVideosCurrentTime(progress.currentTime);
+  }
+
+  introControlHandle = () => {
+    if (this.props.introVidsCurrentIndex + 1 < this.props.introVids.length) {
+      this.props.setIntroVideosCurrentTime(0.0);
+      this.props.setIntroVideosCurrentIndex(this.props.introVidsCurrentIndex + 1);
+    } 
+    else {
+      this.props.setMenuInitFlag(true);
+      this.props.videoPlay('introPause', true);
+      this.props.videoPlay('menuPause', false);
+      this.props.setDisplay('introDisp', 'none');
+      this.props.setDisplay('menuDisp', 'flex');
+      this.props.setDisplay('mainDisp', 'flex');
+    };
+  }
+
   setDisplay = () => {
+    Immersive.on();
+    Immersive.setImmersive(true);
     const styles = StyleSheet.create({
       container: {
         display: this.props.display,
@@ -94,14 +141,24 @@ class Intro extends PureComponent {
   }
 }
 
-
 Intro.propTypes = {
   introVids: PropTypes.array,
-  appDisps: PropTypes.object,
+  introVidsCurrentIndex: PropTypes.number,
+  introVidsCurrentTime: PropTypes.number,
+  introPause: PropTypes.bool,
   display: PropTypes.string,
   brightness: PropTypes.number,
-  audioSettings: PropTypes.object,
-  dispatch: PropTypes.func
+  volume: PropTypes.number,
+  video: PropTypes.number,
+  videoPlay: PropTypes.func,
+  setIntroVideosCurrentIndex: PropTypes.func,
+  setIntroVideosCurrentTime: PropTypes.func,
+  setMenuInitFlag: PropTypes.func,
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentDidMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -120,13 +177,24 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     introVids: state.simpleAndroidGame.introVids,
-    appDisps: state.simpleAndroidGame.displays,
-    display: state.simpleAndroidGame.displays.intro,
-    brightness: state.simpleAndroidGame.settings.videoSettings.Brightness,
-    audioSettings: state.simpleAndroidGame.settings.audioSettings
+    introVidsCurrentIndex: state.simpleAndroidGame.introVidsCurrentIndex,
+    introVidsCurrentTime: state.simpleAndroidGame.introVidsCurrentTime,
+    introPause: state.simpleAndroidGame.introPause,
+    display: state.simpleAndroidGame.introDisp,
+    brightness: state.simpleAndroidGame.Brightness,
+    volume: state.simpleAndroidGame.Volume,
+    video: state.simpleAndroidGame.Video
   };
 };
 
-export default connect(stateMap)(Intro);
+const mapDispatchToProps = {
+  videoPlay,
+  setIntroVideosCurrentIndex,
+  setIntroVideosCurrentTime,
+  setMenuInitFlag,
+  setDisplay
+};
+
+export default connect(stateMap, mapDispatchToProps)(Intro);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => Intro);
