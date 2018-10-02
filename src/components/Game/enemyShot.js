@@ -193,7 +193,7 @@ class EnemyShot extends PureComponent {
         this.checkSoundDoublePlay(this.state.boomSound);
         this.props.removeEnemyShot(this.props.id);
         this.props.setShipHitpoints(--this.props.hitpoints);
-        if (--this.props.hitpoints === 0) {
+        if (this.props.hitpoints === 0) {
           this.props.setShipHitpoints(0);
           this.props.setDisplay('shipDisp', 'none');
           this.props.setGameState('deactivated');
