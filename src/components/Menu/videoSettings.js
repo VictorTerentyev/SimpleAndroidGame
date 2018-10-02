@@ -71,12 +71,11 @@ class VideoSettings extends PureComponent {
       Brightness: this.props.brightness,
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
+    this.getPropFromAsyncStorage('Brightness');
   }
 
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
-    this.getData('Brightness');
-    this.props.setSetting('Brightness', this.state['Brightness']);
   }
 
   componentWillUnmount = () => {
@@ -110,27 +109,37 @@ class VideoSettings extends PureComponent {
 
   handleSliderValueChange = (val, item) => {
     this.checkBtnSoundDoublePlay();
-    this.storeData(item, val);
-    this.setState({ [item]: val });
-    this.props.setSetting(item, val);
+    this.setPropToAsyncStorage(item, val);
   }
 
-  storeData = async (prop, value) => {
+  setPropToAsyncStorage = async (prop, value) => {
     try {
-      await AsyncStorage.setItem(prop, value);
-    }
-    catch (error) {};
-  }
-
-  getData = async (prop) => {
-    try {
-      await AsyncStorage.getItem(prop).then(val => {
-        if (val !== null ) {
-          this.setState({ [prop]: val });
-        }
+      await AsyncStorage.setItem(prop, JSON.stringify(value)).then(() => {
+        this.props.setSetting(prop, value);
+        this.setState({ [prop]: value });
       });
     }
-    catch (error) {};
+    catch (error) {
+      console.log(error.message);
+    };
+  }
+
+  getPropFromAsyncStorage = async (prop) => {
+    try {
+      await AsyncStorage.getItem(prop).then(val => {
+        if (val === null) {
+          this.props.setSetting(prop, 1.0);
+          this.setState({[prop]: 1.0});
+        }
+        else {
+          this.props.setSetting(prop, JSON.parse(val));
+          this.setState({[prop]: JSON.parse(val)});
+        };
+      });
+    }
+    catch (error) {
+      console.log(error.message);
+    };
   }
 }
 

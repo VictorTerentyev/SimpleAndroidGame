@@ -83,6 +83,10 @@ class AudioSettings extends PureComponent {
       shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
       enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
+    this.getPropFromAsyncStorage('Volume');
+    this.getPropFromAsyncStorage('Effects');
+    this.getPropFromAsyncStorage('Music');
+    this.getPropFromAsyncStorage('Video');
   }
 
   componentWillMount = () => {
@@ -128,16 +132,37 @@ class AudioSettings extends PureComponent {
 
   handleSliderValueChange = (val, item) => {
     this.checkBtnSoundDoublePlay();
-    this.setState({ [item]: val });
-    this.props.setSetting(item, val);
-    this.storeData(item, val);
+    this.setPropToAsyncStorage(item, val);
   }
 
-  storeData = async (prop, value) => {
+  setPropToAsyncStorage = async (prop, value) => {
     try {
-      await AsyncStorage.setItem(prop, value);
+      await AsyncStorage.setItem(prop, JSON.stringify(value)).then(() => {
+        this.props.setSetting(prop, value);
+        this.setState({ [prop]: value });
+      });
     }
-    catch (error) {};
+    catch (error) {
+      console.log(error.message);
+    };
+  }
+
+  getPropFromAsyncStorage = async (prop) => {
+    try {
+      await AsyncStorage.getItem(prop).then(val => {
+        if (val === null) {
+          this.props.setSetting(prop, 1.0);
+          this.setState({[prop]: 1.0});
+        }
+        else {
+          this.props.setSetting(prop, JSON.parse(val));
+          this.setState({[prop]: JSON.parse(val)});
+        };
+      });
+    }
+    catch (error) {
+      console.log(error.message);
+    };
   }
 }
 

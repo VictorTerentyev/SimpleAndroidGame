@@ -12,7 +12,7 @@ const store = createStore(reducer, applyMiddleware(thunk));
 
 const SimpleAndroidGame = () => (
   <Provider store={store}>
-    <MainContainer />
+    <MainContainer/>
   </Provider>
 )
 

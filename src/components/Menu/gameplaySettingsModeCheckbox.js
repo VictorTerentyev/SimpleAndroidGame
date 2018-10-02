@@ -36,7 +36,9 @@ class ModeCheckbox extends PureComponent {
           ]}
           disabled={this.state.disabled}
           onPress={() => this.handleCheckboxChange(this.state.value)}
-        ><View/></TouchableHighlight>
+        >
+          <View/>
+        </TouchableHighlight>
       </View>
     );
   }
@@ -50,6 +52,7 @@ class ModeCheckbox extends PureComponent {
       buttonBackgroundColor: '#fafafa',
       sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
+    this.getPropFromAsyncStorage();
   }
   
   componentWillMount = () => {
@@ -78,22 +81,7 @@ class ModeCheckbox extends PureComponent {
 
   handleCheckboxChange = (val) => {
     this.checkSoundDoublePlay();
-    if (val === false) {
-      this.setState({
-        value: true,
-        buttonBackgroundColor: '#fdb023'
-      });
-      this.props.setSetting('mode', 'hardcore');
-      this.storeData('mode', 'hardcore');
-    } 
-    else {
-      this.setState({
-        value: false,
-        buttonBackgroundColor: '#fafafa'
-      });
-      this.props.setSetting('mode', 'default');
-      this.storeData('mode', 'default');
-    };
+    this.setPropToAsyncStorage(val);
   }
 
   setButtonStyle = () => {
@@ -110,11 +98,54 @@ class ModeCheckbox extends PureComponent {
     this.state.sound.play();
   }
 
-  storeData = async (prop, value) => {
+  setPropToAsyncStorage = async (value) => {
     try {
-      await AsyncStorage.setItem(prop, value);
+      if (value === true) {
+        await AsyncStorage.setItem('mode', 'default').then(() => {
+          this.props.setSetting('mode', 'default');
+          this.setState({
+            value: false,
+            buttonBackgroundColor: '#fafafa'
+          });
+        });
+      }
+      else {
+        await AsyncStorage.setItem('mode', 'hardcore').then(() => {
+          this.props.setSetting('mode', 'hardcore');
+          this.setState({
+            value: true,
+            buttonBackgroundColor: '#fdb023'
+          });
+        });
+      };
     }
-    catch (error) {};
+    catch (error) {
+      console.log(error.message);
+    };
+  }
+
+  getPropFromAsyncStorage = async () => {
+    try {
+      await AsyncStorage.getItem('mode').then((val) => {
+        if ([null, 'default'].includes(val)) {
+          this.props.setSetting('mode', 'default');
+          this.setState({
+            value: false,
+            buttonBackgroundColor: '#fafafa'
+          });
+        }
+        else {
+          this.props.setSetting('mode', 'hardcore');
+          this.setState({
+            value: true,
+            buttonBackgroundColor: '#fdb023'
+          });
+        };
+      });
+    }
+    catch (error) {
+      console.log(error.message);
+    };
   }
 }
 
