@@ -31,12 +31,14 @@ class Intro extends PureComponent {
       display: { display },
       brightness: { brightness },
       volume: { volume },
-      video: { video },
-      componentWillMount,
-      componentDidMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      video: { video }
     } = this.props;
+
+    this.state = {
+      appState: 'background',
+      display: 'flex',
+      displayFlag: false
+    };
 
     return (
       <View style={this.setDisplay()}>
@@ -59,21 +61,23 @@ class Intro extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: 'background'
-    };
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentDidMount = () => {
-    if (this.props.display === 'flex') {
+    if (this.props.display === true) {
       this.player.seek(this.props.introVidsCurrentTime);
-    }
+    };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -107,9 +111,9 @@ class Intro extends PureComponent {
       this.props.setMenuInitFlag(true);
       this.props.videoPlay('introPause', true);
       this.props.videoPlay('menuPause', false);
-      this.props.setDisplay('introDisp', 'none');
-      this.props.setDisplay('menuDisp', 'flex');
-      this.props.setDisplay('mainDisp', 'flex');
+      this.props.setDisplay('introDisp', false);
+      this.props.setDisplay('menuDisp', true);
+      this.props.setDisplay('mainDisp', true);
     };
   }
 
@@ -118,11 +122,18 @@ class Intro extends PureComponent {
     Immersive.setImmersive(true);
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         flex: 1
       }
     });
     return styles.container;
+  }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
   }
 
   setVideoBrightness = () => {
@@ -146,7 +157,7 @@ Intro.propTypes = {
   introVidsCurrentIndex: PropTypes.number,
   introVidsCurrentTime: PropTypes.number,
   introPause: PropTypes.bool,
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
   volume: PropTypes.number,
   video: PropTypes.number,
@@ -154,11 +165,7 @@ Intro.propTypes = {
   setIntroVideosCurrentIndex: PropTypes.func,
   setIntroVideosCurrentTime: PropTypes.func,
   setMenuInitFlag: PropTypes.func,
-  setDisplay: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentDidMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({

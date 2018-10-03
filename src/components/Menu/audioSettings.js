@@ -27,11 +27,23 @@ class AudioSettings extends PureComponent {
       volume: { volume },
       effects: { effects },
       music: { music },
-      video: { video },
-      componentWillMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      video: { video }
     } = this.props;
+
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      Volume: this.props.volume,
+      Effects: this.props.effects,
+      Music: this.props.music,
+      Video: this.props.video,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
 
     return (
       <View style={this.setDisplay()}>
@@ -69,20 +81,7 @@ class AudioSettings extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      Volume: this.props.volume,
-      Effects: this.props.effects,
-      Music: this.props.music,
-      Video: this.props.video,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
+  constructor = () => {
     this.getPropFromAsyncStorage('Volume');
     this.getPropFromAsyncStorage('Effects');
     this.getPropFromAsyncStorage('Music');
@@ -94,6 +93,12 @@ class AudioSettings extends PureComponent {
   }
 
   componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
     this.state.btnSound.setVolume(nextProps.volume * nextProps.effects);
     this.state.shotSound.setVolume(nextProps.volume * nextProps.effects);
     this.state.enemyShotSound.setVolume(nextProps.volume * nextProps.effects);
@@ -115,7 +120,7 @@ class AudioSettings extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,   
+        display: this.state.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
@@ -123,6 +128,13 @@ class AudioSettings extends PureComponent {
       }
     });
     return styles.container;
+  }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -167,17 +179,14 @@ class AudioSettings extends PureComponent {
 }
 
 AudioSettings.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
   volume: PropTypes.number,
   effects: PropTypes.number,
   music: PropTypes.number,
   effects: PropTypes.number,
   video: PropTypes.number,
-  setSetting: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setSetting: PropTypes.func
 }
 
 const styles = StyleSheet.create({

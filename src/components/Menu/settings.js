@@ -21,10 +21,27 @@ class Settings extends PureComponent {
     const {
       state: { state },
       display: { display },
-      brightness: { brightness },
-      componentWillMount,
-      componentWillUnmount
+      brightness: { brightness }
     } = this.props;
+
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackgrounds: {
+        Video: {},
+        Audio: {},
+        Gameplay: {},
+        Back: {}
+      },
+      textColors: {
+        Video: '#fafafa',
+        Audio: '#fafafa',
+        Gameplay: '#fafafa',
+        Back: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
 
     return (
       <View style={this.setDisplay()}>
@@ -58,28 +75,17 @@ class Settings extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackgrounds: {
-        Video: {},
-        Audio: {},
-        Gameplay: {},
-        Back: {}
-      },
-      textColors: {
-        Video: '#fafafa',
-        Audio: '#fafafa',
-        Gameplay: '#fafafa',
-        Back: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -95,19 +101,19 @@ class Settings extends PureComponent {
 
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('settingsDisp', 'none');
+    this.props.setDisplay('settingsDisp', false);
     switch (item) {
       case 'Video':
-        this.props.setDisplay('videoDisp', 'flex');
+        this.props.setDisplay('videoDisp', true);
         break;
       case 'Audio':
-        this.props.setDisplay('audioDisp', 'flex');
+        this.props.setDisplay('audioDisp', true);
         break;
       case 'Gameplay':
-        this.props.setDisplay('gameplayDisp', 'flex');
+        this.props.setDisplay('gameplayDisp', true);
         break;
       case 'Back':
-        this.props.setDisplay('mainDisp', 'flex');
+        this.props.setDisplay('mainDisp', true);
         break;
     }
   }
@@ -138,7 +144,7 @@ class Settings extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         marginTop: 10,
         marginLeft: 10,
         opacity: this.props.brightness
@@ -147,21 +153,24 @@ class Settings extends PureComponent {
     return styles.container;
   }
 
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
+  }
+
   checkBtnSoundDoublePlay = () => {
     this.state.btnSound.stop();
     this.state.btnSound.play();
   }
 }
 
-
-
 Settings.propTypes = {
   state: PropTypes.string,
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
-  setDisplay: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({

@@ -30,11 +30,22 @@ class Shot extends PureComponent {
       score: { score },
       enemyShips: { enemyShips },
       enemyShipsHitpoints: { enemyShipsHitpoints },
-      enemyShipsCurrentPositions: { enemyShipsCurrentPositions },
-      componentWillMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      enemyShipsCurrentPositions: { enemyShipsCurrentPositions }
     } = this.props
+
+    this.state = {
+      appState: AppState.currentState,
+      screenWidth: Dimensions.get('window').width,
+      shotWidth: Dimensions.get('window').width * 0.1,
+      shotHeight: Dimensions.get('window').height * 0.06,
+      shipWidth: Dimensions.get('window').width * 0.1,
+      shipHeight: Dimensions.get('window').height * 0.2,
+      shotPosAnim: new Animated.Value(0),
+      shotBgAnim: new Animated.Value(0),
+      resumedFlag: false,
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.shotSound.play()}),
+      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
 
     return (
       <Animated.View
@@ -57,21 +68,7 @@ class Shot extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      screenWidth: Dimensions.get('window').width,
-      shotWidth: Dimensions.get('window').width * 0.1,
-      shotHeight: Dimensions.get('window').height * 0.06,
-      shipWidth: Dimensions.get('window').width * 0.1,
-      shipHeight: Dimensions.get('window').height * 0.2,
-      shotPosAnim: new Animated.Value(0),
-      shotBgAnim: new Animated.Value(0),
-      resumedFlag: false,
-      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {this.state.shotSound.play()}),
-      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
+  constructor = () => {
     this.positionX = 0;
   }
 
@@ -221,10 +218,7 @@ Shot.propTypes = {
   removeShot: PropTypes.func,
   removeEnemyShip: PropTypes.func,
   removeEnemyShipHitpoints: PropTypes.func,
-  removeEnemyShipCurrentPosition: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  removeEnemyShipCurrentPosition: PropTypes.func
 }
 
 const styles = StyleSheet.create({

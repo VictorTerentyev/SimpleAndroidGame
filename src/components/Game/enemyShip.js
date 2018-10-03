@@ -25,11 +25,18 @@ import {
 class EnemyShip extends PureComponent {
   render() {
     const {
-      state: { state },
-      componentWillMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      state: { state }
     } = this.props;
+
+    this.state = {
+      exist: true,
+      random: Math.random() * (10000 - 9000) + 200,
+      loopState: 'deactivated',
+      screenWidth: Dimensions.get('window').width,
+      positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
+      positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+      anim: new Animated.Value(this.props.positionX)
+    };
     
     return (
       <Animated.View
@@ -51,17 +58,7 @@ class EnemyShip extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      exist: true,
-      random: Math.random() * (10000 - 9000) + 200,
-      loopState: 'deactivated',
-      screenWidth: Dimensions.get('window').width,
-      positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
-      positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      anim: new Animated.Value(this.props.positionX)
-    };
+  constructor = () => {
     this.positionX = 0;
   }
 
@@ -166,10 +163,7 @@ EnemyShip.propTypes = {
   removeEnemyShip: PropTypes.func,
   removeEnemyShipHitpoints: PropTypes.func,
   removeEnemyShipCurrentPosition: PropTypes.func,
-  addEnemyShot: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  addEnemyShot: PropTypes.func
 }
 
 const styles = StyleSheet.create({

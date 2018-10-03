@@ -11,9 +11,12 @@ import {
 class Hitpoints extends PureComponent {
   render() {
     const {
-      hitpoints: { hitpoints },
-      componentWillReceiveProps
+      hitpoints: { hitpoints }
     } = this.props;
+
+    this.state = {
+      hitpoints: []
+    };
 
     return (
       <View style={styles.container}>
@@ -22,13 +25,6 @@ class Hitpoints extends PureComponent {
         })}
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      hitpoints: []
-    };
   }
 
   componentWillMount = () => {
