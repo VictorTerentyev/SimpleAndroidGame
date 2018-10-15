@@ -17,7 +17,7 @@ import Sound from 'react-native-sound';
 
 class SettingsBackButton extends PureComponent {
   render() {
-    const = {
+    const {
       currentDisplayName: { currentDisplayName }
     } = this.props;
 
