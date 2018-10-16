@@ -110,8 +110,8 @@ class GameBackground extends PureComponent {
 
 GameBackground.propTypes = {
   state: PropTypes.string,
-  display: PropTypes.bool
-  brightness: PropTypes.number,
+  display: PropTypes.bool,
+  brightness: PropTypes.number
 }
 
 const styles = StyleSheet.create({

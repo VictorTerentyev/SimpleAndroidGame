@@ -29,6 +29,8 @@ class ModeCheckbox extends PureComponent {
       sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
 
+    this.getPropFromAsyncStorage();
+
     return (
       <View style={styles.container}>
         <Text style={styles.title}>Hardcore</Text>
@@ -45,10 +47,6 @@ class ModeCheckbox extends PureComponent {
         </TouchableHighlight>
       </View>
     );
-  }
-
-  constructor() {
-    this.getPropFromAsyncStorage();
   }
   
   componentWillMount = () => {

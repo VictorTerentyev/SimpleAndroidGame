@@ -31,6 +31,8 @@ class Ship extends PureComponent {
       anim: new Animated.Value(this.props.position),
     };
 
+    this.setListener();
+
     return (
       <Animated.View
         style={[
@@ -51,7 +53,7 @@ class Ship extends PureComponent {
   }
 
   componentWillMount = () => {
-    this.setListener();
+    this.setListener(); //ошибка где-то здесь
   }
 
   componentWillReceiveProps = (nextProps) => {

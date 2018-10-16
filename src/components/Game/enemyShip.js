@@ -58,7 +58,7 @@ class EnemyShip extends PureComponent {
     );
   }
 
-  constructor = () => {
+  constructor() {
     this.positionX = 0;
   }
 
