@@ -11,9 +11,12 @@ import {
 class Score extends PureComponent {
   render() {
     const {
-      score: { score },
-      componentWillReceiveProps
+      score: { score }
     } = this.props;
+
+    this.state = {
+      score: this.props.score
+    };
 
     return (
       <View style={styles.container}>
@@ -22,21 +25,13 @@ class Score extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      score: this.props.score
-    };
-  }
-
   componentWillReceiveProps = (nextProps) => {
     this.setState({score: nextProps.score});
   }
 }
 
 Score.propTypes = {
-  score: PropTypes.number,
-  dispatch: PropTypes.func
+  score: PropTypes.number
 }
 
 const styles = StyleSheet.create({

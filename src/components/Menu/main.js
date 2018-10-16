@@ -28,10 +28,27 @@ class MainMenu extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      mode: { mode },
-      componentWillMount,
-      componentWillUnmount
+      mode: { mode }
     } = this.props;
+
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackgrounds: {
+        Start: {},
+        Settings: {},
+        Credits: {},
+        Exit: {}
+      },
+      textColors: {
+        Start: '#fafafa',
+        Settings: '#fafafa',
+        Credits: '#fafafa',
+        Exit: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
 
     return (
       <View style={this.setDisplay()}>
@@ -65,28 +82,17 @@ class MainMenu extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackgrounds: {
-        Start: {},
-        Settings: {},
-        Credits: {},
-        Exit: {}
-      },
-      textColors: {
-        Start: '#fafafa',
-        Settings: '#fafafa',
-        Credits: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -102,17 +108,17 @@ class MainMenu extends PureComponent {
 
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('mainDisp', 'none');
+    this.props.setDisplay('mainDisp', false);
     switch (item) {
       case 'Start':
         switch (this.props.state) {
           case 'deactivated':
-            if (this.props.mode === 'hardcore') {
+            if (this.props.mode === true) {
               this.props.setGameInitialState(1);
             } 
             else {
               this.props.setGameInitialState();
-            }
+            };
             this.props.setGameState('active');
             break;
 
@@ -120,19 +126,19 @@ class MainMenu extends PureComponent {
             this.props.setGameState('resumed');
             break;
         }
-        this.props.setDisplay('menuDisp', 'none');
-        this.props.setDisplay('mainDisp', 'none');
-        this.props.setDisplay('gameDisp', 'flex');
-        this.props.setDisplay('shipDisp', 'flex');
+        this.props.setDisplay('menuDisp', false);
+        this.props.setDisplay('mainDisp', false);
+        this.props.setDisplay('gameDisp', true);
+        this.props.setDisplay('shipDisp', true);
         break;
       case 'Settings':
-        this.props.setDisplay('settingsDisp', 'flex');
+        this.props.setDisplay('settingsDisp', true);
         break;
       case 'Credits':
-        this.props.setDisplay('creditsDisp', 'flex');
+        this.props.setDisplay('creditsDisp', true);
         break;
       case 'Exit':
-        this.props.setDisplay('exitDisp', 'flex');
+        this.props.setDisplay('exitDisp', true);
         break;
     }
   }
@@ -163,13 +169,20 @@ class MainMenu extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         marginTop: 10,
         marginLeft: 10,
         opacity: this.props.brightness
       }
     });
     return styles.container;
+  }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -180,15 +193,13 @@ class MainMenu extends PureComponent {
 
 MainMenu.propTypes = {
   state: PropTypes.string,
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
-  mod: PropTypes.string,
+  mode: PropTypes.bool,
   setGameState: PropTypes.func,
   setGameInitialState: PropTypes.func,
   setDisplay: PropTypes.func,
-  setPosition: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setPosition: PropTypes.func
 }
 
 const styles = StyleSheet.create({

@@ -19,11 +19,15 @@ class ModeCheckbox extends PureComponent {
   render() {
     const {
       state: { state },
-      mode: { mode },
-      componentWillMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      mode: { mode }
     } = this.props;
+
+    this.state = {
+      appState: AppState.currentState,
+      disabled: false,
+      buttonBackgroundColor: '#fafafa',
+      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
 
     return (
       <View style={styles.container}>
@@ -35,7 +39,7 @@ class ModeCheckbox extends PureComponent {
             styles.button
           ]}
           disabled={this.state.disabled}
-          onPress={() => this.handleCheckboxChange(this.state.value)}
+          onPress={() => this.handleCheckboxChange(this.props.value)}
         >
           <View/>
         </TouchableHighlight>
@@ -43,15 +47,7 @@ class ModeCheckbox extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      disabled: false,
-      value: false,
-      buttonBackgroundColor: '#fafafa',
-      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
+  constructor() {
     this.getPropFromAsyncStorage();
   }
   
@@ -101,19 +97,17 @@ class ModeCheckbox extends PureComponent {
   setPropToAsyncStorage = async (value) => {
     try {
       if (value === true) {
-        await AsyncStorage.setItem('mode', 'default').then(() => {
-          this.props.setSetting('mode', 'default');
+        await AsyncStorage.setItem('mode', JSON.stringify(false)).then(() => {
+          this.props.setSetting('mode', false);
           this.setState({
-            value: false,
             buttonBackgroundColor: '#fafafa'
           });
         });
       }
       else {
-        await AsyncStorage.setItem('mode', 'hardcore').then(() => {
-          this.props.setSetting('mode', 'hardcore');
+        await AsyncStorage.setItem('mode', JSON.stringify(true)).then(() => {
+          this.props.setSetting('mode', true);
           this.setState({
-            value: true,
             buttonBackgroundColor: '#fdb023'
           });
         });
@@ -127,17 +121,15 @@ class ModeCheckbox extends PureComponent {
   getPropFromAsyncStorage = async () => {
     try {
       await AsyncStorage.getItem('mode').then((val) => {
-        if ([null, 'default'].includes(val)) {
-          this.props.setSetting('mode', 'default');
+        if ([null, false].includes(JSON.parse(val))) {
+          this.props.setSetting('mode', false);
           this.setState({
-            value: false,
             buttonBackgroundColor: '#fafafa'
           });
         }
         else {
-          this.props.setSetting('mode', 'hardcore');
+          this.props.setSetting('mode', true);
           this.setState({
-            value: true,
             buttonBackgroundColor: '#fdb023'
           });
         };
@@ -151,7 +143,7 @@ class ModeCheckbox extends PureComponent {
 
 ModeCheckbox.propTypes = {
   state: PropTypes.string,
-  mode: PropTypes.string,
+  mode: PropTypes.bool,
   setSetting: PropTypes.func,
   componentWillMount: PropTypes.func,
   componentWillReceiveProps: PropTypes.func,
