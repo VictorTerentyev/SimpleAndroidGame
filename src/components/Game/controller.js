@@ -24,17 +24,11 @@ class Controller extends PureComponent {
       position: { position },
       currentPosition: { currentPosition },
       shots: { shots },
-      controllerState: { controllerState }
+      controllerState: { controllerState },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      disabled: false,
-      shootFlag: false,
-      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      moveDoubleTapFlag: false,
-      shootDoubleTapFlag: false
-    };
 
     return (
       <View style={styles.container}>
@@ -61,6 +55,18 @@ class Controller extends PureComponent {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      disabled: false,
+      shootFlag: false,
+      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+      moveDoubleTapFlag: false,
+      shootDoubleTapFlag: false
+    };
   }
 
   componentWillMount = () => {
@@ -121,7 +127,10 @@ Controller.propTypes = {
   controllerState: PropTypes.bool,
   setControllerState: PropTypes.func,
   setPosition: PropTypes.func,
-  addShot: PropTypes.func
+  addShot: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

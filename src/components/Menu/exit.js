@@ -22,23 +22,10 @@ class Exit extends PureComponent {
   render() {
     const {
       display: { display },
-      brightness: { brightness }
+      brightness: { brightness },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Cancel: {},
-        Exit: {}
-      },
-      textColors: {
-        Cancel: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
 
     return (
       <View style={styles.bgContainer}>
@@ -75,17 +62,24 @@ class Exit extends PureComponent {
     );
   }
 
-  componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      btnBackgrounds: {
+        Cancel: {},
+        Exit: {}
+      },
+      textColors: {
+        Cancel: '#fafafa',
+        Exit: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillUnmount = () => {
@@ -103,11 +97,10 @@ class Exit extends PureComponent {
     this.checkBtnSoundDoublePlay();
     switch (item) {
       case 'Cancel':
-        this.props.setDisplay('mainDisp', true);
-        this.props.setDisplay('exitDisp', false);
+        this.props.setDisplay('mainDisp', 'flex');
+        this.props.setDisplay('exitDisp', 'none');
         break;
       case 'Exit':
-        //try another way
         BackHandler.exitApp();
         break;
     }
@@ -138,7 +131,7 @@ class Exit extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.state.display,
+        display: this.props.display,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',  
@@ -149,13 +142,6 @@ class Exit extends PureComponent {
     return styles.container;
   }
 
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
-  }
-
   checkBtnSoundDoublePlay = () => {
     this.state.btnSound.stop();
     this.state.btnSound.play();
@@ -163,9 +149,11 @@ class Exit extends PureComponent {
 }
 
 Exit.propTypes = {
-  display: PropTypes.bool,
+  display: PropTypes.string,
   brightness: PropTypes.number,
-  setDisplay: PropTypes.func
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

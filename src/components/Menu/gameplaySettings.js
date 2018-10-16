@@ -18,11 +18,6 @@ class GameplaySettings extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      display: 'none',
-      displayFlag: true
-    }
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -34,19 +29,10 @@ class GameplaySettings extends PureComponent {
     );
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
-  }
-
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.state.display,   
+        display: this.props.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
@@ -55,17 +41,10 @@ class GameplaySettings extends PureComponent {
     });
     return styles.container;
   }
-
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
-  }
 }
 
 GameplaySettings.propTypes = {
-  display: PropTypes.bool,
+  display: PropTypes.string,
   brightness: PropTypes.number
 }
 

@@ -16,14 +16,11 @@ class GameBackground extends PureComponent {
     const {
       state: { state },
       brightness: { brightness },
-      display: { display }
+      display: { display },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      state: this.props.state,
-      appState: AppState.currentState, 
-      anim: new Animated.Value(0),
-    };
 
     return (
       <View style={styles.container}>
@@ -45,12 +42,21 @@ class GameBackground extends PureComponent {
     );
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      state: this.props.state,
+      appState: AppState.currentState, 
+      anim: new Animated.Value(0),
+    };
+  }
+
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if(nextProps.display === true) {
+    if(nextProps.display === 'flex') {
       this.setBgAnimation();
     } else { 
       Animated.timing(
@@ -110,8 +116,11 @@ class GameBackground extends PureComponent {
 
 GameBackground.propTypes = {
   state: PropTypes.string,
-  display: PropTypes.bool
   brightness: PropTypes.number,
+  display: PropTypes.string,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -132,8 +141,8 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
-    display: state.simpleAndroidGame.gameDisp,
-    brightness: state.simpleAndroidGame.Brightness
+    brightness: state.simpleAndroidGame.Brightness,
+    display: state.simpleAndroidGame.gameDisp
   };
 };
 

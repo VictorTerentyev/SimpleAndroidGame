@@ -25,12 +25,9 @@ class ShipsList extends PureComponent {
       state: { state },
       shipDisp: { shipDisp },
       position: { position },
-      enemyShips: { enemyShips }
+      enemyShips: { enemyShips },
+      componentWillReceiveProps
     } = this.props;
-
-    this.state = {
-      activeFlag: false
-    }
 
     return (
       <View style={styles.container} renderToHardwareTextureAndroid>
@@ -48,6 +45,13 @@ class ShipsList extends PureComponent {
         })}
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeFlag: false
+    }
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -102,6 +106,7 @@ ShipsList.propTypes = {
   addEnemyShip: PropTypes.func,
   addEnemyShipHitpoints: PropTypes.func,
   addEnemyShipCurrentPosition: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func
 }
 
 const styles = StyleSheet.create({

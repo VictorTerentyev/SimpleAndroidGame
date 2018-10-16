@@ -30,24 +30,14 @@ class Menu extends PureComponent {
   render() {
     const {
       initFlag: { initFlag },
-      display: { display },
-      brightness: { brightness },
       musicCurrentTime: { musicCurrentTime },
-      bgVideoPaused: { bgVideoPaused }
+      display: { display }, 
+      bgVideoPaused: { bgVideoPaused },
+      brightness: { brightness },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      bgVideoPaused: this.props.bgVideoPaused,
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1);
-        if (this.state.appState === 'active' && this.props.initFlag === true) {
-          this.state.bgMusic.play();
-        };
-      })
-    }
 
     return (
       <View style={this.setDisplay()}>
@@ -71,21 +61,29 @@ class Menu extends PureComponent {
     );
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      bgVideoPaused: this.props.bgVideoPaused,
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+        if (this.state.appState === 'active' && this.props.initFlag === true) {
+          this.state.bgMusic.play();
+        };
+      })
+    };
+  }
+
   componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
-    if (nextProps.display === true && this.state.appState === 'active') {
+    if (nextProps.display === 'flex' && this.state.appState === 'active') {
       this.setState({bgVideoPaused: false});
       this.state.bgMusic.play();
-    }
+    } 
     else {
       this.setState({bgVideoPaused: true});
       this.state.bgMusic.pause();
@@ -112,18 +110,11 @@ class Menu extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.state.display,
+        display: this.props.display,
         flex: 1
       }
     });
     return styles.container;
-  }
-
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
   }
 
   setVideoBrightness = () => {
@@ -144,11 +135,14 @@ class Menu extends PureComponent {
 
 Menu.propTypes = {
   initFlag: PropTypes.bool,
-  display: PropTypes.bool,
+  display: PropTypes.string,
+  bgPaused: PropTypes.bool,
   brightness: PropTypes.number,
   musicCurrentTime: PropTypes.number,
-  bgVideoPaused: PropTypes.bool,
-  setMenuMusicCurrentTime: PropTypes.func
+  setMenuMusicCurrentTime: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 let styles = StyleSheet.create({

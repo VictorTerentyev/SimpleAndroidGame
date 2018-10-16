@@ -26,17 +26,11 @@ class Game extends PureComponent {
     const {
       state: { state },
       display: { display },
-      brightness: { brightness }
+      brightness: { brightness },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1);
-      })
-    };
 
     return (
       <View style={this.setDisplay()}>
@@ -53,26 +47,30 @@ class Game extends PureComponent {
     );
   }
 
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+      })
+    };
+  }
+
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
     if(['active', 'resumed'].includes(nextProps.state)) {
       this.state.bgMusic.play();
-    };
+    } 
     if (nextProps.state === 'paused') {
       this.state.bgMusic.pause();
-    };
+    }
     if (nextProps.state === 'deactivated') {
       this.state.bgMusic.stop();
-    };
+    }
   }
 
   componentWillUnmount = () => {
@@ -83,17 +81,10 @@ class Game extends PureComponent {
     const styles = StyleSheet.create({
       container: {
         flex: 1,
-        display: this.state.display
+        display: this.props.display
       }
     });
     return styles.container;
-  }
-
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
   }
 
   setBrightness = () => {
@@ -125,7 +116,7 @@ Game.propTypes = {
   hitpoints: PropTypes.number,
   position: PropTypes.number,
   shots: PropTypes.array,
-  display: PropTypes.bool,
+  display: PropTypes.string,
   brightness: PropTypes.number,
   setGameState: PropTypes.func,
   setDisplay: PropTypes.func,

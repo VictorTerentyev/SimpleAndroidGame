@@ -23,16 +23,10 @@ class VideoSettings extends PureComponent {
   render() {
     const { 
       display: { display },
-      brightness: { brightness }
+      brightness: { brightness },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      Brightness: this.props.brightness,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
 
     return (
       <View style={this.setDisplay()}>
@@ -70,21 +64,18 @@ class VideoSettings extends PureComponent {
     );
   }
 
-  constructor = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      Brightness: this.props.brightness,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
     this.getPropFromAsyncStorage('Brightness');
   }
 
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
   }
 
   componentWillUnmount = () => {
@@ -101,7 +92,7 @@ class VideoSettings extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.state.display,   
+        display: this.props.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
@@ -109,13 +100,6 @@ class VideoSettings extends PureComponent {
       }
     });
     return styles.container;
-  }
-
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -160,9 +144,11 @@ class VideoSettings extends PureComponent {
 }
 
 VideoSettings.propTypes = {
-  display: PropTypes.bool,
+  display: PropTypes.string,
   brightness: PropTypes.number,
   setSetting: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

@@ -26,23 +26,11 @@ class EnemyShot extends PureComponent {
     const {
       state: { state },
       hitpoints: { hitpoints },
-      currentPosition: { currentPosition }
+      currentPosition: { currentPosition },
+      componentWillMount,
+      componentWillReceiveProps,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      screenWidth: Dimensions.get('window').width,
-      shotHeight: Dimensions.get('window').height * 0.06,
-      shipWidth: Dimensions.get('window').width * 0.9,
-      shipHeight: Dimensions.get('window').height * 0.2,
-      shotPosAnim: new Animated.Value(this.props.positionX),
-      shotBgAnim: new Animated.Value(0),
-      resumedFlag: false,
-      shotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.checkSoundDoublePlay(this.state.shotSound)
-      }),
-      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
 
     return (
       <Animated.View
@@ -65,7 +53,22 @@ class EnemyShot extends PureComponent {
     );
   }
 
-  constructor = () => {
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      screenWidth: Dimensions.get('window').width,
+      shotHeight: Dimensions.get('window').height * 0.06,
+      shipWidth: Dimensions.get('window').width * 0.9,
+      shipHeight: Dimensions.get('window').height * 0.2,
+      shotPosAnim: new Animated.Value(this.props.positionX),
+      shotBgAnim: new Animated.Value(0),
+      resumedFlag: false,
+      shotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.checkSoundDoublePlay(this.state.shotSound)
+      }),
+      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
     this.positionX = 0;
   }
 
@@ -192,12 +195,12 @@ class EnemyShot extends PureComponent {
         this.props.setShipHitpoints(--this.props.hitpoints);
         if (this.props.hitpoints === 0) {
           this.props.setShipHitpoints(0);
-          this.props.setDisplay('shipDisp', false);
+          this.props.setDisplay('shipDisp', 'none');
           this.props.setGameState('deactivated');
           setTimeout(() => {
-            this.props.setDisplay('gameDisp', false);
-            this.props.setDisplay('menuDisp', true);
-            this.props.setDisplay('mainDisp', true);
+            this.props.setDisplay('gameDisp', 'none');
+            this.props.setDisplay('menuDisp', 'flex');
+            this.props.setDisplay('mainDisp', 'flex');
           }, 5000)
         }
       }
@@ -212,7 +215,10 @@ EnemyShot.propTypes = {
   setDisplay: PropTypes.func,
   setGameState: PropTypes.func,
   setShipHitpoints: PropTypes.func,
-  removeEnemyShot: PropTypes.func
+  removeEnemyShot: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillReceiveProps: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

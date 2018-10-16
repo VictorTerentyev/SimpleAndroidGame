@@ -20,12 +20,10 @@ import Sound from 'react-native-sound';
 
 class GameMenuBtn extends PureComponent {
   render() {
-    this.state = {
-      textColor: '#fafafa',
-      btnBackground: {},
-      appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
+    const {
+      componentWillMount,
+      componentWillUnmount
+    } = this.props;
 
     return (
       <View style={styles.menuBtn}>
@@ -42,6 +40,16 @@ class GameMenuBtn extends PureComponent {
         </ImageBackground>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      textColor: '#fafafa',
+      btnBackground: {},
+      appState: AppState.currentState,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillMount = () => {
@@ -61,9 +69,9 @@ class GameMenuBtn extends PureComponent {
 
   menuActionHandle = () => {
     this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('menuDisp', true);
-    this.props.setDisplay('mainDisp', true);
-    this.props.setDisplay('gameDisp', false);
+    this.props.setDisplay('menuDisp', 'flex');
+    this.props.setDisplay('mainDisp', 'flex');
+    this.props.setDisplay('gameDisp', 'none');
     this.props.setGameState('paused');
   }
 
@@ -93,7 +101,9 @@ class GameMenuBtn extends PureComponent {
 
 GameMenuBtn.propTypes = {
   setGameState: PropTypes.func,
-  setDisplay: PropTypes.func
+  setDisplay: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

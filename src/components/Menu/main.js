@@ -28,27 +28,10 @@ class MainMenu extends PureComponent {
       state: { state },
       display: { display },
       brightness: { brightness },
-      mode: { mode }
+      mode: { mode },
+      componentWillMount,
+      componentWillUnmount
     } = this.props;
-
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Start: {},
-        Settings: {},
-        Credits: {},
-        Exit: {}
-      },
-      textColors: {
-        Start: '#fafafa',
-        Settings: '#fafafa',
-        Credits: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
 
     return (
       <View style={this.setDisplay()}>
@@ -82,17 +65,28 @@ class MainMenu extends PureComponent {
     );
   }
 
-  componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      btnBackgrounds: {
+        Start: {},
+        Settings: {},
+        Credits: {},
+        Exit: {}
+      },
+      textColors: {
+        Start: '#fafafa',
+        Settings: '#fafafa',
+        Credits: '#fafafa',
+        Exit: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    if (nextProps.display === true && this.state.displayFlag === true) {
-      this.setDisplayState('flex', false);
-    };
-    if (nextProps.display === false && this.state.displayFlag === false) {
-      this.setDisplayState('none', true);
-    };
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillUnmount = () => {
@@ -108,17 +102,17 @@ class MainMenu extends PureComponent {
 
   actionHandle = (item) => {
     this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('mainDisp', false);
+    this.props.setDisplay('mainDisp', 'none');
     switch (item) {
       case 'Start':
         switch (this.props.state) {
           case 'deactivated':
-            if (this.props.mode === true) {
+            if (this.props.mode === 'hardcore') {
               this.props.setGameInitialState(1);
             } 
             else {
               this.props.setGameInitialState();
-            };
+            }
             this.props.setGameState('active');
             break;
 
@@ -126,19 +120,19 @@ class MainMenu extends PureComponent {
             this.props.setGameState('resumed');
             break;
         }
-        this.props.setDisplay('menuDisp', false);
-        this.props.setDisplay('mainDisp', false);
-        this.props.setDisplay('gameDisp', true);
-        this.props.setDisplay('shipDisp', true);
+        this.props.setDisplay('menuDisp', 'none');
+        this.props.setDisplay('mainDisp', 'none');
+        this.props.setDisplay('gameDisp', 'flex');
+        this.props.setDisplay('shipDisp', 'flex');
         break;
       case 'Settings':
-        this.props.setDisplay('settingsDisp', true);
+        this.props.setDisplay('settingsDisp', 'flex');
         break;
       case 'Credits':
-        this.props.setDisplay('creditsDisp', true);
+        this.props.setDisplay('creditsDisp', 'flex');
         break;
       case 'Exit':
-        this.props.setDisplay('exitDisp', true);
+        this.props.setDisplay('exitDisp', 'flex');
         break;
     }
   }
@@ -169,20 +163,13 @@ class MainMenu extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.state.display,
+        display: this.props.display,
         marginTop: 10,
         marginLeft: 10,
         opacity: this.props.brightness
       }
     });
     return styles.container;
-  }
-
-  setDisplayState = (display, flag) => {
-    this.setState({
-      display: display,
-      displayFlag: flag
-    });
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -193,13 +180,15 @@ class MainMenu extends PureComponent {
 
 MainMenu.propTypes = {
   state: PropTypes.string,
-  display: PropTypes.bool,
+  display: PropTypes.string,
   brightness: PropTypes.number,
-  mode: PropTypes.bool,
+  mod: PropTypes.string,
   setGameState: PropTypes.func,
   setGameInitialState: PropTypes.func,
   setDisplay: PropTypes.func,
-  setPosition: PropTypes.func
+  setPosition: PropTypes.func,
+  componentWillMount: PropTypes.func,
+  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({
