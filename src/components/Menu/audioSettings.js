@@ -45,11 +45,6 @@ class AudioSettings extends PureComponent {
       enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
     };
 
-    this.getPropFromAsyncStorage('Volume');
-    this.getPropFromAsyncStorage('Effects');
-    this.getPropFromAsyncStorage('Music');
-    this.getPropFromAsyncStorage('Video');
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -84,6 +79,13 @@ class AudioSettings extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor = () => {
+    this.getPropFromAsyncStorage('Volume');
+    this.getPropFromAsyncStorage('Effects');
+    this.getPropFromAsyncStorage('Music');
+    this.getPropFromAsyncStorage('Video');
   }
 
   componentWillMount = () => {

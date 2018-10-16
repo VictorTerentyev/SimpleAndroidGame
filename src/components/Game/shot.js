@@ -68,7 +68,7 @@ class Shot extends PureComponent {
     );
   }
 
-  constructor() {
+  constructor = () => {
     this.positionX = 0;
   }
 

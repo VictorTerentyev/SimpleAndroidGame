@@ -34,8 +34,6 @@ class VideoSettings extends PureComponent {
       btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
     }
 
-    this.getPropFromAsyncStorage('Brightness');
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -70,6 +68,10 @@ class VideoSettings extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor = () => {
+    this.getPropFromAsyncStorage('Brightness');
   }
 
   componentWillMount = () => {

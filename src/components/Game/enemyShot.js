@@ -65,7 +65,7 @@ class EnemyShot extends PureComponent {
     );
   }
 
-  constructor() {
+  constructor = () => {
     this.positionX = 0;
   }
 
