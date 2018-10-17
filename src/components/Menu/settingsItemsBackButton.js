@@ -21,13 +21,6 @@ class SettingsBackButton extends PureComponent {
       currentDisplayName: { currentDisplayName }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      btnBackground: {},
-      textColor: '#fafafa',
-      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-
     return (
       <View style={styles.container}>
         <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
@@ -43,6 +36,16 @@ class SettingsBackButton extends PureComponent {
         </ImageBackground>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      btnBackground: {},
+      textColor: '#fafafa',
+      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillMount = () => {

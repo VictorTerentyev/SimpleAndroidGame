@@ -14,10 +14,6 @@ class Hitpoints extends PureComponent {
       hitpoints: { hitpoints }
     } = this.props;
 
-    this.state = {
-      hitpoints: []
-    };
-
     return (
       <View style={styles.container}>
         {this.state.hitpoints.map(e => {
@@ -25,6 +21,13 @@ class Hitpoints extends PureComponent {
         })}
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      hitpoints: []
+    };
   }
 
   componentWillMount = () => {

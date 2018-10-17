@@ -26,16 +26,6 @@ class VideoSettings extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      Brightness: this.props.brightness,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-
-    this.getPropFromAsyncStorage('Brightness');
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -70,6 +60,18 @@ class VideoSettings extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      Brightness: this.props.brightness,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
+    this.getPropFromAsyncStorage('Brightness');
   }
 
   componentWillMount = () => {

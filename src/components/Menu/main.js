@@ -31,25 +31,6 @@ class MainMenu extends PureComponent {
       mode: { mode }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Start: {},
-        Settings: {},
-        Credits: {},
-        Exit: {}
-      },
-      textColors: {
-        Start: '#fafafa',
-        Settings: '#fafafa',
-        Credits: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-
     return (
       <View style={this.setDisplay()}>
         <SectionList
@@ -80,6 +61,28 @@ class MainMenu extends PureComponent {
         <View id="hr" style={styles.hr}/>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackgrounds: {
+        Start: {},
+        Settings: {},
+        Credits: {},
+        Exit: {}
+      },
+      textColors: {
+        Start: '#fafafa',
+        Settings: '#fafafa',
+        Credits: '#fafafa',
+        Exit: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillMount = () => {

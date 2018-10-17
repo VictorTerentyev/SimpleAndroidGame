@@ -14,15 +14,18 @@ class Score extends PureComponent {
       score: { score }
     } = this.props;
 
-    this.state = {
-      score: this.props.score
-    };
-
     return (
       <View style={styles.container}>
         <Text style={styles.text}>{'Score: ' + this.state.score}</Text>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      score: this.props.score
+    };
   }
 
   componentWillReceiveProps = (nextProps) => {

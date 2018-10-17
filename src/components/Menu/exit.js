@@ -25,21 +25,6 @@ class Exit extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Cancel: {},
-        Exit: {}
-      },
-      textColors: {
-        Cancel: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-
     return (
       <View style={styles.bgContainer}>
         <View style={this.setDisplay()}>
@@ -73,6 +58,24 @@ class Exit extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackgrounds: {
+        Cancel: {},
+        Exit: {}
+      },
+      textColors: {
+        Cancel: '#fafafa',
+        Exit: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillMount = () => {

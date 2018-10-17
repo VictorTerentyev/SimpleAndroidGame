@@ -34,12 +34,6 @@ class Intro extends PureComponent {
       video: { video }
     } = this.props;
 
-    this.state = {
-      appState: 'background',
-      display: 'flex',
-      displayFlag: false
-    };
-
     return (
       <View style={this.setDisplay()}>
         <TouchableOpacity style={styles.btn} onPress={() => this.introControlHandle()}>
@@ -59,6 +53,15 @@ class Intro extends PureComponent {
         </TouchableOpacity>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: 'background',
+      display: 'flex',
+      displayFlag: false
+    };
   }
 
   componentWillMount = () => {
@@ -85,7 +88,7 @@ class Intro extends PureComponent {
   }
 
   handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === 'flex') {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === true) {
       this.props.videoPlay('introPause', false);
     }
     else {

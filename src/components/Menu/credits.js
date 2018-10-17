@@ -22,15 +22,6 @@ class Credits extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackground: {},
-      textColor: '#fafafa',
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-
     return (
       <View style={styles.bgContainer}>
         <View style={this.setDisplay()}>
@@ -55,6 +46,18 @@ class Credits extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackground: {},
+      textColor: '#fafafa',
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
   }
 
   componentWillMount = () => {

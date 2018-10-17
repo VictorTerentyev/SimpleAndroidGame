@@ -19,12 +19,6 @@ class GameBackground extends PureComponent {
       display: { display }
     } = this.props;
 
-    this.state = {
-      state: this.props.state,
-      appState: AppState.currentState, 
-      anim: new Animated.Value(0),
-    };
-
     return (
       <View style={styles.container}>
         <Animated.Image 
@@ -43,6 +37,15 @@ class GameBackground extends PureComponent {
         <View style={this.setBrightness()}/>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      state: this.props.state,
+      appState: AppState.currentState, 
+      anim: new Animated.Value(0)
+    };
   }
 
   componentWillMount = () => {

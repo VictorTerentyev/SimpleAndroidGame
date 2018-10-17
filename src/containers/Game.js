@@ -29,15 +29,6 @@ class Game extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1);
-      })
-    };
-
     return (
       <View style={this.setDisplay()}>
         <Background/>
@@ -51,6 +42,18 @@ class Game extends PureComponent {
         <Controller/>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+      })
+    };
   }
 
   componentWillMount = () => {

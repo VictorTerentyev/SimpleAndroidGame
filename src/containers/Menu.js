@@ -36,19 +36,6 @@ class Menu extends PureComponent {
       bgVideoPaused: { bgVideoPaused }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      bgVideoPaused: this.props.bgVideoPaused,
-      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1);
-        if (this.state.appState === 'active' && this.props.initFlag === true) {
-          this.state.bgMusic.play();
-        };
-      })
-    }
-
     return (
       <View style={this.setDisplay()}>
         <Video 
@@ -69,6 +56,22 @@ class Menu extends PureComponent {
         <Exit/>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      bgVideoPaused: this.props.bgVideoPaused,
+      bgMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {
+        this.state.bgMusic.setNumberOfLoops(-1);
+        if (this.state.appState === 'active' && this.props.initFlag === true) {
+          this.state.bgMusic.play();
+        };
+      })
+    }
   }
 
   componentDidMount = () => {

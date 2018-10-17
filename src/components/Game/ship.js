@@ -22,17 +22,6 @@ class Ship extends PureComponent {
       position: { position }
     } = this.props;
 
-    this.state = {
-      display: 'flex',
-      displayFlag: false,
-      shipHeight: '100%',
-      shipWidth: '100%',
-      visibilityFlag: true,
-      anim: new Animated.Value(this.props.position),
-    };
-
-    this.setListener();
-
     return (
       <Animated.View
         style={[
@@ -52,8 +41,20 @@ class Ship extends PureComponent {
     );
   }
 
+  constructor(props) {
+    super(props)
+    this.state = {
+      display: 'flex',
+      displayFlag: false,
+      shipHeight: '100%',
+      shipWidth: '100%',
+      visibilityFlag: true,
+      anim: new Animated.Value(this.props.position),
+    };
+  }
+
   componentWillMount = () => {
-    this.setListener(); //ошибка где-то здесь
+    this.setListener();
   }
 
   componentWillReceiveProps = (nextProps) => {

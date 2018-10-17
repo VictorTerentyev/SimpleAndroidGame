@@ -24,25 +24,6 @@ class Settings extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Video: {},
-        Audio: {},
-        Gameplay: {},
-        Back: {}
-      },
-      textColors: {
-        Video: '#fafafa',
-        Audio: '#fafafa',
-        Gameplay: '#fafafa',
-        Back: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-
     return (
       <View style={this.setDisplay()}>
         <SectionList
@@ -73,6 +54,28 @@ class Settings extends PureComponent {
         <View id="hr" style={styles.hr}/>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      btnBackgrounds: {
+        Video: {},
+        Audio: {},
+        Gameplay: {},
+        Back: {}
+      },
+      textColors: {
+        Video: '#fafafa',
+        Audio: '#fafafa',
+        Gameplay: '#fafafa',
+        Back: '#fafafa'
+      },
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    }
   }
 
   componentWillMount = () => {

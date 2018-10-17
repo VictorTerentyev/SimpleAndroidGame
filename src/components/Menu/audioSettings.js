@@ -30,26 +30,6 @@ class AudioSettings extends PureComponent {
       video: { video }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      Volume: this.props.volume,
-      Effects: this.props.effects,
-      Music: this.props.music,
-      Video: this.props.video,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-
-    this.getPropFromAsyncStorage('Volume');
-    this.getPropFromAsyncStorage('Effects');
-    this.getPropFromAsyncStorage('Music');
-    this.getPropFromAsyncStorage('Video');
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -84,6 +64,28 @@ class AudioSettings extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      appState: AppState.currentState,
+      display: 'none',
+      displayFlag: true,
+      Volume: this.props.volume,
+      Effects: this.props.effects,
+      Music: this.props.music,
+      Video: this.props.video,
+      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
+    };
+    this.getPropFromAsyncStorage('Volume');
+    this.getPropFromAsyncStorage('Effects');
+    this.getPropFromAsyncStorage('Music');
+    this.getPropFromAsyncStorage('Video');
   }
 
   componentWillMount = () => {

@@ -18,11 +18,6 @@ class GameplaySettings extends PureComponent {
       brightness: { brightness }
     } = this.props;
 
-    this.state = {
-      display: 'none',
-      displayFlag: true
-    }
-
     return (
       <View style={this.setDisplay()}>
         <View style={styles.container}>
@@ -32,6 +27,14 @@ class GameplaySettings extends PureComponent {
         </View>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      display: 'none',
+      displayFlag: true
+    };
   }
 
   componentWillReceiveProps = (nextProps) => {

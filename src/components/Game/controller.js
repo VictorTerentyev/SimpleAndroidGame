@@ -27,15 +27,6 @@ class Controller extends PureComponent {
       controllerState: { controllerState }
     } = this.props;
 
-    this.state = {
-      appState: AppState.currentState,
-      disabled: false,
-      shootFlag: false,
-      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      moveDoubleTapFlag: false,
-      shootDoubleTapFlag: false
-    };
-
     return (
       <View style={styles.container}>
         <TouchableHighlight 
@@ -61,6 +52,18 @@ class Controller extends PureComponent {
         </TouchableHighlight>
       </View>
     );
+  }
+
+  constructor() {
+    super();
+    this.state = {
+      appState: AppState.currentState,
+      disabled: false,
+      shootFlag: false,
+      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+      moveDoubleTapFlag: false,
+      shootDoubleTapFlag: false
+    };
   }
 
   componentWillMount = () => {
