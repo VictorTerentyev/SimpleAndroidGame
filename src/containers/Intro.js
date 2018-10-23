@@ -22,6 +22,12 @@ import {
 import Video from 'react-native-video';
 
 class Intro extends PureComponent {
+  state = {
+    appState: 'background',
+    display: 'flex',
+    displayFlag: false
+  };
+
   render() {
     const {
       introVids: { introVids },
@@ -55,15 +61,6 @@ class Intro extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-    this.state = {
-      appState: 'background',
-      display: 'flex',
-      displayFlag: false
-    };
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
@@ -79,6 +76,7 @@ class Intro extends PureComponent {
       this.setDisplayState('flex', false);
     };
     if (nextProps.display === false && this.state.displayFlag === false) {
+      alert('triggered');
       this.setDisplayState('none', true);
     };
   }
