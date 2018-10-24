@@ -17,6 +17,15 @@ import {
 } from '../../actions/AppActions';
 
 class Controller extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    disabled: false,
+    shootFlag: false,
+    shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+    moveDoubleTapFlag: false,
+    shootDoubleTapFlag: false
+  };
+
   render() {
     const {
       state: { state },
@@ -52,18 +61,6 @@ class Controller extends PureComponent {
         </TouchableHighlight>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      disabled: false,
-      shootFlag: false,
-      shipYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      moveDoubleTapFlag: false,
-      shootDoubleTapFlag: false
-    };
   }
 
   componentWillMount = () => {

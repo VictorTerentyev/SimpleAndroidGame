@@ -15,6 +15,15 @@ import {
 import { setShipCurrentPosition } from '../../actions/AppActions';
 
 class Ship extends PureComponent {
+  state = {
+    display: 'flex',
+    displayFlag: false,
+    shipHeight: '100%',
+    shipWidth: '100%',
+    visibilityFlag: true,
+    anim: new Animated.Value(this.props.position),
+  };
+
   render() {
     const {
       display: { display },
@@ -39,18 +48,6 @@ class Ship extends PureComponent {
         />
       </Animated.View>
     );
-  }
-
-  constructor(props) {
-    super(props)
-    this.state = {
-      display: 'flex',
-      displayFlag: false,
-      shipHeight: '100%',
-      shipWidth: '100%',
-      visibilityFlag: true,
-      anim: new Animated.Value(this.props.position),
-    };
   }
 
   componentWillMount = () => {

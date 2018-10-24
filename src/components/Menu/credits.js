@@ -16,6 +16,15 @@ import { setDisplay } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class Credits extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackground: {},
+    textColor: '#fafafa',
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const { 
       display: { display },
@@ -46,18 +55,6 @@ class Credits extends PureComponent {
         </View>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackground: {},
-      textColor: '#fafafa',
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {

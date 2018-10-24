@@ -82,11 +82,9 @@ class Menu extends PureComponent {
       this.setDisplayState('none', true);
     };
     if (nextProps.display === true && this.state.appState === 'active') {
-      this.setState({bgVideoPaused: false});
       this.state.bgMusic.play();
     }
     else {
-      this.setState({bgVideoPaused: true});
       this.state.bgMusic.pause();
     };
   }

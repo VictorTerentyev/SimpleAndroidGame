@@ -23,6 +23,18 @@ import {
 } from '../../actions/AppActions';
 
 class EnemyShip extends PureComponent {
+  positionX = 0;
+
+  state = {
+    exist: true,
+    random: Math.random() * (10000 - 9000) + 200,
+    loopState: 'deactivated',
+    screenWidth: Dimensions.get('window').width,
+    positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
+    positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
+    anim: new Animated.Value(this.props.positionX)
+  };
+
   render() {
     const {
       state: { state }
@@ -46,20 +58,6 @@ class EnemyShip extends PureComponent {
         />
       </Animated.View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      exist: true,
-      random: Math.random() * (10000 - 9000) + 200,
-      loopState: 'deactivated',
-      screenWidth: Dimensions.get('window').width,
-      positionXMiddle: Dimensions.get('window').width * 0.9 * 0.07,
-      positionYMiddle: Dimensions.get('window').height * 0.9 * 0.07,
-      anim: new Animated.Value(this.props.positionX)
-    };
-    this.positionX = 0;
   }
 
   componentWillMount = () => {

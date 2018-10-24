@@ -16,6 +16,13 @@ import { setDisplay } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class SettingsBackButton extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    btnBackground: {},
+    textColor: '#fafafa',
+    sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
       currentDisplayName: { currentDisplayName }
@@ -36,16 +43,6 @@ class SettingsBackButton extends PureComponent {
         </ImageBackground>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackground: {},
-      textColor: '#fafafa',
-      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {

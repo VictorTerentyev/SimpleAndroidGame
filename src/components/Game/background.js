@@ -12,6 +12,12 @@ import {
 } from 'react-native';
 
 class GameBackground extends PureComponent {
+  state = {
+    state: this.props.state,
+    appState: AppState.currentState, 
+    anim: new Animated.Value(0)
+  };
+
   render() {
     const {
       state: { state },
@@ -37,15 +43,6 @@ class GameBackground extends PureComponent {
         <View style={this.setBrightness()}/>
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      state: this.props.state,
-      appState: AppState.currentState, 
-      anim: new Animated.Value(0)
-    };
   }
 
   componentWillMount = () => {

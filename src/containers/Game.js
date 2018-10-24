@@ -22,6 +22,15 @@ import {
 import Sound from 'react-native-sound';
 
 class Game extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
+      this.state.bgMusic.setNumberOfLoops(-1);
+    })
+  };
+
   render() {
     const {
       state: { state },
@@ -42,18 +51,6 @@ class Game extends PureComponent {
         <Controller/>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      bgMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.state.bgMusic.setNumberOfLoops(-1);
-      })
-    };
   }
 
   componentWillMount = () => {

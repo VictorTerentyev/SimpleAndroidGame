@@ -63,6 +63,15 @@ class Intro extends PureComponent {
 
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+    // set current display state after unlock
+    /*
+    if (this.props.display === true) {
+      this.setState({display: 'flex', displayFlag: false});
+    }
+    else {
+      this.setState({display: 'none', displayFlag: true});
+    };
+    */
   }
 
   componentDidMount = () => {
@@ -76,7 +85,6 @@ class Intro extends PureComponent {
       this.setDisplayState('flex', false);
     };
     if (nextProps.display === false && this.state.displayFlag === false) {
-      alert('triggered');
       this.setDisplayState('none', true);
     };
   }

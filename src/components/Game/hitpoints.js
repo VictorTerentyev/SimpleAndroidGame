@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 
 class Hitpoints extends PureComponent {
+  state = {
+    hitpoints: []
+  };
+
   render() {
     const {
       hitpoints: { hitpoints }
@@ -21,13 +25,6 @@ class Hitpoints extends PureComponent {
         })}
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      hitpoints: []
-    };
   }
 
   componentWillMount = () => {

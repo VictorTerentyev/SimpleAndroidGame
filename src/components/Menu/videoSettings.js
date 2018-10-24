@@ -20,6 +20,14 @@ import Sound from 'react-native-sound';
 import BackButton from './settingsItemsBackButton';
 
 class VideoSettings extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    Brightness: this.props.brightness,
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const { 
       display: { display },
@@ -62,20 +70,9 @@ class VideoSettings extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      Brightness: this.props.brightness,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-    this.getPropFromAsyncStorage('Brightness');
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+    this.getPropFromAsyncStorage('Brightness');
   }
 
   componentWillReceiveProps = (nextProps) => {

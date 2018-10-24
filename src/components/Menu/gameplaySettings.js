@@ -12,6 +12,11 @@ import ModeCheckbox from './gameplaySettingsModeCheckbox';
 import BackButton from './settingsItemsBackButton';
 
 class GameplaySettings extends PureComponent {
+  state = {
+    display: 'none',
+    displayFlag: true
+  };
+
   render() {
     const { 
       display: { display },
@@ -27,14 +32,6 @@ class GameplaySettings extends PureComponent {
         </View>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      display: 'none',
-      displayFlag: true
-    };
   }
 
   componentWillReceiveProps = (nextProps) => {

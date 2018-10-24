@@ -16,6 +16,13 @@ import { setSetting } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class ModeCheckbox extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    disabled: false,
+    buttonBackgroundColor: '#fafafa',
+    sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
       state: { state },
@@ -39,20 +46,10 @@ class ModeCheckbox extends PureComponent {
       </View>
     );
   }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      disabled: false,
-      buttonBackgroundColor: '#fafafa',
-      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-    this.getPropFromAsyncStorage();
-  }
   
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+    this.getPropFromAsyncStorage();
   }
 
   componentWillReceiveProps = (nextProps) => {

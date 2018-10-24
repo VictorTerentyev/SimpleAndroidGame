@@ -19,6 +19,13 @@ import {
 import Sound from 'react-native-sound';
 
 class GameMenuBtn extends PureComponent {
+  state = {
+    textColor: '#fafafa',
+    btnBackground: {},
+    appState: AppState.currentState,
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     return (
       <View style={styles.menuBtn}>
@@ -35,16 +42,6 @@ class GameMenuBtn extends PureComponent {
         </ImageBackground>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      textColor: '#fafafa',
-      btnBackground: {},
-      appState: AppState.currentState,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {

@@ -19,6 +19,21 @@ import Sound from 'react-native-sound';
 import BtnBackgroundImage from '../../../assets/images/btn.png';
 
 class Exit extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackgrounds: {
+      Cancel: {},
+      Exit: {}
+    },
+    textColors: {
+      Cancel: '#fafafa',
+      Exit: '#fafafa'
+    },
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
       display: { display },
@@ -58,24 +73,6 @@ class Exit extends PureComponent {
         </View>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Cancel: {},
-        Exit: {}
-      },
-      textColors: {
-        Cancel: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {

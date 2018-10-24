@@ -23,6 +23,25 @@ import {
 import Sound from 'react-native-sound';
 
 class MainMenu extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackgrounds: {
+      Start: {},
+      Settings: {},
+      Credits: {},
+      Exit: {}
+    },
+    textColors: {
+      Start: '#fafafa',
+      Settings: '#fafafa',
+      Credits: '#fafafa',
+      Exit: '#fafafa'
+    },
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+  
   render() {
     const {
       state: { state },
@@ -61,28 +80,6 @@ class MainMenu extends PureComponent {
         <View id="hr" style={styles.hr}/>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Start: {},
-        Settings: {},
-        Credits: {},
-        Exit: {}
-      },
-      textColors: {
-        Start: '#fafafa',
-        Settings: '#fafafa',
-        Credits: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {

@@ -9,6 +9,10 @@ import {
 } from 'react-native';
 
 class Score extends PureComponent {
+  state = {
+    score: this.props.score
+  };
+
   render() {
     const {
       score: { score }
@@ -19,13 +23,6 @@ class Score extends PureComponent {
         <Text style={styles.text}>{'Score: ' + this.state.score}</Text>
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      score: this.props.score
-    };
   }
 
   componentWillReceiveProps = (nextProps) => {

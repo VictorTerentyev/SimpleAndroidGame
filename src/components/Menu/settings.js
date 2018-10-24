@@ -17,6 +17,25 @@ import { setDisplay } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class Settings extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackgrounds: {
+      Video: {},
+      Audio: {},
+      Gameplay: {},
+      Back: {}
+    },
+    textColors: {
+      Video: '#fafafa',
+      Audio: '#fafafa',
+      Gameplay: '#fafafa',
+      Back: '#fafafa'
+    },
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  }
+
   render() {
     const {
       state: { state },
@@ -54,28 +73,6 @@ class Settings extends PureComponent {
         <View id="hr" style={styles.hr}/>
       </View>
     );
-  }
-
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      btnBackgrounds: {
-        Video: {},
-        Audio: {},
-        Gameplay: {},
-        Back: {}
-      },
-      textColors: {
-        Video: '#fafafa',
-        Audio: '#fafafa',
-        Gameplay: '#fafafa',
-        Back: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
   }
 
   componentWillMount = () => {

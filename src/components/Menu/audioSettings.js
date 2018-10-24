@@ -20,6 +20,21 @@ import Sound from 'react-native-sound';
 import BackButton from './settingsItemsBackButton';
 
 class AudioSettings extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    Volume: this.props.volume,
+    Effects: this.props.effects,
+    Music: this.props.music,
+    Video: this.props.video,
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+    bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+    bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+    shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
+    enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const { 
       display: { display },
@@ -66,30 +81,12 @@ class AudioSettings extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      display: 'none',
-      displayFlag: true,
-      Volume: this.props.volume,
-      Effects: this.props.effects,
-      Music: this.props.music,
-      Video: this.props.video,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgMenuMusic: new Sound('menu.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      bgGameMusic: new Sound('mgame.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      shotSound: new Sound('yshot.mp3', Sound.MAIN_BUNDLE, (error) => {}),
-      enemyShotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
     this.getPropFromAsyncStorage('Volume');
     this.getPropFromAsyncStorage('Effects');
     this.getPropFromAsyncStorage('Music');
     this.getPropFromAsyncStorage('Video');
-  }
-
-  componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
   componentWillReceiveProps = (nextProps) => {

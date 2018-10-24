@@ -22,6 +22,23 @@ import {
 import Sound from 'react-native-sound';
 
 class EnemyShot extends PureComponent {
+  positionX = 0;
+
+  state = {
+    appState: AppState.currentState,
+    screenWidth: Dimensions.get('window').width,
+    shotHeight: Dimensions.get('window').height * 0.06,
+    shipWidth: Dimensions.get('window').width * 0.9,
+    shipHeight: Dimensions.get('window').height * 0.2,
+    shotPosAnim: new Animated.Value(this.props.positionX),
+    shotBgAnim: new Animated.Value(0),
+    resumedFlag: false,
+    shotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {
+      this.checkSoundDoublePlay(this.state.shotSound)
+    }),
+    boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
       state: { state },
@@ -48,25 +65,6 @@ class EnemyShot extends PureComponent {
         />
       </Animated.View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      screenWidth: Dimensions.get('window').width,
-      shotHeight: Dimensions.get('window').height * 0.06,
-      shipWidth: Dimensions.get('window').width * 0.9,
-      shipHeight: Dimensions.get('window').height * 0.2,
-      shotPosAnim: new Animated.Value(this.props.positionX),
-      shotBgAnim: new Animated.Value(0),
-      resumedFlag: false,
-      shotSound: new Sound('eshot.mp3', Sound.MAIN_BUNDLE, (error) => {
-        this.checkSoundDoublePlay(this.state.shotSound)
-      }),
-      boomSound: new Sound('boom.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
-    this.positionX = 0;
   }
 
   componentWillMount = () => {
