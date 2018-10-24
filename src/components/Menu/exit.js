@@ -12,6 +12,8 @@ import {
   BackHandler
 } from 'react-native';
 
+import ReactExit from 'react-native-exit-app';
+
 import { setDisplay } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
@@ -108,7 +110,8 @@ class Exit extends PureComponent {
         break;
       case 'Exit':
         //try another way
-        BackHandler.exitApp();
+        //BackHandler.exitApp();
+        ReactExit.exitApp();
         break;
     }
   }
