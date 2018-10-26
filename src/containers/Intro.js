@@ -62,7 +62,6 @@ class Intro extends PureComponent {
   }
 
   componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
     // set current display state after unlock
     /*
     if (this.props.display === true) {
@@ -75,6 +74,7 @@ class Intro extends PureComponent {
   }
 
   componentDidMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
     if (this.props.display === true) {
       this.player.seek(this.props.introVidsCurrentTime);
     };

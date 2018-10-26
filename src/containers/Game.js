@@ -53,7 +53,7 @@ class Game extends PureComponent {
     );
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
   }
 
