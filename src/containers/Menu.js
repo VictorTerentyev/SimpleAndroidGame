@@ -95,7 +95,7 @@ class Menu extends PureComponent {
   }
 
   handleAppStateChange = (nextAppState) => {
-    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === 'flex') {
+    if (['background', 'inactive'].includes(this.state.appState) && nextAppState === 'active' && this.props.display === true) {
       this.state.bgMusic.play();
       this.setState({bgVideoPaused: false});
     }

@@ -148,7 +148,7 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-exit-app')
+    implementation project(':react-native-exit-app')
     implementation project(':react-native-immersive')
     implementation project(':react-native-sound')
     implementation project(':react-native-video')
