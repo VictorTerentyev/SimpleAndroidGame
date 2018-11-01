@@ -9,10 +9,13 @@ import {
 } from 'react-native';
 
 class Score extends PureComponent {
+  state = {
+    score: this.props.score
+  };
+
   render() {
     const {
-      score: { score },
-      componentWillReceiveProps
+      score: { score }
     } = this.props;
 
     return (
@@ -22,21 +25,13 @@ class Score extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      score: this.props.score
-    };
-  }
-
   componentWillReceiveProps = (nextProps) => {
     this.setState({score: nextProps.score});
   }
 }
 
 Score.propTypes = {
-  score: PropTypes.number,
-  dispatch: PropTypes.func
+  score: PropTypes.number
 }
 
 const styles = StyleSheet.create({

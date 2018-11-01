@@ -16,12 +16,19 @@ import { setDisplay } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class Credits extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackground: {},
+    textColor: '#fafafa',
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const { 
       display: { display },
-      brightness: { brightness },
-      componentWillMount,
-      componentWillUnmount
+      brightness: { brightness }
     } = this.props;
 
     return (
@@ -50,18 +57,17 @@ class Credits extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackground: {},
-      textColor: '#fafafa',
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
-  }
-
   componentWillMount = () => {
     AppState.addEventListener('change', this.handleAppStateChange);
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -77,8 +83,8 @@ class Credits extends PureComponent {
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay()
-    this.props.setDisplay('mainDisp', 'flex');
-    this.props.setDisplay('creditsDisp', 'none');
+    this.props.setDisplay('mainDisp', true);
+    this.props.setDisplay('creditsDisp', false);
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -99,11 +105,10 @@ class Credits extends PureComponent {
     return styles.textColor;
   }
 
-
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',  
@@ -114,6 +119,13 @@ class Credits extends PureComponent {
     return styles.container;
   }
 
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
+  }
+
   checkBtnSoundDoublePlay = () => {
     this.state.btnSound.stop();
     this.state.btnSound.play();
@@ -121,7 +133,7 @@ class Credits extends PureComponent {
 }
 
 Credits.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
   componentWillMount: PropTypes.func,
   componentWillUnmount: PropTypes.func

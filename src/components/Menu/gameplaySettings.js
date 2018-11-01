@@ -12,6 +12,11 @@ import ModeCheckbox from './gameplaySettingsModeCheckbox';
 import BackButton from './settingsItemsBackButton';
 
 class GameplaySettings extends PureComponent {
+  state = {
+    display: 'none',
+    displayFlag: true
+  };
+
   render() {
     const { 
       display: { display },
@@ -29,10 +34,19 @@ class GameplaySettings extends PureComponent {
     );
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
+  }
+
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,   
+        display: this.state.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
@@ -41,10 +55,17 @@ class GameplaySettings extends PureComponent {
     });
     return styles.container;
   }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
+  }
 }
 
 GameplaySettings.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number
 }
 

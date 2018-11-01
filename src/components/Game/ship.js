@@ -15,15 +15,22 @@ import {
 import { setShipCurrentPosition } from '../../actions/AppActions';
 
 class Ship extends PureComponent {
+  state = {
+    display: 'flex',
+    displayFlag: false,
+    shipHeight: '100%',
+    shipWidth: '100%',
+    visibilityFlag: true,
+    anim: new Animated.Value(this.props.position),
+  };
+
   render() {
     const {
       display: { display },
       hitpoints: { hitpoints },
-      position: { position },
-      componentWillMount,
-      componentWillReceiveProps,
-      componentWillUnmount
+      position: { position }
     } = this.props;
+
     return (
       <Animated.View
         style={[
@@ -43,21 +50,17 @@ class Ship extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      shipHeight: '100%',
-      shipWidth: '100%',
-      visibilityFlag: true,
-      anim: new Animated.Value(this.props.position),
-    };
-  }
-
   componentWillMount = () => {
     this.setListener();
   }
 
   componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
     if (nextProps.hitpoints !== 0) {
       this.setBgAnimation(nextProps.position);
       if (this.state.visibilityFlag === false) {
@@ -90,7 +93,7 @@ class Ship extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         position: 'absolute',
         width: '10%',
         height: '20%',
@@ -99,6 +102,13 @@ class Ship extends PureComponent {
       }
     });
     return styles.container;
+  }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
   }
 
   setImageDisplay = () => {
@@ -130,13 +140,10 @@ class Ship extends PureComponent {
 }
 
 Ship.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   hitpoints: PropTypes.number,
   position: PropTypes.number,
-  setShipCurrentPosition: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setShipCurrentPosition: PropTypes.func
 }
 
 const stateMap = (state) => {

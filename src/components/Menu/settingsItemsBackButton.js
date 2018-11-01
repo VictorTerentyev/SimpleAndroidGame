@@ -16,11 +16,17 @@ import { setDisplay } from '../../actions/AppActions';
 import Sound from 'react-native-sound';
 
 class SettingsBackButton extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    btnBackground: {},
+    textColor: '#fafafa',
+    sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
-      componentWillMount,
-      componentWillUnmount
-    } = this.props
+      currentDisplayName: { currentDisplayName }
+    } = this.props;
 
     return (
       <View style={styles.container}>
@@ -37,16 +43,6 @@ class SettingsBackButton extends PureComponent {
         </ImageBackground>
       </View>
     );
-  }
-
-  constructor(props) {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackground: {},
-      textColor: '#fafafa',
-      sound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    };
   }
 
   componentWillMount = () => {
@@ -66,8 +62,8 @@ class SettingsBackButton extends PureComponent {
 
   actionHandle = () => {
     this.checkBtnSoundDoublePlay();
-    this.props.setDisplay('settingsDisp', 'flex');
-    this.props.setDisplay(this.props.currentDisplayName, 'none');
+    this.props.setDisplay('settingsDisp', true);
+    this.props.setDisplay(this.props.currentDisplayName, false);
   }
 
   changeUnderlayHandle = (color, img) => {
@@ -96,9 +92,7 @@ class SettingsBackButton extends PureComponent {
 
 SettingsBackButton.propTypes = {
   currentDisplayName: PropTypes.string,
-  setDisplay: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({

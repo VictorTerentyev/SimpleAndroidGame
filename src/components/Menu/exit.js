@@ -12,6 +12,8 @@ import {
   BackHandler
 } from 'react-native';
 
+import ReactExit from 'react-native-exit-app';
+
 import { setDisplay } from '../../actions/AppActions';
 
 import Sound from 'react-native-sound';
@@ -19,12 +21,25 @@ import Sound from 'react-native-sound';
 import BtnBackgroundImage from '../../../assets/images/btn.png';
 
 class Exit extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    btnBackgrounds: {
+      Cancel: {},
+      Exit: {}
+    },
+    textColors: {
+      Cancel: '#fafafa',
+      Exit: '#fafafa'
+    },
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const {
       display: { display },
-      brightness: { brightness },
-      componentWillMount,
-      componentWillUnmount
+      brightness: { brightness }
     } = this.props;
 
     return (
@@ -62,24 +77,17 @@ class Exit extends PureComponent {
     );
   }
 
-  constructor() {
-    super();
-    this.state = {
-      appState: AppState.currentState,
-      btnBackgrounds: {
-        Cancel: {},
-        Exit: {}
-      },
-      textColors: {
-        Cancel: '#fafafa',
-        Exit: '#fafafa'
-      },
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
+  componentDidMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
   }
 
-  componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -97,11 +105,13 @@ class Exit extends PureComponent {
     this.checkBtnSoundDoublePlay();
     switch (item) {
       case 'Cancel':
-        this.props.setDisplay('mainDisp', 'flex');
-        this.props.setDisplay('exitDisp', 'none');
+        this.props.setDisplay('mainDisp', true);
+        this.props.setDisplay('exitDisp', false);
         break;
       case 'Exit':
-        BackHandler.exitApp();
+        //try another way
+        //BackHandler.exitApp();
+        ReactExit.exitApp();
         break;
     }
   }
@@ -131,7 +141,7 @@ class Exit extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,
+        display: this.state.display,
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',  
@@ -142,6 +152,13 @@ class Exit extends PureComponent {
     return styles.container;
   }
 
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
+  }
+
   checkBtnSoundDoublePlay = () => {
     this.state.btnSound.stop();
     this.state.btnSound.play();
@@ -149,11 +166,9 @@ class Exit extends PureComponent {
 }
 
 Exit.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
-  setDisplay: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillUnmount: PropTypes.func
+  setDisplay: PropTypes.func
 }
 
 const styles = StyleSheet.create({

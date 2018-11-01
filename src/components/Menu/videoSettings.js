@@ -20,12 +20,18 @@ import Sound from 'react-native-sound';
 import BackButton from './settingsItemsBackButton';
 
 class VideoSettings extends PureComponent {
+  state = {
+    appState: AppState.currentState,
+    display: 'none',
+    displayFlag: true,
+    Brightness: this.props.brightness,
+    btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
+  };
+
   render() {
     const { 
       display: { display },
-      brightness: { brightness },
-      componentWillMount,
-      componentWillUnmount
+      brightness: { brightness }
     } = this.props;
 
     return (
@@ -64,18 +70,18 @@ class VideoSettings extends PureComponent {
     );
   }
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      appState: AppState.currentState,
-      Brightness: this.props.brightness,
-      btnSound: new Sound('click.mp3', Sound.MAIN_BUNDLE, (error) => {})
-    }
+  componentWillMount = () => {
+    AppState.addEventListener('change', this.handleAppStateChange);
     this.getPropFromAsyncStorage('Brightness');
   }
 
-  componentWillMount = () => {
-    AppState.addEventListener('change', this.handleAppStateChange);
+  componentWillReceiveProps = (nextProps) => {
+    if (nextProps.display === true && this.state.displayFlag === true) {
+      this.setDisplayState('flex', false);
+    };
+    if (nextProps.display === false && this.state.displayFlag === false) {
+      this.setDisplayState('none', true);
+    };
   }
 
   componentWillUnmount = () => {
@@ -92,7 +98,7 @@ class VideoSettings extends PureComponent {
   setDisplay = () => {
     const styles = StyleSheet.create({
       container: {
-        display: this.props.display,   
+        display: this.state.display,   
         backgroundColor: 'rgba(0,0,0,0.5)',
         padding: 10,
         flex: 1,
@@ -100,6 +106,13 @@ class VideoSettings extends PureComponent {
       }
     });
     return styles.container;
+  }
+
+  setDisplayState = (display, flag) => {
+    this.setState({
+      display: display,
+      displayFlag: flag
+    });
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -144,11 +157,9 @@ class VideoSettings extends PureComponent {
 }
 
 VideoSettings.propTypes = {
-  display: PropTypes.string,
+  display: PropTypes.bool,
   brightness: PropTypes.number,
   setSetting: PropTypes.func,
-  componentWillMount: PropTypes.func,
-  componentWillUnmount: PropTypes.func
 }
 
 const styles = StyleSheet.create({

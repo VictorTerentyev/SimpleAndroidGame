@@ -20,13 +20,15 @@ import Ship from './ship';
 import EnemyShip from './enemyShip';
 
 class ShipsList extends PureComponent {
+  state = {
+    activeFlag: false
+  }
+
   render() {
     const {
       state: { state },
-      shipDisp: { shipDisp },
       position: { position },
-      enemyShips: { enemyShips },
-      componentWillReceiveProps
+      enemyShips: { enemyShips }
     } = this.props;
 
     return (
@@ -45,13 +47,6 @@ class ShipsList extends PureComponent {
         })}
       </View>
     );
-  }
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeFlag: false
-    }
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -99,14 +94,12 @@ class ShipsList extends PureComponent {
 
 ShipsList.propTypes = {
   state: PropTypes.string,
-  shipDisp: PropTypes.string,
   position: PropTypes.number,
   enemyShips: PropTypes.array,
   setDisplay: PropTypes.func,
   addEnemyShip: PropTypes.func,
   addEnemyShipHitpoints: PropTypes.func,
-  addEnemyShipCurrentPosition: PropTypes.func,
-  componentWillReceiveProps: PropTypes.func
+  addEnemyShipCurrentPosition: PropTypes.func
 }
 
 const styles = StyleSheet.create({
@@ -122,7 +115,6 @@ const styles = StyleSheet.create({
 const stateMap = (state) => {
   return {
     state: state.simpleAndroidGame.state,
-    shipDisp: state.simpleAndroidGame.shipDisp,
     position: state.simpleAndroidGame.position,
     enemyShips: state.simpleAndroidGame.enemyShips
   };
