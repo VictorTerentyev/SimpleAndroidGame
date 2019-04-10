@@ -19,6 +19,7 @@ import {
 import Sound from 'react-native-sound';
 
 class GameMenuBtn extends PureComponent {
+
   state = {
     textColor: '#fafafa',
     btnBackground: {},
@@ -27,6 +28,11 @@ class GameMenuBtn extends PureComponent {
   };
 
   render() {
+
+    const {
+      hitpoints: { hitpoints }
+    } = this.props;
+
     return (
       <View style={styles.menuBtn}>
         <ImageBackground style={styles.btnBgImg} source={this.state.btnBackground}>
@@ -64,7 +70,12 @@ class GameMenuBtn extends PureComponent {
     this.props.setDisplay('menuDisp', true);
     this.props.setDisplay('mainDisp', true);
     this.props.setDisplay('gameDisp', false);
-    this.props.setGameState('paused');
+    if (this.props.hitpoints > 0) {
+      this.props.setGameState('paused');
+    }
+    else {
+      this.props.setGameState('deactivated');
+    }
   }
 
   checkBtnSoundDoublePlay = () => {
@@ -92,6 +103,7 @@ class GameMenuBtn extends PureComponent {
 }
 
 GameMenuBtn.propTypes = {
+  hitpoints: PropTypes.number,
   setGameState: PropTypes.func,
   setDisplay: PropTypes.func
 }
@@ -116,11 +128,18 @@ const styles = StyleSheet.create({
   }
 });
 
+
+const stateMap = (state) => {
+  return {
+    hitpoints: state.simpleAndroidGame.hitpoints
+  };
+};
+
 const mapDispatchToProps = {
   setDisplay,
   setGameState
 };
 
-export default connect(null, mapDispatchToProps)(GameMenuBtn);
+export default connect(stateMap, mapDispatchToProps)(GameMenuBtn);
 
 AppRegistry.registerComponent('SimpleAndroidGame', () => GameMenuBtn);

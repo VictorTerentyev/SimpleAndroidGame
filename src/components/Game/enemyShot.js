@@ -193,10 +193,12 @@ class EnemyShot extends PureComponent {
           this.props.setDisplay('shipDisp', false);
           this.props.setGameState('deactivated');
           setTimeout(() => {
-            this.props.setDisplay('gameDisp', false);
-            this.props.setDisplay('menuDisp', true);
-            this.props.setDisplay('mainDisp', true);
-          }, 5000)
+            if (this.props.hitpoints === 0) {
+              this.props.setDisplay('gameDisp', false);
+              this.props.setDisplay('menuDisp', true);
+              this.props.setDisplay('mainDisp', true);
+            }
+          }, 3000)
         }
       }
     }
